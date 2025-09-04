@@ -1,0 +1,15 @@
+('Run at local', False)
+run eval for split_name test
+Calculating highlight scores with min score 2 (Fair)
+Time cost 0.18 seconds
+Calculating highlight scores with min score 3 (Good)
+Time cost 0.22 seconds
+Calculating highlight scores with min score 4 (VeryGood)
+Time cost 0.2 seconds
+run eval for split_name val
+Calculating highlight scores with min score 2 (Fair)
+Time cost 0.22 seconds
+Calculating highlight scores with min score 3 (Good)
+Time cost 0.21 seconds
+Calculating highlight scores with min score 4 (VeryGood)
+Time cost 0.21 seconds

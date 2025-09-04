@@ -1,0 +1,5609 @@
+[
+  {
+    "qid": 2579,
+    "duration": 150,
+    "relevant_windows": [
+      [ 82, 150 ]
+    ]
+  },
+  {
+    "qid": 8737,
+    "duration": 126,
+    "relevant_windows": [
+      [ 0, 16 ]
+    ]
+  },
+  {
+    "qid": 2321,
+    "duration": 150,
+    "relevant_windows": [
+      [ 40, 90 ]
+    ]
+  },
+  {
+    "qid": 8014,
+    "duration": 150,
+    "relevant_windows": [
+      [ 66, 96 ]
+    ]
+  },
+  {
+    "qid": 721,
+    "duration": 150,
+    "relevant_windows": [
+      [ 134, 148 ]
+    ]
+  },
+  {
+    "qid": 5584,
+    "duration": 150,
+    "relevant_windows": [
+      [ 100, 104 ],
+      [ 114, 136 ]
+    ]
+  },
+  {
+    "qid": 3069,
+    "duration": 150,
+    "relevant_windows": [
+      [ 58, 150 ]
+    ]
+  },
+  {
+    "qid": 2433,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 32 ]
+    ]
+  },
+  {
+    "qid": 4792,
+    "duration": 150,
+    "relevant_windows": [
+      [ 58, 82 ],
+      [ 96, 106 ],
+      [ 124, 128 ],
+      [ 138, 150 ]
+    ]
+  },
+  {
+    "qid": 4691,
+    "duration": 150,
+    "relevant_windows": [
+      [ 42, 74 ],
+      [ 84, 86 ]
+    ]
+  },
+  {
+    "qid": 9462,
+    "duration": 150,
+    "relevant_windows": [
+      [ 6, 18 ],
+      [ 28, 34 ],
+      [ 38, 48 ],
+      [ 54, 60 ]
+    ]
+  },
+  {
+    "qid": 3826,
+    "duration": 150,
+    "relevant_windows": [
+      [ 34, 36 ],
+      [ 40, 44 ],
+      [ 60, 64 ],
+      [ 70, 74 ],
+      [ 80, 84 ],
+      [ 104, 106 ],
+      [ 114, 116 ],
+      [ 128, 130 ],
+      [ 140, 144 ]
+    ]
+  },
+  {
+    "qid": 5256,
+    "duration": 150,
+    "relevant_windows": [
+      [ 24, 58 ]
+    ]
+  },
+  {
+    "qid": 3054,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 2244,
+    "duration": 150,
+    "relevant_windows": [
+      [ 12, 32 ],
+      [ 38, 44 ],
+      [ 62, 70 ],
+      [ 74, 76 ],
+      [ 82, 98 ]
+    ]
+  },
+  {
+    "qid": 255,
+    "duration": 150,
+    "relevant_windows": [
+      [ 106, 130 ],
+      [ 132, 136 ]
+    ]
+  },
+  {
+    "qid": 7285,
+    "duration": 150,
+    "relevant_windows": [
+      [ 16, 50 ]
+    ]
+  },
+  {
+    "qid": 10107,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 34 ],
+      [ 40, 82 ],
+      [ 88, 94 ],
+      [ 98, 104 ],
+      [ 112, 116 ],
+      [ 124, 128 ],
+      [ 132, 150 ]
+    ]
+  },
+  {
+    "qid": 6598,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 48 ]
+    ]
+  },
+  {
+    "qid": 5168,
+    "duration": 150,
+    "relevant_windows": [
+      [ 68, 92 ]
+    ]
+  },
+  {
+    "qid": 7604,
+    "duration": 150,
+    "relevant_windows": [
+      [ 62, 86 ]
+    ]
+  },
+  {
+    "qid": 1155,
+    "duration": 150,
+    "relevant_windows": [
+      [ 10, 14 ],
+      [ 28, 32 ],
+      [ 34, 54 ],
+      [ 74, 80 ]
+    ]
+  },
+  {
+    "qid": 898,
+    "duration": 150,
+    "relevant_windows": [
+      [ 122, 134 ],
+      [ 140, 144 ]
+    ]
+  },
+  {
+    "qid": 6282,
+    "duration": 150,
+    "relevant_windows": [
+      [ 54, 92 ]
+    ]
+  },
+  {
+    "qid": 8872,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 16 ]
+    ]
+  },
+  {
+    "qid": 9073,
+    "duration": 150,
+    "relevant_windows": [
+      [ 52, 70 ]
+    ]
+  },
+  {
+    "qid": 4178,
+    "duration": 150,
+    "relevant_windows": [
+      [ 120, 148 ]
+    ]
+  },
+  {
+    "qid": 3530,
+    "duration": 150,
+    "relevant_windows": [
+      [ 38, 150 ]
+    ]
+  },
+  {
+    "qid": 9367,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 44 ]
+    ]
+  },
+  {
+    "qid": 8987,
+    "duration": 150,
+    "relevant_windows": [
+      [ 72, 98 ]
+    ]
+  },
+  {
+    "qid": 3456,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 28 ]
+    ]
+  },
+  {
+    "qid": 759,
+    "duration": 150,
+    "relevant_windows": [
+      [ 130, 144 ]
+    ]
+  },
+  {
+    "qid": 4235,
+    "duration": 150,
+    "relevant_windows": [
+      [ 10, 18 ],
+      [ 22, 36 ]
+    ]
+  },
+  {
+    "qid": 8028,
+    "duration": 150,
+    "relevant_windows": [
+      [ 20, 150 ]
+    ]
+  },
+  {
+    "qid": 6252,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 40 ]
+    ]
+  },
+  {
+    "qid": 6798,
+    "duration": 150,
+    "relevant_windows": [
+      [ 22, 54 ]
+    ]
+  },
+  {
+    "qid": 7454,
+    "duration": 150,
+    "relevant_windows": [
+      [ 54, 72 ]
+    ]
+  },
+  {
+    "qid": 5407,
+    "duration": 150,
+    "relevant_windows": [
+      [ 40, 56 ]
+    ]
+  },
+  {
+    "qid": 2445,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 4946,
+    "duration": 150,
+    "relevant_windows": [
+      [ 66, 150 ]
+    ]
+  },
+  {
+    "qid": 101,
+    "duration": 150,
+    "relevant_windows": [
+      [ 96, 112 ],
+      [ 114, 128 ]
+    ]
+  },
+  {
+    "qid": 7575,
+    "duration": 150,
+    "relevant_windows": [
+      [ 54, 92 ]
+    ]
+  },
+  {
+    "qid": 8956,
+    "duration": 150,
+    "relevant_windows": [
+      [ 14, 88 ],
+      [ 90, 150 ]
+    ]
+  },
+  {
+    "qid": 7065,
+    "duration": 150,
+    "relevant_windows": [
+      [ 124, 150 ]
+    ]
+  },
+  {
+    "qid": 2852,
+    "duration": 150,
+    "relevant_windows": [
+      [ 78, 96 ],
+      [ 108, 114 ],
+      [ 122, 128 ]
+    ]
+  },
+  {
+    "qid": 8691,
+    "duration": 150,
+    "relevant_windows": [
+      [ 32, 50 ]
+    ]
+  },
+  {
+    "qid": 9657,
+    "duration": 134,
+    "relevant_windows": [
+      [ 30, 34 ],
+      [ 66, 80 ],
+      [ 128, 132 ]
+    ]
+  },
+  {
+    "qid": 7787,
+    "duration": 150,
+    "relevant_windows": [
+      [ 100, 120 ]
+    ]
+  },
+  {
+    "qid": 7236,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 144 ]
+    ]
+  },
+  {
+    "qid": 9768,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 6288,
+    "duration": 126,
+    "relevant_windows": [
+      [ 68, 116 ]
+    ]
+  },
+  {
+    "qid": 5392,
+    "duration": 150,
+    "relevant_windows": [
+      [ 46, 78 ]
+    ]
+  },
+  {
+    "qid": 1021,
+    "duration": 150,
+    "relevant_windows": [
+      [ 62, 92 ],
+      [ 100, 120 ],
+      [ 130, 150 ]
+    ]
+  },
+  {
+    "qid": 9325,
+    "duration": 150,
+    "relevant_windows": [
+      [ 126, 150 ]
+    ]
+  },
+  {
+    "qid": 8188,
+    "duration": 150,
+    "relevant_windows": [
+      [ 94, 108 ],
+      [ 110, 114 ]
+    ]
+  },
+  {
+    "qid": 1115,
+    "duration": 150,
+    "relevant_windows": [
+      [ 72, 94 ]
+    ]
+  },
+  {
+    "qid": 2024,
+    "duration": 150,
+    "relevant_windows": [
+      [ 78, 104 ]
+    ]
+  },
+  {
+    "qid": 10033,
+    "duration": 150,
+    "relevant_windows": [
+      [ 86, 100 ]
+    ]
+  },
+  {
+    "qid": 3748,
+    "duration": 150,
+    "relevant_windows": [
+      [ 98, 126 ]
+    ]
+  },
+  {
+    "qid": 2267,
+    "duration": 150,
+    "relevant_windows": [
+      [ 20, 62 ]
+    ]
+  },
+  {
+    "qid": 338,
+    "duration": 150,
+    "relevant_windows": [
+      [ 2, 18 ]
+    ]
+  },
+  {
+    "qid": 9283,
+    "duration": 150,
+    "relevant_windows": [
+      [ 72, 96 ]
+    ]
+  },
+  {
+    "qid": 7338,
+    "duration": 150,
+    "relevant_windows": [
+      [ 132, 142 ],
+      [ 146, 150 ]
+    ]
+  },
+  {
+    "qid": 4832,
+    "duration": 150,
+    "relevant_windows": [
+      [ 32, 40 ],
+      [ 44, 50 ],
+      [ 54, 58 ],
+      [ 68, 72 ],
+      [ 74, 78 ],
+      [ 80, 94 ],
+      [ 106, 110 ],
+      [ 118, 126 ],
+      [ 142, 150 ]
+    ]
+  },
+  {
+    "qid": 3663,
+    "duration": 150,
+    "relevant_windows": [
+      [ 8, 10 ],
+      [ 16, 20 ],
+      [ 54, 60 ],
+      [ 70, 72 ],
+      [ 106, 116 ],
+      [ 138, 142 ],
+      [ 146, 150 ]
+    ]
+  },
+  {
+    "qid": 9885,
+    "duration": 130,
+    "relevant_windows": [
+      [ 0, 20 ],
+      [ 22, 104 ]
+    ]
+  },
+  {
+    "qid": 8101,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 24 ],
+      [ 36, 42 ]
+    ]
+  },
+  {
+    "qid": 4122,
+    "duration": 150,
+    "relevant_windows": [
+      [ 96, 150 ]
+    ]
+  },
+  {
+    "qid": 4856,
+    "duration": 150,
+    "relevant_windows": [
+      [ 112, 126 ]
+    ]
+  },
+  {
+    "qid": 4116,
+    "duration": 150,
+    "relevant_windows": [
+      [ 84, 128 ]
+    ]
+  },
+  {
+    "qid": 3731,
+    "duration": 150,
+    "relevant_windows": [
+      [ 42, 44 ],
+      [ 50, 56 ],
+      [ 62, 70 ],
+      [ 96, 98 ],
+      [ 110, 150 ]
+    ]
+  },
+  {
+    "qid": 1626,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 24 ]
+    ]
+  },
+  {
+    "qid": 3658,
+    "duration": 150,
+    "relevant_windows": [
+      [ 128, 150 ]
+    ]
+  },
+  {
+    "qid": 7139,
+    "duration": 150,
+    "relevant_windows": [
+      [ 40, 54 ]
+    ]
+  },
+  {
+    "qid": 9713,
+    "duration": 150,
+    "relevant_windows": [
+      [ 20, 38 ]
+    ]
+  },
+  {
+    "qid": 2988,
+    "duration": 150,
+    "relevant_windows": [
+      [ 124, 150 ]
+    ]
+  },
+  {
+    "qid": 8900,
+    "duration": 150,
+    "relevant_windows": [
+      [ 2, 128 ]
+    ]
+  },
+  {
+    "qid": 8747,
+    "duration": 150,
+    "relevant_windows": [
+      [ 72, 118 ]
+    ]
+  },
+  {
+    "qid": 4602,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 26 ]
+    ]
+  },
+  {
+    "qid": 10267,
+    "duration": 150,
+    "relevant_windows": [
+      [ 124, 150 ]
+    ]
+  },
+  {
+    "qid": 8605,
+    "duration": 150,
+    "relevant_windows": [
+      [ 34, 72 ]
+    ]
+  },
+  {
+    "qid": 3513,
+    "duration": 150,
+    "relevant_windows": [
+      [ 66, 104 ]
+    ]
+  },
+  {
+    "qid": 9220,
+    "duration": 150,
+    "relevant_windows": [
+      [ 68, 130 ]
+    ]
+  },
+  {
+    "qid": 582,
+    "duration": 150,
+    "relevant_windows": [
+      [ 50, 52 ],
+      [ 60, 74 ]
+    ]
+  },
+  {
+    "qid": 9988,
+    "duration": 150,
+    "relevant_windows": [
+      [ 106, 112 ],
+      [ 122, 128 ],
+      [ 136, 138 ],
+      [ 144, 150 ]
+    ]
+  },
+  {
+    "qid": 3766,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 52 ]
+    ]
+  },
+  {
+    "qid": 8594,
+    "duration": 150,
+    "relevant_windows": [
+      [ 74, 88 ]
+    ]
+  },
+  {
+    "qid": 3003,
+    "duration": 150,
+    "relevant_windows": [
+      [ 20, 72 ]
+    ]
+  },
+  {
+    "qid": 5762,
+    "duration": 150,
+    "relevant_windows": [
+      [ 86, 106 ]
+    ]
+  },
+  {
+    "qid": 307,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 8774,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 44 ]
+    ]
+  },
+  {
+    "qid": 1678,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 20 ],
+      [ 82, 136 ],
+      [ 144, 150 ]
+    ]
+  },
+  {
+    "qid": 8457,
+    "duration": 150,
+    "relevant_windows": [
+      [ 2, 34 ]
+    ]
+  },
+  {
+    "qid": 1260,
+    "duration": 150,
+    "relevant_windows": [
+      [ 78, 104 ]
+    ]
+  },
+  {
+    "qid": 755,
+    "duration": 150,
+    "relevant_windows": [
+      [ 36, 54 ]
+    ]
+  },
+  {
+    "qid": 580,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 6 ],
+      [ 50, 70 ]
+    ]
+  },
+  {
+    "qid": 3925,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 52 ]
+    ]
+  },
+  {
+    "qid": 7412,
+    "duration": 150,
+    "relevant_windows": [
+      [ 84, 98 ]
+    ]
+  },
+  {
+    "qid": 4573,
+    "duration": 150,
+    "relevant_windows": [
+      [ 84, 140 ]
+    ]
+  },
+  {
+    "qid": 4163,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 66 ],
+      [ 126, 134 ]
+    ]
+  },
+  {
+    "qid": 9026,
+    "duration": 150,
+    "relevant_windows": [
+      [ 68, 78 ],
+      [ 84, 86 ],
+      [ 120, 122 ],
+      [ 134, 148 ]
+    ]
+  },
+  {
+    "qid": 6431,
+    "duration": 150,
+    "relevant_windows": [
+      [ 54, 58 ],
+      [ 62, 66 ],
+      [ 92, 100 ]
+    ]
+  },
+  {
+    "qid": 4689,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 1285,
+    "duration": 150,
+    "relevant_windows": [
+      [ 126, 150 ]
+    ]
+  },
+  {
+    "qid": 7117,
+    "duration": 150,
+    "relevant_windows": [
+      [ 28, 44 ]
+    ]
+  },
+  {
+    "qid": 457,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 48 ]
+    ]
+  },
+  {
+    "qid": 4098,
+    "duration": 150,
+    "relevant_windows": [
+      [ 46, 50 ],
+      [ 52, 54 ],
+      [ 56, 58 ],
+      [ 60, 66 ],
+      [ 98, 100 ],
+      [ 102, 104 ],
+      [ 108, 110 ],
+      [ 114, 120 ],
+      [ 122, 132 ],
+      [ 138, 142 ]
+    ]
+  },
+  {
+    "qid": 7972,
+    "duration": 150,
+    "relevant_windows": [
+      [ 20, 40 ],
+      [ 42, 48 ],
+      [ 50, 64 ],
+      [ 94, 112 ],
+      [ 118, 124 ],
+      [ 126, 130 ],
+      [ 144, 150 ]
+    ]
+  },
+  {
+    "qid": 7468,
+    "duration": 150,
+    "relevant_windows": [
+      [ 86, 120 ]
+    ]
+  },
+  {
+    "qid": 5671,
+    "duration": 150,
+    "relevant_windows": [
+      [ 10, 16 ],
+      [ 18, 20 ],
+      [ 22, 36 ]
+    ]
+  },
+  {
+    "qid": 5592,
+    "duration": 150,
+    "relevant_windows": [
+      [ 44, 66 ]
+    ]
+  },
+  {
+    "qid": 7364,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 4637,
+    "duration": 150,
+    "relevant_windows": [
+      [ 106, 130 ]
+    ]
+  },
+  {
+    "qid": 9537,
+    "duration": 150,
+    "relevant_windows": [
+      [ 132, 150 ]
+    ]
+  },
+  {
+    "qid": 245,
+    "duration": 150,
+    "relevant_windows": [
+      [ 8, 34 ],
+      [ 36, 38 ]
+    ]
+  },
+  {
+    "qid": 1109,
+    "duration": 150,
+    "relevant_windows": [
+      [ 100, 120 ]
+    ]
+  },
+  {
+    "qid": 1970,
+    "duration": 150,
+    "relevant_windows": [
+      [ 42, 80 ]
+    ]
+  },
+  {
+    "qid": 8182,
+    "duration": 150,
+    "relevant_windows": [
+      [ 92, 106 ]
+    ]
+  },
+  {
+    "qid": 3727,
+    "duration": 150,
+    "relevant_windows": [
+      [ 18, 30 ],
+      [ 36, 38 ],
+      [ 56, 64 ]
+    ]
+  },
+  {
+    "qid": 1223,
+    "duration": 150,
+    "relevant_windows": [
+      [ 92, 150 ]
+    ]
+  },
+  {
+    "qid": 9854,
+    "duration": 150,
+    "relevant_windows": [
+      [ 82, 96 ]
+    ]
+  },
+  {
+    "qid": 4978,
+    "duration": 150,
+    "relevant_windows": [
+      [ 108, 142 ]
+    ]
+  },
+  {
+    "qid": 252,
+    "duration": 150,
+    "relevant_windows": [
+      [ 16, 32 ]
+    ]
+  },
+  {
+    "qid": 8084,
+    "duration": 150,
+    "relevant_windows": [
+      [ 34, 70 ],
+      [ 114, 130 ]
+    ]
+  },
+  {
+    "qid": 3290,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 4 ],
+      [ 6, 84 ]
+    ]
+  },
+  {
+    "qid": 7441,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 62 ]
+    ]
+  },
+  {
+    "qid": 5246,
+    "duration": 150,
+    "relevant_windows": [
+      [ 12, 28 ]
+    ]
+  },
+  {
+    "qid": 8295,
+    "duration": 148,
+    "relevant_windows": [
+      [ 48, 80 ],
+      [ 86, 122 ]
+    ]
+  },
+  {
+    "qid": 8937,
+    "duration": 150,
+    "relevant_windows": [
+      [ 18, 58 ]
+    ]
+  },
+  {
+    "qid": 5037,
+    "duration": 150,
+    "relevant_windows": [
+      [ 84, 116 ]
+    ]
+  },
+  {
+    "qid": 6063,
+    "duration": 150,
+    "relevant_windows": [
+      [ 62, 100 ],
+      [ 102, 140 ]
+    ]
+  },
+  {
+    "qid": 6052,
+    "duration": 150,
+    "relevant_windows": [
+      [ 22, 40 ]
+    ]
+  },
+  {
+    "qid": 6084,
+    "duration": 150,
+    "relevant_windows": [
+      [ 28, 36 ],
+      [ 40, 72 ]
+    ]
+  },
+  {
+    "qid": 9746,
+    "duration": 150,
+    "relevant_windows": [
+      [ 82, 108 ]
+    ]
+  },
+  {
+    "qid": 5764,
+    "duration": 150,
+    "relevant_windows": [
+      [ 48, 50 ],
+      [ 58, 62 ],
+      [ 102, 130 ],
+      [ 134, 144 ]
+    ]
+  },
+  {
+    "qid": 237,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 36 ],
+      [ 66, 68 ]
+    ]
+  },
+  {
+    "qid": 2861,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 3354,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 8 ],
+      [ 16, 84 ]
+    ]
+  },
+  {
+    "qid": 9510,
+    "duration": 120,
+    "relevant_windows": [
+      [ 10, 36 ],
+      [ 46, 48 ]
+    ]
+  },
+  {
+    "qid": 3388,
+    "duration": 150,
+    "relevant_windows": [
+      [ 76, 116 ]
+    ]
+  },
+  {
+    "qid": 1395,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 34 ],
+      [ 42, 48 ],
+      [ 68, 72 ],
+      [ 74, 84 ],
+      [ 94, 98 ],
+      [ 102, 106 ],
+      [ 112, 120 ],
+      [ 124, 138 ],
+      [ 144, 146 ],
+      [ 148, 150 ]
+    ]
+  },
+  {
+    "qid": 5783,
+    "duration": 150,
+    "relevant_windows": [
+      [ 106, 130 ]
+    ]
+  },
+  {
+    "qid": 3030,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 60 ]
+    ]
+  },
+  {
+    "qid": 1070,
+    "duration": 150,
+    "relevant_windows": [
+      [ 110, 116 ],
+      [ 118, 128 ]
+    ]
+  },
+  {
+    "qid": 6700,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 50 ]
+    ]
+  },
+  {
+    "qid": 7319,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 30 ],
+      [ 34, 36 ]
+    ]
+  },
+  {
+    "qid": 4349,
+    "duration": 150,
+    "relevant_windows": [
+      [ 18, 48 ]
+    ]
+  },
+  {
+    "qid": 2873,
+    "duration": 150,
+    "relevant_windows": [
+      [ 58, 82 ]
+    ]
+  },
+  {
+    "qid": 2834,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 14 ],
+      [ 18, 32 ]
+    ]
+  },
+  {
+    "qid": 9185,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 5388,
+    "duration": 150,
+    "relevant_windows": [
+      [ 130, 150 ]
+    ]
+  },
+  {
+    "qid": 7234,
+    "duration": 150,
+    "relevant_windows": [
+      [ 108, 150 ]
+    ]
+  },
+  {
+    "qid": 10137,
+    "duration": 150,
+    "relevant_windows": [
+      [ 136, 150 ]
+    ]
+  },
+  {
+    "qid": 10143,
+    "duration": 150,
+    "relevant_windows": [
+      [ 28, 44 ]
+    ]
+  },
+  {
+    "qid": 3111,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 58 ]
+    ]
+  },
+  {
+    "qid": 7483,
+    "duration": 150,
+    "relevant_windows": [
+      [ 74, 96 ]
+    ]
+  },
+  {
+    "qid": 1135,
+    "duration": 150,
+    "relevant_windows": [
+      [ 18, 40 ],
+      [ 64, 72 ],
+      [ 76, 80 ],
+      [ 82, 86 ],
+      [ 90, 96 ]
+    ]
+  },
+  {
+    "qid": 8424,
+    "duration": 150,
+    "relevant_windows": [
+      [ 16, 56 ]
+    ]
+  },
+  {
+    "qid": 3696,
+    "duration": 150,
+    "relevant_windows": [
+      [ 114, 150 ]
+    ]
+  },
+  {
+    "qid": 491,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 8 ],
+      [ 36, 42 ],
+      [ 48, 60 ],
+      [ 120, 124 ],
+      [ 128, 150 ]
+    ]
+  },
+  {
+    "qid": 7244,
+    "duration": 150,
+    "relevant_windows": [
+      [ 104, 126 ],
+      [ 138, 140 ]
+    ]
+  },
+  {
+    "qid": 5606,
+    "duration": 150,
+    "relevant_windows": [
+      [ 4, 46 ]
+    ]
+  },
+  {
+    "qid": 3264,
+    "duration": 150,
+    "relevant_windows": [
+      [ 38, 48 ],
+      [ 52, 56 ],
+      [ 62, 68 ],
+      [ 90, 96 ],
+      [ 146, 150 ]
+    ]
+  },
+  {
+    "qid": 5833,
+    "duration": 150,
+    "relevant_windows": [
+      [ 82, 96 ]
+    ]
+  },
+  {
+    "qid": 1692,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 22 ]
+    ]
+  },
+  {
+    "qid": 2777,
+    "duration": 150,
+    "relevant_windows": [
+      [ 2, 38 ]
+    ]
+  },
+  {
+    "qid": 589,
+    "duration": 150,
+    "relevant_windows": [
+      [ 52, 68 ]
+    ]
+  },
+  {
+    "qid": 3348,
+    "duration": 150,
+    "relevant_windows": [
+      [ 116, 144 ]
+    ]
+  },
+  {
+    "qid": 6400,
+    "duration": 150,
+    "relevant_windows": [
+      [ 130, 150 ]
+    ]
+  },
+  {
+    "qid": 4590,
+    "duration": 150,
+    "relevant_windows": [
+      [ 78, 108 ]
+    ]
+  },
+  {
+    "qid": 7905,
+    "duration": 150,
+    "relevant_windows": [
+      [ 64, 124 ],
+      [ 126, 130 ]
+    ]
+  },
+  {
+    "qid": 10104,
+    "duration": 150,
+    "relevant_windows": [
+      [ 34, 40 ],
+      [ 44, 52 ]
+    ]
+  },
+  {
+    "qid": 3370,
+    "duration": 150,
+    "relevant_windows": [
+      [ 98, 126 ]
+    ]
+  },
+  {
+    "qid": 4072,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 26 ],
+      [ 28, 44 ],
+      [ 46, 62 ],
+      [ 64, 102 ],
+      [ 104, 150 ]
+    ]
+  },
+  {
+    "qid": 5699,
+    "duration": 150,
+    "relevant_windows": [
+      [ 114, 128 ]
+    ]
+  },
+  {
+    "qid": 9028,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 18 ]
+    ]
+  },
+  {
+    "qid": 1743,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 80 ]
+    ]
+  },
+  {
+    "qid": 2562,
+    "duration": 150,
+    "relevant_windows": [
+      [ 76, 102 ]
+    ]
+  },
+  {
+    "qid": 10092,
+    "duration": 150,
+    "relevant_windows": [
+      [ 116, 120 ],
+      [ 126, 150 ]
+    ]
+  },
+  {
+    "qid": 472,
+    "duration": 150,
+    "relevant_windows": [
+      [ 2, 24 ]
+    ]
+  },
+  {
+    "qid": 5342,
+    "duration": 150,
+    "relevant_windows": [
+      [ 56, 76 ],
+      [ 96, 150 ]
+    ]
+  },
+  {
+    "qid": 781,
+    "duration": 150,
+    "relevant_windows": [
+      [ 6, 20 ]
+    ]
+  },
+  {
+    "qid": 5926,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 14 ]
+    ]
+  },
+  {
+    "qid": 3407,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 140 ]
+    ]
+  },
+  {
+    "qid": 2276,
+    "duration": 150,
+    "relevant_windows": [
+      [ 4, 28 ]
+    ]
+  },
+  {
+    "qid": 9796,
+    "duration": 150,
+    "relevant_windows": [
+      [ 126, 140 ]
+    ]
+  },
+  {
+    "qid": 7735,
+    "duration": 150,
+    "relevant_windows": [
+      [ 134, 148 ]
+    ]
+  },
+  {
+    "qid": 4023,
+    "duration": 150,
+    "relevant_windows": [
+      [ 28, 130 ]
+    ]
+  },
+  {
+    "qid": 1264,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 72 ],
+      [ 84, 150 ]
+    ]
+  },
+  {
+    "qid": 1136,
+    "duration": 150,
+    "relevant_windows": [
+      [ 44, 48 ],
+      [ 78, 104 ]
+    ]
+  },
+  {
+    "qid": 2435,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 28 ]
+    ]
+  },
+  {
+    "qid": 8341,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 128 ],
+      [ 130, 150 ]
+    ]
+  },
+  {
+    "qid": 8671,
+    "duration": 150,
+    "relevant_windows": [
+      [ 48, 52 ],
+      [ 72, 120 ]
+    ]
+  },
+  {
+    "qid": 4758,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 44 ]
+    ]
+  },
+  {
+    "qid": 7924,
+    "duration": 150,
+    "relevant_windows": [
+      [ 128, 146 ]
+    ]
+  },
+  {
+    "qid": 993,
+    "duration": 150,
+    "relevant_windows": [
+      [ 98, 116 ]
+    ]
+  },
+  {
+    "qid": 884,
+    "duration": 134,
+    "relevant_windows": [
+      [ 112, 134 ]
+    ]
+  },
+  {
+    "qid": 228,
+    "duration": 150,
+    "relevant_windows": [
+      [ 88, 92 ],
+      [ 94, 108 ],
+      [ 120, 124 ]
+    ]
+  },
+  {
+    "qid": 9562,
+    "duration": 150,
+    "relevant_windows": [
+      [ 14, 16 ],
+      [ 36, 40 ],
+      [ 48, 80 ],
+      [ 100, 104 ]
+    ]
+  },
+  {
+    "qid": 8444,
+    "duration": 150,
+    "relevant_windows": [
+      [ 72, 86 ]
+    ]
+  },
+  {
+    "qid": 41,
+    "duration": 150,
+    "relevant_windows": [
+      [ 12, 48 ]
+    ]
+  },
+  {
+    "qid": 4378,
+    "duration": 150,
+    "relevant_windows": [
+      [ 90, 116 ]
+    ]
+  },
+  {
+    "qid": 4652,
+    "duration": 150,
+    "relevant_windows": [
+      [ 122, 150 ]
+    ]
+  },
+  {
+    "qid": 8263,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 2 ],
+      [ 4, 12 ],
+      [ 14, 24 ]
+    ]
+  },
+  {
+    "qid": 3900,
+    "duration": 150,
+    "relevant_windows": [
+      [ 12, 34 ]
+    ]
+  },
+  {
+    "qid": 4627,
+    "duration": 150,
+    "relevant_windows": [
+      [ 26, 36 ],
+      [ 50, 60 ],
+      [ 62, 150 ]
+    ]
+  },
+  {
+    "qid": 9173,
+    "duration": 130,
+    "relevant_windows": [
+      [ 62, 124 ]
+    ]
+  },
+  {
+    "qid": 9119,
+    "duration": 150,
+    "relevant_windows": [
+      [ 40, 80 ]
+    ]
+  },
+  {
+    "qid": 7768,
+    "duration": 150,
+    "relevant_windows": [
+      [ 84, 130 ]
+    ]
+  },
+  {
+    "qid": 912,
+    "duration": 150,
+    "relevant_windows": [
+      [ 74, 108 ]
+    ]
+  },
+  {
+    "qid": 9651,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 128 ]
+    ]
+  },
+  {
+    "qid": 5672,
+    "duration": 150,
+    "relevant_windows": [
+      [ 46, 62 ]
+    ]
+  },
+  {
+    "qid": 4217,
+    "duration": 150,
+    "relevant_windows": [
+      [ 60, 94 ]
+    ]
+  },
+  {
+    "qid": 2469,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 36 ],
+      [ 40, 62 ],
+      [ 64, 66 ]
+    ]
+  },
+  {
+    "qid": 8792,
+    "duration": 150,
+    "relevant_windows": [
+      [ 68, 132 ]
+    ]
+  },
+  {
+    "qid": 5568,
+    "duration": 150,
+    "relevant_windows": [
+      [ 88, 92 ],
+      [ 96, 110 ]
+    ]
+  },
+  {
+    "qid": 1568,
+    "duration": 150,
+    "relevant_windows": [
+      [ 22, 150 ]
+    ]
+  },
+  {
+    "qid": 5748,
+    "duration": 150,
+    "relevant_windows": [
+      [ 86, 134 ],
+      [ 140, 148 ]
+    ]
+  },
+  {
+    "qid": 5994,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 22 ]
+    ]
+  },
+  {
+    "qid": 2390,
+    "duration": 150,
+    "relevant_windows": [
+      [ 124, 150 ]
+    ]
+  },
+  {
+    "qid": 4097,
+    "duration": 150,
+    "relevant_windows": [
+      [ 26, 48 ],
+      [ 50, 56 ],
+      [ 58, 66 ],
+      [ 72, 80 ],
+      [ 90, 106 ],
+      [ 120, 132 ],
+      [ 142, 146 ]
+    ]
+  },
+  {
+    "qid": 4226,
+    "duration": 150,
+    "relevant_windows": [
+      [ 10, 54 ]
+    ]
+  },
+  {
+    "qid": 3028,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 26 ],
+      [ 50, 78 ]
+    ]
+  },
+  {
+    "qid": 430,
+    "duration": 150,
+    "relevant_windows": [
+      [ 118, 128 ],
+      [ 130, 138 ],
+      [ 144, 146 ]
+    ]
+  },
+  {
+    "qid": 4303,
+    "duration": 150,
+    "relevant_windows": [
+      [ 126, 150 ]
+    ]
+  },
+  {
+    "qid": 5941,
+    "duration": 150,
+    "relevant_windows": [
+      [ 60, 112 ]
+    ]
+  },
+  {
+    "qid": 1183,
+    "duration": 150,
+    "relevant_windows": [
+      [ 50, 66 ]
+    ]
+  },
+  {
+    "qid": 9737,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 20 ]
+    ]
+  },
+  {
+    "qid": 5224,
+    "duration": 150,
+    "relevant_windows": [
+      [ 50, 72 ],
+      [ 104, 112 ],
+      [ 116, 120 ]
+    ]
+  },
+  {
+    "qid": 1487,
+    "duration": 150,
+    "relevant_windows": [
+      [ 82, 150 ]
+    ]
+  },
+  {
+    "qid": 10242,
+    "duration": 124,
+    "relevant_windows": [
+      [ 8, 28 ],
+      [ 56, 62 ],
+      [ 76, 84 ]
+    ]
+  },
+  {
+    "qid": 5817,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 86 ]
+    ]
+  },
+  {
+    "qid": 6571,
+    "duration": 150,
+    "relevant_windows": [
+      [ 90, 108 ]
+    ]
+  },
+  {
+    "qid": 3811,
+    "duration": 150,
+    "relevant_windows": [
+      [ 34, 56 ]
+    ]
+  },
+  {
+    "qid": 7830,
+    "duration": 150,
+    "relevant_windows": [
+      [ 68, 106 ]
+    ]
+  },
+  {
+    "qid": 10091,
+    "duration": 150,
+    "relevant_windows": [
+      [ 36, 54 ],
+      [ 66, 80 ]
+    ]
+  },
+  {
+    "qid": 4320,
+    "duration": 150,
+    "relevant_windows": [
+      [ 50, 74 ],
+      [ 76, 84 ]
+    ]
+  },
+  {
+    "qid": 922,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 8 ],
+      [ 10, 16 ],
+      [ 32, 36 ],
+      [ 42, 44 ],
+      [ 48, 54 ],
+      [ 58, 70 ],
+      [ 122, 128 ],
+      [ 132, 134 ],
+      [ 140, 142 ]
+    ]
+  },
+  {
+    "qid": 2640,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 934,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 24 ]
+    ]
+  },
+  {
+    "qid": 5198,
+    "duration": 150,
+    "relevant_windows": [
+      [ 26, 44 ]
+    ]
+  },
+  {
+    "qid": 2897,
+    "duration": 150,
+    "relevant_windows": [
+      [ 42, 150 ]
+    ]
+  },
+  {
+    "qid": 3634,
+    "duration": 150,
+    "relevant_windows": [
+      [ 100, 148 ]
+    ]
+  },
+  {
+    "qid": 7284,
+    "duration": 150,
+    "relevant_windows": [
+      [ 90, 94 ],
+      [ 96, 142 ]
+    ]
+  },
+  {
+    "qid": 8348,
+    "duration": 150,
+    "relevant_windows": [
+      [ 76, 150 ]
+    ]
+  },
+  {
+    "qid": 571,
+    "duration": 150,
+    "relevant_windows": [
+      [ 30, 36 ],
+      [ 42, 58 ]
+    ]
+  },
+  {
+    "qid": 1827,
+    "duration": 150,
+    "relevant_windows": [
+      [ 56, 94 ]
+    ]
+  },
+  {
+    "qid": 8287,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 8 ],
+      [ 10, 42 ]
+    ]
+  },
+  {
+    "qid": 7390,
+    "duration": 150,
+    "relevant_windows": [
+      [ 12, 14 ],
+      [ 16, 20 ],
+      [ 28, 60 ],
+      [ 66, 132 ],
+      [ 144, 146 ]
+    ]
+  },
+  {
+    "qid": 2173,
+    "duration": 150,
+    "relevant_windows": [
+      [ 24, 36 ],
+      [ 40, 56 ],
+      [ 60, 76 ],
+      [ 120, 122 ],
+      [ 134, 146 ],
+      [ 148, 150 ]
+    ]
+  },
+  {
+    "qid": 7548,
+    "duration": 150,
+    "relevant_windows": [
+      [ 46, 52 ],
+      [ 56, 60 ],
+      [ 68, 76 ],
+      [ 84, 86 ],
+      [ 88, 90 ],
+      [ 92, 96 ]
+    ]
+  },
+  {
+    "qid": 7707,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 18 ]
+    ]
+  },
+  {
+    "qid": 5998,
+    "duration": 150,
+    "relevant_windows": [
+      [ 20, 62 ]
+    ]
+  },
+  {
+    "qid": 68,
+    "duration": 150,
+    "relevant_windows": [
+      [ 56, 74 ]
+    ]
+  },
+  {
+    "qid": 967,
+    "duration": 150,
+    "relevant_windows": [
+      [ 106, 122 ]
+    ]
+  },
+  {
+    "qid": 8977,
+    "duration": 150,
+    "relevant_windows": [
+      [ 74, 94 ]
+    ]
+  },
+  {
+    "qid": 5468,
+    "duration": 150,
+    "relevant_windows": [
+      [ 94, 108 ],
+      [ 116, 120 ]
+    ]
+  },
+  {
+    "qid": 329,
+    "duration": 150,
+    "relevant_windows": [
+      [ 20, 50 ]
+    ]
+  },
+  {
+    "qid": 7848,
+    "duration": 150,
+    "relevant_windows": [
+      [ 78, 84 ],
+      [ 92, 102 ]
+    ]
+  },
+  {
+    "qid": 6546,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 46 ],
+      [ 48, 58 ],
+      [ 84, 150 ]
+    ]
+  },
+  {
+    "qid": 6429,
+    "duration": 150,
+    "relevant_windows": [
+      [ 86, 112 ],
+      [ 118, 150 ]
+    ]
+  },
+  {
+    "qid": 7759,
+    "duration": 150,
+    "relevant_windows": [
+      [ 90, 150 ]
+    ]
+  },
+  {
+    "qid": 4763,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 4 ],
+      [ 10, 12 ],
+      [ 34, 52 ],
+      [ 66, 68 ],
+      [ 72, 76 ],
+      [ 86, 108 ],
+      [ 118, 140 ]
+    ]
+  },
+  {
+    "qid": 1365,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 3253,
+    "duration": 150,
+    "relevant_windows": [
+      [ 84, 108 ]
+    ]
+  },
+  {
+    "qid": 8323,
+    "duration": 150,
+    "relevant_windows": [
+      [ 118, 150 ]
+    ]
+  },
+  {
+    "qid": 2166,
+    "duration": 150,
+    "relevant_windows": [
+      [ 52, 82 ]
+    ]
+  },
+  {
+    "qid": 9056,
+    "duration": 150,
+    "relevant_windows": [
+      [ 120, 136 ]
+    ]
+  },
+  {
+    "qid": 9653,
+    "duration": 150,
+    "relevant_windows": [
+      [ 44, 60 ]
+    ]
+  },
+  {
+    "qid": 3733,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 7601,
+    "duration": 150,
+    "relevant_windows": [
+      [ 54, 72 ]
+    ]
+  },
+  {
+    "qid": 7512,
+    "duration": 150,
+    "relevant_windows": [
+      [ 4, 36 ],
+      [ 38, 40 ],
+      [ 42, 46 ]
+    ]
+  },
+  {
+    "qid": 4256,
+    "duration": 150,
+    "relevant_windows": [
+      [ 48, 50 ],
+      [ 52, 74 ]
+    ]
+  },
+  {
+    "qid": 5374,
+    "duration": 150,
+    "relevant_windows": [
+      [ 74, 108 ],
+      [ 110, 130 ]
+    ]
+  },
+  {
+    "qid": 5687,
+    "duration": 150,
+    "relevant_windows": [
+      [ 20, 52 ]
+    ]
+  },
+  {
+    "qid": 2570,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 36 ]
+    ]
+  },
+  {
+    "qid": 7373,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 24 ],
+      [ 114, 150 ]
+    ]
+  },
+  {
+    "qid": 3296,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 48 ]
+    ]
+  },
+  {
+    "qid": 2326,
+    "duration": 150,
+    "relevant_windows": [
+      [ 18, 20 ],
+      [ 24, 46 ]
+    ]
+  },
+  {
+    "qid": 8560,
+    "duration": 150,
+    "relevant_windows": [
+      [ 88, 108 ],
+      [ 116, 118 ]
+    ]
+  },
+  {
+    "qid": 5765,
+    "duration": 150,
+    "relevant_windows": [
+      [ 70, 88 ]
+    ]
+  },
+  {
+    "qid": 3242,
+    "duration": 150,
+    "relevant_windows": [
+      [ 70, 114 ]
+    ]
+  },
+  {
+    "qid": 9545,
+    "duration": 150,
+    "relevant_windows": [
+      [ 48, 68 ]
+    ]
+  },
+  {
+    "qid": 2977,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 5958,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 32 ]
+    ]
+  },
+  {
+    "qid": 3615,
+    "duration": 150,
+    "relevant_windows": [
+      [ 80, 118 ]
+    ]
+  },
+  {
+    "qid": 6075,
+    "duration": 150,
+    "relevant_windows": [
+      [ 2, 42 ]
+    ]
+  },
+  {
+    "qid": 9703,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 2 ],
+      [ 10, 14 ],
+      [ 30, 40 ],
+      [ 42, 60 ],
+      [ 64, 70 ],
+      [ 86, 92 ],
+      [ 96, 100 ],
+      [ 104, 108 ],
+      [ 110, 112 ],
+      [ 118, 120 ],
+      [ 126, 128 ],
+      [ 132, 134 ],
+      [ 138, 142 ]
+    ]
+  },
+  {
+    "qid": 2557,
+    "duration": 150,
+    "relevant_windows": [
+      [ 82, 108 ]
+    ]
+  },
+  {
+    "qid": 9862,
+    "duration": 134,
+    "relevant_windows": [
+      [ 26, 34 ],
+      [ 36, 46 ],
+      [ 48, 58 ],
+      [ 60, 70 ],
+      [ 72, 82 ],
+      [ 84, 94 ]
+    ]
+  },
+  {
+    "qid": 1849,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 26 ]
+    ]
+  },
+  {
+    "qid": 124,
+    "duration": 150,
+    "relevant_windows": [
+      [ 20, 22 ],
+      [ 26, 28 ],
+      [ 30, 44 ]
+    ]
+  },
+  {
+    "qid": 2248,
+    "duration": 150,
+    "relevant_windows": [
+      [ 96, 150 ]
+    ]
+  },
+  {
+    "qid": 5070,
+    "duration": 150,
+    "relevant_windows": [
+      [ 74, 98 ]
+    ]
+  },
+  {
+    "qid": 3951,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 3275,
+    "duration": 150,
+    "relevant_windows": [
+      [ 36, 38 ],
+      [ 82, 110 ]
+    ]
+  },
+  {
+    "qid": 8216,
+    "duration": 150,
+    "relevant_windows": [
+      [ 38, 42 ],
+      [ 56, 66 ]
+    ]
+  },
+  {
+    "qid": 9671,
+    "duration": 150,
+    "relevant_windows": [
+      [ 50, 82 ]
+    ]
+  },
+  {
+    "qid": 3995,
+    "duration": 150,
+    "relevant_windows": [
+      [ 106, 136 ]
+    ]
+  },
+  {
+    "qid": 2758,
+    "duration": 150,
+    "relevant_windows": [
+      [ 54, 98 ]
+    ]
+  },
+  {
+    "qid": 10003,
+    "duration": 150,
+    "relevant_windows": [
+      [ 16, 22 ],
+      [ 48, 56 ]
+    ]
+  },
+  {
+    "qid": 1495,
+    "duration": 150,
+    "relevant_windows": [
+      [ 60, 128 ]
+    ]
+  },
+  {
+    "qid": 6980,
+    "duration": 150,
+    "relevant_windows": [
+      [ 14, 36 ]
+    ]
+  },
+  {
+    "qid": 2611,
+    "duration": 150,
+    "relevant_windows": [
+      [ 108, 148 ]
+    ]
+  },
+  {
+    "qid": 711,
+    "duration": 150,
+    "relevant_windows": [
+      [ 50, 70 ]
+    ]
+  },
+  {
+    "qid": 2808,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 40 ]
+    ]
+  },
+  {
+    "qid": 7654,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 30 ]
+    ]
+  },
+  {
+    "qid": 5775,
+    "duration": 150,
+    "relevant_windows": [
+      [ 34, 50 ]
+    ]
+  },
+  {
+    "qid": 2226,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 2 ],
+      [ 14, 16 ],
+      [ 18, 24 ],
+      [ 28, 30 ],
+      [ 42, 44 ],
+      [ 56, 58 ],
+      [ 78, 80 ],
+      [ 86, 90 ],
+      [ 92, 100 ],
+      [ 104, 108 ],
+      [ 110, 112 ],
+      [ 114, 116 ],
+      [ 124, 126 ],
+      [ 130, 132 ],
+      [ 136, 138 ],
+      [ 140, 142 ],
+      [ 146, 150 ]
+    ]
+  },
+  {
+    "qid": 8358,
+    "duration": 150,
+    "relevant_windows": [
+      [ 22, 40 ],
+      [ 42, 44 ]
+    ]
+  },
+  {
+    "qid": 7174,
+    "duration": 150,
+    "relevant_windows": [
+      [ 40, 56 ]
+    ]
+  },
+  {
+    "qid": 7410,
+    "duration": 150,
+    "relevant_windows": [
+      [ 60, 108 ]
+    ]
+  },
+  {
+    "qid": 8675,
+    "duration": 150,
+    "relevant_windows": [
+      [ 22, 54 ]
+    ]
+  },
+  {
+    "qid": 9266,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 28 ],
+      [ 36, 52 ],
+      [ 54, 58 ],
+      [ 60, 68 ],
+      [ 84, 90 ]
+    ]
+  },
+  {
+    "qid": 4135,
+    "duration": 150,
+    "relevant_windows": [
+      [ 12, 42 ]
+    ]
+  },
+  {
+    "qid": 3851,
+    "duration": 150,
+    "relevant_windows": [
+      [ 46, 78 ]
+    ]
+  },
+  {
+    "qid": 8309,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 4 ],
+      [ 6, 46 ],
+      [ 48, 106 ],
+      [ 130, 150 ]
+    ]
+  },
+  {
+    "qid": 873,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 40 ]
+    ]
+  },
+  {
+    "qid": 2556,
+    "duration": 150,
+    "relevant_windows": [
+      [ 98, 150 ]
+    ]
+  },
+  {
+    "qid": 6419,
+    "duration": 150,
+    "relevant_windows": [
+      [ 4, 150 ]
+    ]
+  },
+  {
+    "qid": 7138,
+    "duration": 150,
+    "relevant_windows": [
+      [ 84, 100 ]
+    ]
+  },
+  {
+    "qid": 1950,
+    "duration": 150,
+    "relevant_windows": [
+      [ 110, 150 ]
+    ]
+  },
+  {
+    "qid": 4673,
+    "duration": 150,
+    "relevant_windows": [
+      [ 76, 104 ]
+    ]
+  },
+  {
+    "qid": 5826,
+    "duration": 150,
+    "relevant_windows": [
+      [ 30, 32 ],
+      [ 50, 74 ]
+    ]
+  },
+  {
+    "qid": 1046,
+    "duration": 150,
+    "relevant_windows": [
+      [ 4, 26 ]
+    ]
+  },
+  {
+    "qid": 3277,
+    "duration": 150,
+    "relevant_windows": [
+      [ 10, 34 ]
+    ]
+  },
+  {
+    "qid": 6879,
+    "duration": 150,
+    "relevant_windows": [
+      [ 80, 104 ]
+    ]
+  },
+  {
+    "qid": 6234,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 6 ],
+      [ 10, 66 ]
+    ]
+  },
+  {
+    "qid": 5317,
+    "duration": 150,
+    "relevant_windows": [
+      [ 34, 50 ],
+      [ 54, 56 ],
+      [ 66, 90 ]
+    ]
+  },
+  {
+    "qid": 4474,
+    "duration": 150,
+    "relevant_windows": [
+      [ 124, 150 ]
+    ]
+  },
+  {
+    "qid": 9548,
+    "duration": 150,
+    "relevant_windows": [
+      [ 4, 42 ],
+      [ 78, 96 ]
+    ]
+  },
+  {
+    "qid": 2232,
+    "duration": 150,
+    "relevant_windows": [
+      [ 6, 8 ],
+      [ 18, 20 ],
+      [ 24, 26 ],
+      [ 40, 42 ],
+      [ 46, 48 ],
+      [ 52, 54 ],
+      [ 56, 60 ],
+      [ 64, 66 ],
+      [ 68, 74 ],
+      [ 78, 80 ],
+      [ 96, 100 ],
+      [ 102, 104 ],
+      [ 106, 108 ],
+      [ 122, 124 ],
+      [ 132, 134 ],
+      [ 136, 140 ],
+      [ 142, 146 ],
+      [ 148, 150 ]
+    ]
+  },
+  {
+    "qid": 453,
+    "duration": 150,
+    "relevant_windows": [
+      [ 120, 126 ],
+      [ 128, 136 ]
+    ]
+  },
+  {
+    "qid": 3819,
+    "duration": 150,
+    "relevant_windows": [
+      [ 52, 80 ]
+    ]
+  },
+  {
+    "qid": 9715,
+    "duration": 150,
+    "relevant_windows": [
+      [ 66, 150 ]
+    ]
+  },
+  {
+    "qid": 3303,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 10 ],
+      [ 12, 22 ],
+      [ 24, 150 ]
+    ]
+  },
+  {
+    "qid": 6474,
+    "duration": 150,
+    "relevant_windows": [
+      [ 92, 128 ]
+    ]
+  },
+  {
+    "qid": 4648,
+    "duration": 150,
+    "relevant_windows": [
+      [ 8, 12 ],
+      [ 14, 20 ],
+      [ 24, 28 ],
+      [ 30, 32 ],
+      [ 62, 74 ]
+    ]
+  },
+  {
+    "qid": 4806,
+    "duration": 150,
+    "relevant_windows": [
+      [ 104, 142 ]
+    ]
+  },
+  {
+    "qid": 5194,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 14 ]
+    ]
+  },
+  {
+    "qid": 4687,
+    "duration": 150,
+    "relevant_windows": [
+      [ 8, 34 ]
+    ]
+  },
+  {
+    "qid": 9212,
+    "duration": 150,
+    "relevant_windows": [
+      [ 110, 150 ]
+    ]
+  },
+  {
+    "qid": 7685,
+    "duration": 150,
+    "relevant_windows": [
+      [ 62, 78 ]
+    ]
+  },
+  {
+    "qid": 4540,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 48 ],
+      [ 80, 90 ]
+    ]
+  },
+  {
+    "qid": 1377,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 30 ]
+    ]
+  },
+  {
+    "qid": 3809,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 126 ]
+    ]
+  },
+  {
+    "qid": 4920,
+    "duration": 150,
+    "relevant_windows": [
+      [ 64, 84 ]
+    ]
+  },
+  {
+    "qid": 5936,
+    "duration": 150,
+    "relevant_windows": [
+      [ 50, 56 ],
+      [ 58, 68 ]
+    ]
+  },
+  {
+    "qid": 4326,
+    "duration": 150,
+    "relevant_windows": [
+      [ 110, 148 ]
+    ]
+  },
+  {
+    "qid": 8147,
+    "duration": 150,
+    "relevant_windows": [
+      [ 16, 150 ]
+    ]
+  },
+  {
+    "qid": 494,
+    "duration": 150,
+    "relevant_windows": [
+      [ 44, 60 ],
+      [ 72, 90 ]
+    ]
+  },
+  {
+    "qid": 5985,
+    "duration": 138,
+    "relevant_windows": [
+      [ 28, 52 ]
+    ]
+  },
+  {
+    "qid": 1985,
+    "duration": 150,
+    "relevant_windows": [
+      [ 122, 150 ]
+    ]
+  },
+  {
+    "qid": 3449,
+    "duration": 150,
+    "relevant_windows": [
+      [ 14, 36 ]
+    ]
+  },
+  {
+    "qid": 5243,
+    "duration": 150,
+    "relevant_windows": [
+      [ 130, 150 ]
+    ]
+  },
+  {
+    "qid": 9993,
+    "duration": 150,
+    "relevant_windows": [
+      [ 6, 12 ],
+      [ 40, 46 ],
+      [ 72, 80 ],
+      [ 86, 94 ],
+      [ 122, 132 ],
+      [ 146, 150 ]
+    ]
+  },
+  {
+    "qid": 4164,
+    "duration": 150,
+    "relevant_windows": [
+      [ 92, 148 ]
+    ]
+  },
+  {
+    "qid": 4130,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 4309,
+    "duration": 150,
+    "relevant_windows": [
+      [ 110, 132 ]
+    ]
+  },
+  {
+    "qid": 6110,
+    "duration": 150,
+    "relevant_windows": [
+      [ 108, 150 ]
+    ]
+  },
+  {
+    "qid": 8749,
+    "duration": 150,
+    "relevant_windows": [
+      [ 78, 92 ]
+    ]
+  },
+  {
+    "qid": 3503,
+    "duration": 150,
+    "relevant_windows": [
+      [ 52, 88 ],
+      [ 96, 98 ]
+    ]
+  },
+  {
+    "qid": 10029,
+    "duration": 150,
+    "relevant_windows": [
+      [ 110, 124 ]
+    ]
+  },
+  {
+    "qid": 3403,
+    "duration": 150,
+    "relevant_windows": [
+      [ 90, 112 ],
+      [ 114, 122 ],
+      [ 132, 138 ]
+    ]
+  },
+  {
+    "qid": 1751,
+    "duration": 150,
+    "relevant_windows": [
+      [ 100, 126 ],
+      [ 128, 130 ],
+      [ 134, 150 ]
+    ]
+  },
+  {
+    "qid": 3739,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 20 ],
+      [ 114, 126 ]
+    ]
+  },
+  {
+    "qid": 4887,
+    "duration": 150,
+    "relevant_windows": [
+      [ 68, 132 ]
+    ]
+  },
+  {
+    "qid": 4419,
+    "duration": 150,
+    "relevant_windows": [
+      [ 30, 150 ]
+    ]
+  },
+  {
+    "qid": 635,
+    "duration": 150,
+    "relevant_windows": [
+      [ 94, 96 ],
+      [ 100, 108 ],
+      [ 112, 120 ]
+    ]
+  },
+  {
+    "qid": 5510,
+    "duration": 150,
+    "relevant_windows": [
+      [ 106, 120 ]
+    ]
+  },
+  {
+    "qid": 3938,
+    "duration": 150,
+    "relevant_windows": [
+      [ 114, 140 ]
+    ]
+  },
+  {
+    "qid": 3915,
+    "duration": 150,
+    "relevant_windows": [
+      [ 6, 10 ],
+      [ 12, 16 ],
+      [ 18, 36 ]
+    ]
+  },
+  {
+    "qid": 6337,
+    "duration": 150,
+    "relevant_windows": [
+      [ 30, 150 ]
+    ]
+  },
+  {
+    "qid": 7653,
+    "duration": 150,
+    "relevant_windows": [
+      [ 24, 60 ]
+    ]
+  },
+  {
+    "qid": 3834,
+    "duration": 150,
+    "relevant_windows": [
+      [ 122, 150 ]
+    ]
+  },
+  {
+    "qid": 2125,
+    "duration": 150,
+    "relevant_windows": [
+      [ 18, 58 ]
+    ]
+  },
+  {
+    "qid": 5688,
+    "duration": 150,
+    "relevant_windows": [
+      [ 56, 78 ]
+    ]
+  },
+  {
+    "qid": 1566,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 60 ],
+      [ 76, 94 ]
+    ]
+  },
+  {
+    "qid": 10254,
+    "duration": 150,
+    "relevant_windows": [
+      [ 64, 70 ],
+      [ 74, 88 ],
+      [ 96, 102 ]
+    ]
+  },
+  {
+    "qid": 1918,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 26 ]
+    ]
+  },
+  {
+    "qid": 6065,
+    "duration": 150,
+    "relevant_windows": [
+      [ 98, 150 ]
+    ]
+  },
+  {
+    "qid": 4957,
+    "duration": 150,
+    "relevant_windows": [
+      [ 4, 24 ]
+    ]
+  },
+  {
+    "qid": 2800,
+    "duration": 150,
+    "relevant_windows": [
+      [ 68, 112 ]
+    ]
+  },
+  {
+    "qid": 525,
+    "duration": 150,
+    "relevant_windows": [
+      [ 104, 150 ]
+    ]
+  },
+  {
+    "qid": 5703,
+    "duration": 150,
+    "relevant_windows": [
+      [ 60, 70 ],
+      [ 134, 150 ]
+    ]
+  },
+  {
+    "qid": 2363,
+    "duration": 128,
+    "relevant_windows": [
+      [ 2, 12 ],
+      [ 16, 22 ],
+      [ 54, 58 ],
+      [ 60, 64 ],
+      [ 68, 72 ],
+      [ 76, 78 ]
+    ]
+  },
+  {
+    "qid": 3077,
+    "duration": 150,
+    "relevant_windows": [
+      [ 108, 124 ],
+      [ 126, 136 ],
+      [ 140, 146 ]
+    ]
+  },
+  {
+    "qid": 1323,
+    "duration": 150,
+    "relevant_windows": [
+      [ 80, 112 ]
+    ]
+  },
+  {
+    "qid": 9277,
+    "duration": 150,
+    "relevant_windows": [
+      [ 44, 56 ],
+      [ 134, 146 ]
+    ]
+  },
+  {
+    "qid": 1813,
+    "duration": 150,
+    "relevant_windows": [
+      [ 44, 50 ],
+      [ 62, 64 ],
+      [ 76, 136 ],
+      [ 146, 150 ]
+    ]
+  },
+  {
+    "qid": 10307,
+    "duration": 150,
+    "relevant_windows": [
+      [ 118, 120 ],
+      [ 124, 132 ],
+      [ 134, 150 ]
+    ]
+  },
+  {
+    "qid": 1067,
+    "duration": 150,
+    "relevant_windows": [
+      [ 134, 150 ]
+    ]
+  },
+  {
+    "qid": 6107,
+    "duration": 150,
+    "relevant_windows": [
+      [ 20, 150 ]
+    ]
+  },
+  {
+    "qid": 8298,
+    "duration": 150,
+    "relevant_windows": [
+      [ 76, 150 ]
+    ]
+  },
+  {
+    "qid": 5613,
+    "duration": 150,
+    "relevant_windows": [
+      [ 118, 132 ],
+      [ 136, 138 ]
+    ]
+  },
+  {
+    "qid": 1312,
+    "duration": 150,
+    "relevant_windows": [
+      [ 36, 148 ]
+    ]
+  },
+  {
+    "qid": 7332,
+    "duration": 150,
+    "relevant_windows": [
+      [ 34, 82 ]
+    ]
+  },
+  {
+    "qid": 9369,
+    "duration": 150,
+    "relevant_windows": [
+      [ 28, 38 ],
+      [ 62, 72 ],
+      [ 140, 150 ]
+    ]
+  },
+  {
+    "qid": 5437,
+    "duration": 150,
+    "relevant_windows": [
+      [ 44, 82 ]
+    ]
+  },
+  {
+    "qid": 7627,
+    "duration": 150,
+    "relevant_windows": [
+      [ 12, 50 ]
+    ]
+  },
+  {
+    "qid": 8730,
+    "duration": 150,
+    "relevant_windows": [
+      [ 44, 62 ]
+    ]
+  },
+  {
+    "qid": 6139,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 32 ]
+    ]
+  },
+  {
+    "qid": 9216,
+    "duration": 150,
+    "relevant_windows": [
+      [ 56, 116 ]
+    ]
+  },
+  {
+    "qid": 5029,
+    "duration": 150,
+    "relevant_windows": [
+      [ 122, 144 ]
+    ]
+  },
+  {
+    "qid": 81,
+    "duration": 150,
+    "relevant_windows": [
+      [ 4, 74 ]
+    ]
+  },
+  {
+    "qid": 9667,
+    "duration": 150,
+    "relevant_windows": [
+      [ 134, 150 ]
+    ]
+  },
+  {
+    "qid": 6480,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 32 ]
+    ]
+  },
+  {
+    "qid": 10294,
+    "duration": 150,
+    "relevant_windows": [
+      [ 94, 96 ],
+      [ 100, 108 ],
+      [ 120, 138 ]
+    ]
+  },
+  {
+    "qid": 7044,
+    "duration": 150,
+    "relevant_windows": [
+      [ 136, 150 ]
+    ]
+  },
+  {
+    "qid": 1755,
+    "duration": 150,
+    "relevant_windows": [
+      [ 34, 36 ],
+      [ 40, 80 ]
+    ]
+  },
+  {
+    "qid": 3229,
+    "duration": 150,
+    "relevant_windows": [
+      [ 48, 150 ]
+    ]
+  },
+  {
+    "qid": 1616,
+    "duration": 150,
+    "relevant_windows": [
+      [ 50, 72 ]
+    ]
+  },
+  {
+    "qid": 2721,
+    "duration": 150,
+    "relevant_windows": [
+      [ 100, 128 ]
+    ]
+  },
+  {
+    "qid": 7477,
+    "duration": 150,
+    "relevant_windows": [
+      [ 122, 142 ]
+    ]
+  },
+  {
+    "qid": 621,
+    "duration": 150,
+    "relevant_windows": [
+      [ 6, 36 ]
+    ]
+  },
+  {
+    "qid": 10289,
+    "duration": 150,
+    "relevant_windows": [
+      [ 14, 28 ]
+    ]
+  },
+  {
+    "qid": 4266,
+    "duration": 150,
+    "relevant_windows": [
+      [ 90, 108 ],
+      [ 124, 142 ]
+    ]
+  },
+  {
+    "qid": 8075,
+    "duration": 150,
+    "relevant_windows": [
+      [ 20, 24 ],
+      [ 34, 40 ],
+      [ 44, 46 ],
+      [ 52, 54 ],
+      [ 60, 64 ],
+      [ 68, 72 ],
+      [ 78, 92 ],
+      [ 94, 108 ],
+      [ 120, 126 ],
+      [ 132, 134 ],
+      [ 144, 150 ]
+    ]
+  },
+  {
+    "qid": 4477,
+    "duration": 150,
+    "relevant_windows": [
+      [ 54, 88 ]
+    ]
+  },
+  {
+    "qid": 6512,
+    "duration": 150,
+    "relevant_windows": [
+      [ 4, 56 ]
+    ]
+  },
+  {
+    "qid": 8274,
+    "duration": 150,
+    "relevant_windows": [
+      [ 34, 48 ]
+    ]
+  },
+  {
+    "qid": 8661,
+    "duration": 150,
+    "relevant_windows": [
+      [ 92, 124 ],
+      [ 138, 150 ]
+    ]
+  },
+  {
+    "qid": 5182,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 16 ]
+    ]
+  },
+  {
+    "qid": 9763,
+    "duration": 150,
+    "relevant_windows": [
+      [ 116, 150 ]
+    ]
+  },
+  {
+    "qid": 321,
+    "duration": 150,
+    "relevant_windows": [
+      [ 52, 94 ]
+    ]
+  },
+  {
+    "qid": 2656,
+    "duration": 150,
+    "relevant_windows": [
+      [ 118, 142 ]
+    ]
+  },
+  {
+    "qid": 5797,
+    "duration": 150,
+    "relevant_windows": [
+      [ 32, 56 ]
+    ]
+  },
+  {
+    "qid": 1718,
+    "duration": 150,
+    "relevant_windows": [
+      [ 42, 102 ]
+    ]
+  },
+  {
+    "qid": 2695,
+    "duration": 150,
+    "relevant_windows": [
+      [ 62, 150 ]
+    ]
+  },
+  {
+    "qid": 7666,
+    "duration": 150,
+    "relevant_windows": [
+      [ 8, 18 ],
+      [ 28, 32 ],
+      [ 36, 40 ],
+      [ 44, 52 ],
+      [ 64, 74 ]
+    ]
+  },
+  {
+    "qid": 3194,
+    "duration": 150,
+    "relevant_windows": [
+      [ 108, 132 ],
+      [ 134, 144 ]
+    ]
+  },
+  {
+    "qid": 2202,
+    "duration": 150,
+    "relevant_windows": [
+      [ 6, 10 ],
+      [ 12, 20 ],
+      [ 24, 32 ],
+      [ 36, 76 ]
+    ]
+  },
+  {
+    "qid": 8861,
+    "duration": 150,
+    "relevant_windows": [
+      [ 20, 36 ]
+    ]
+  },
+  {
+    "qid": 2600,
+    "duration": 150,
+    "relevant_windows": [
+      [ 76, 122 ]
+    ]
+  },
+  {
+    "qid": 7981,
+    "duration": 150,
+    "relevant_windows": [
+      [ 8, 26 ]
+    ]
+  },
+  {
+    "qid": 1777,
+    "duration": 150,
+    "relevant_windows": [
+      [ 72, 98 ]
+    ]
+  },
+  {
+    "qid": 313,
+    "duration": 150,
+    "relevant_windows": [
+      [ 68, 86 ]
+    ]
+  },
+  {
+    "qid": 2411,
+    "duration": 150,
+    "relevant_windows": [
+      [ 74, 98 ]
+    ]
+  },
+  {
+    "qid": 1855,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 20 ],
+      [ 44, 64 ]
+    ]
+  },
+  {
+    "qid": 12,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 22 ]
+    ]
+  },
+  {
+    "qid": 9209,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 36 ],
+      [ 50, 78 ],
+      [ 92, 150 ]
+    ]
+  },
+  {
+    "qid": 2741,
+    "duration": 144,
+    "relevant_windows": [
+      [ 0, 86 ]
+    ]
+  },
+  {
+    "qid": 9522,
+    "duration": 150,
+    "relevant_windows": [
+      [ 106, 110 ],
+      [ 112, 120 ],
+      [ 138, 144 ]
+    ]
+  },
+  {
+    "qid": 5217,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 14 ]
+    ]
+  },
+  {
+    "qid": 8131,
+    "duration": 150,
+    "relevant_windows": [
+      [ 54, 66 ],
+      [ 70, 74 ]
+    ]
+  },
+  {
+    "qid": 374,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 90 ],
+      [ 92, 150 ]
+    ]
+  },
+  {
+    "qid": 9712,
+    "duration": 150,
+    "relevant_windows": [
+      [ 28, 32 ],
+      [ 36, 62 ]
+    ]
+  },
+  {
+    "qid": 4704,
+    "duration": 150,
+    "relevant_windows": [
+      [ 24, 28 ],
+      [ 30, 44 ],
+      [ 76, 88 ],
+      [ 106, 108 ]
+    ]
+  },
+  {
+    "qid": 1057,
+    "duration": 150,
+    "relevant_windows": [
+      [ 128, 150 ]
+    ]
+  },
+  {
+    "qid": 2862,
+    "duration": 150,
+    "relevant_windows": [
+      [ 60, 70 ],
+      [ 72, 98 ]
+    ]
+  },
+  {
+    "qid": 9664,
+    "duration": 150,
+    "relevant_windows": [
+      [ 46, 56 ],
+      [ 62, 68 ],
+      [ 120, 126 ]
+    ]
+  },
+  {
+    "qid": 1536,
+    "duration": 150,
+    "relevant_windows": [
+      [ 10, 40 ],
+      [ 42, 80 ],
+      [ 82, 88 ],
+      [ 92, 112 ],
+      [ 114, 128 ],
+      [ 130, 132 ]
+    ]
+  },
+  {
+    "qid": 8152,
+    "duration": 150,
+    "relevant_windows": [
+      [ 12, 28 ],
+      [ 32, 36 ],
+      [ 54, 58 ]
+    ]
+  },
+  {
+    "qid": 1586,
+    "duration": 150,
+    "relevant_windows": [
+      [ 84, 86 ],
+      [ 90, 120 ]
+    ]
+  },
+  {
+    "qid": 3318,
+    "duration": 150,
+    "relevant_windows": [
+      [ 20, 104 ]
+    ]
+  },
+  {
+    "qid": 807,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 20 ]
+    ]
+  },
+  {
+    "qid": 210,
+    "duration": 150,
+    "relevant_windows": [
+      [ 50, 56 ],
+      [ 60, 84 ]
+    ]
+  },
+  {
+    "qid": 2124,
+    "duration": 150,
+    "relevant_windows": [
+      [ 38, 114 ]
+    ]
+  },
+  {
+    "qid": 8066,
+    "duration": 150,
+    "relevant_windows": [
+      [ 80, 100 ]
+    ]
+  },
+  {
+    "qid": 4959,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 58 ]
+    ]
+  },
+  {
+    "qid": 9474,
+    "duration": 150,
+    "relevant_windows": [
+      [ 96, 150 ]
+    ]
+  },
+  {
+    "qid": 3773,
+    "duration": 150,
+    "relevant_windows": [
+      [ 80, 96 ],
+      [ 112, 116 ],
+      [ 120, 124 ]
+    ]
+  },
+  {
+    "qid": 10309,
+    "duration": 150,
+    "relevant_windows": [
+      [ 72, 102 ],
+      [ 104, 146 ]
+    ]
+  },
+  {
+    "qid": 9304,
+    "duration": 150,
+    "relevant_windows": [
+      [ 72, 94 ]
+    ]
+  },
+  {
+    "qid": 9878,
+    "duration": 150,
+    "relevant_windows": [
+      [ 60, 82 ]
+    ]
+  },
+  {
+    "qid": 7046,
+    "duration": 150,
+    "relevant_windows": [
+      [ 32, 60 ],
+      [ 66, 72 ]
+    ]
+  },
+  {
+    "qid": 8676,
+    "duration": 150,
+    "relevant_windows": [
+      [ 6, 80 ]
+    ]
+  },
+  {
+    "qid": 1309,
+    "duration": 150,
+    "relevant_windows": [
+      [ 38, 88 ]
+    ]
+  },
+  {
+    "qid": 7569,
+    "duration": 150,
+    "relevant_windows": [
+      [ 120, 144 ]
+    ]
+  },
+  {
+    "qid": 5480,
+    "duration": 150,
+    "relevant_windows": [
+      [ 4, 12 ],
+      [ 22, 62 ]
+    ]
+  },
+  {
+    "qid": 9450,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 14 ],
+      [ 16, 80 ],
+      [ 82, 92 ],
+      [ 94, 128 ],
+      [ 130, 150 ]
+    ]
+  },
+  {
+    "qid": 4909,
+    "duration": 150,
+    "relevant_windows": [
+      [ 62, 84 ]
+    ]
+  },
+  {
+    "qid": 4559,
+    "duration": 150,
+    "relevant_windows": [
+      [ 124, 150 ]
+    ]
+  },
+  {
+    "qid": 8320,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 38 ]
+    ]
+  },
+  {
+    "qid": 8709,
+    "duration": 150,
+    "relevant_windows": [
+      [ 4, 42 ]
+    ]
+  },
+  {
+    "qid": 5694,
+    "duration": 150,
+    "relevant_windows": [
+      [ 130, 144 ]
+    ]
+  },
+  {
+    "qid": 3252,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 138 ]
+    ]
+  },
+  {
+    "qid": 9879,
+    "duration": 150,
+    "relevant_windows": [
+      [ 72, 100 ]
+    ]
+  },
+  {
+    "qid": 8927,
+    "duration": 150,
+    "relevant_windows": [
+      [ 26, 32 ],
+      [ 132, 136 ],
+      [ 140, 150 ]
+    ]
+  },
+  {
+    "qid": 3830,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 42 ]
+    ]
+  },
+  {
+    "qid": 938,
+    "duration": 150,
+    "relevant_windows": [
+      [ 36, 40 ],
+      [ 46, 60 ]
+    ]
+  },
+  {
+    "qid": 854,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 14 ]
+    ]
+  },
+  {
+    "qid": 2256,
+    "duration": 150,
+    "relevant_windows": [
+      [ 94, 150 ]
+    ]
+  },
+  {
+    "qid": 3566,
+    "duration": 150,
+    "relevant_windows": [
+      [ 98, 150 ]
+    ]
+  },
+  {
+    "qid": 1211,
+    "duration": 150,
+    "relevant_windows": [
+      [ 74, 88 ],
+      [ 90, 96 ],
+      [ 102, 108 ],
+      [ 112, 120 ],
+      [ 122, 126 ],
+      [ 128, 132 ],
+      [ 138, 144 ]
+    ]
+  },
+  {
+    "qid": 8478,
+    "duration": 150,
+    "relevant_windows": [
+      [ 114, 132 ]
+    ]
+  },
+  {
+    "qid": 588,
+    "duration": 150,
+    "relevant_windows": [
+      [ 124, 134 ],
+      [ 138, 146 ]
+    ]
+  },
+  {
+    "qid": 32,
+    "duration": 150,
+    "relevant_windows": [
+      [ 18, 40 ]
+    ]
+  },
+  {
+    "qid": 953,
+    "duration": 150,
+    "relevant_windows": [
+      [ 128, 150 ]
+    ]
+  },
+  {
+    "qid": 2320,
+    "duration": 150,
+    "relevant_windows": [
+      [ 32, 72 ]
+    ]
+  },
+  {
+    "qid": 2205,
+    "duration": 150,
+    "relevant_windows": [
+      [ 78, 102 ]
+    ]
+  },
+  {
+    "qid": 1464,
+    "duration": 150,
+    "relevant_windows": [
+      [ 48, 62 ],
+      [ 72, 76 ],
+      [ 86, 96 ]
+    ]
+  },
+  {
+    "qid": 623,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 14 ]
+    ]
+  },
+  {
+    "qid": 4242,
+    "duration": 150,
+    "relevant_windows": [
+      [ 6, 12 ],
+      [ 18, 26 ],
+      [ 72, 82 ],
+      [ 86, 88 ]
+    ]
+  },
+  {
+    "qid": 8859,
+    "duration": 150,
+    "relevant_windows": [
+      [ 124, 150 ]
+    ]
+  },
+  {
+    "qid": 1842,
+    "duration": 150,
+    "relevant_windows": [
+      [ 44, 78 ]
+    ]
+  },
+  {
+    "qid": 9236,
+    "duration": 150,
+    "relevant_windows": [
+      [ 44, 66 ]
+    ]
+  },
+  {
+    "qid": 6441,
+    "duration": 150,
+    "relevant_windows": [
+      [ 8, 10 ],
+      [ 12, 150 ]
+    ]
+  },
+  {
+    "qid": 7271,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 28 ]
+    ]
+  },
+  {
+    "qid": 686,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 851,
+    "duration": 150,
+    "relevant_windows": [
+      [ 72, 90 ],
+      [ 96, 100 ]
+    ]
+  },
+  {
+    "qid": 7783,
+    "duration": 150,
+    "relevant_windows": [
+      [ 36, 58 ]
+    ]
+  },
+  {
+    "qid": 4837,
+    "duration": 150,
+    "relevant_windows": [
+      [ 110, 124 ]
+    ]
+  },
+  {
+    "qid": 1254,
+    "duration": 150,
+    "relevant_windows": [
+      [ 28, 46 ],
+      [ 48, 58 ]
+    ]
+  },
+  {
+    "qid": 5518,
+    "duration": 150,
+    "relevant_windows": [
+      [ 28, 42 ]
+    ]
+  },
+  {
+    "qid": 6442,
+    "duration": 150,
+    "relevant_windows": [
+      [ 26, 44 ],
+      [ 50, 52 ]
+    ]
+  },
+  {
+    "qid": 2763,
+    "duration": 150,
+    "relevant_windows": [
+      [ 60, 106 ]
+    ]
+  },
+  {
+    "qid": 8632,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 92 ]
+    ]
+  },
+  {
+    "qid": 8764,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 26 ]
+    ]
+  },
+  {
+    "qid": 1632,
+    "duration": 150,
+    "relevant_windows": [
+      [ 14, 16 ],
+      [ 36, 38 ],
+      [ 42, 44 ],
+      [ 46, 48 ],
+      [ 64, 68 ],
+      [ 76, 80 ],
+      [ 84, 88 ],
+      [ 92, 96 ],
+      [ 100, 104 ],
+      [ 116, 118 ],
+      [ 138, 140 ],
+      [ 148, 150 ]
+    ]
+  },
+  {
+    "qid": 9819,
+    "duration": 150,
+    "relevant_windows": [
+      [ 28, 46 ]
+    ]
+  },
+  {
+    "qid": 6356,
+    "duration": 150,
+    "relevant_windows": [
+      [ 36, 96 ]
+    ]
+  },
+  {
+    "qid": 6953,
+    "duration": 150,
+    "relevant_windows": [
+      [ 110, 128 ]
+    ]
+  },
+  {
+    "qid": 6212,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 28 ],
+      [ 54, 56 ]
+    ]
+  },
+  {
+    "qid": 9982,
+    "duration": 150,
+    "relevant_windows": [
+      [ 66, 70 ],
+      [ 72, 78 ],
+      [ 80, 122 ]
+    ]
+  },
+  {
+    "qid": 8135,
+    "duration": 150,
+    "relevant_windows": [
+      [ 34, 48 ]
+    ]
+  },
+  {
+    "qid": 2506,
+    "duration": 150,
+    "relevant_windows": [
+      [ 18, 34 ],
+      [ 74, 94 ]
+    ]
+  },
+  {
+    "qid": 3021,
+    "duration": 150,
+    "relevant_windows": [
+      [ 106, 134 ]
+    ]
+  },
+  {
+    "qid": 6380,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 7515,
+    "duration": 150,
+    "relevant_windows": [
+      [ 38, 42 ],
+      [ 64, 150 ]
+    ]
+  },
+  {
+    "qid": 687,
+    "duration": 150,
+    "relevant_windows": [
+      [ 56, 70 ]
+    ]
+  },
+  {
+    "qid": 4041,
+    "duration": 150,
+    "relevant_windows": [
+      [ 38, 74 ],
+      [ 78, 86 ]
+    ]
+  },
+  {
+    "qid": 9934,
+    "duration": 150,
+    "relevant_windows": [
+      [ 86, 100 ]
+    ]
+  },
+  {
+    "qid": 617,
+    "duration": 150,
+    "relevant_windows": [
+      [ 24, 46 ]
+    ]
+  },
+  {
+    "qid": 5335,
+    "duration": 150,
+    "relevant_windows": [
+      [ 60, 76 ]
+    ]
+  },
+  {
+    "qid": 8818,
+    "duration": 150,
+    "relevant_windows": [
+      [ 40, 64 ],
+      [ 66, 74 ]
+    ]
+  },
+  {
+    "qid": 9198,
+    "duration": 150,
+    "relevant_windows": [
+      [ 10, 32 ]
+    ]
+  },
+  {
+    "qid": 4244,
+    "duration": 150,
+    "relevant_windows": [
+      [ 8, 36 ]
+    ]
+  },
+  {
+    "qid": 7697,
+    "duration": 150,
+    "relevant_windows": [
+      [ 6, 20 ]
+    ]
+  },
+  {
+    "qid": 8874,
+    "duration": 138,
+    "relevant_windows": [
+      [ 36, 54 ]
+    ]
+  },
+  {
+    "qid": 6924,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 8 ],
+      [ 22, 32 ],
+      [ 74, 92 ],
+      [ 120, 128 ]
+    ]
+  },
+  {
+    "qid": 7765,
+    "duration": 150,
+    "relevant_windows": [
+      [ 50, 58 ],
+      [ 66, 84 ]
+    ]
+  },
+  {
+    "qid": 4327,
+    "duration": 150,
+    "relevant_windows": [
+      [ 74, 76 ],
+      [ 78, 86 ],
+      [ 88, 94 ],
+      [ 112, 114 ],
+      [ 120, 150 ]
+    ]
+  },
+  {
+    "qid": 5004,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 14 ]
+    ]
+  },
+  {
+    "qid": 7343,
+    "duration": 150,
+    "relevant_windows": [
+      [ 126, 136 ],
+      [ 140, 150 ]
+    ]
+  },
+  {
+    "qid": 435,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 54 ]
+    ]
+  },
+  {
+    "qid": 8663,
+    "duration": 126,
+    "relevant_windows": [
+      [ 12, 24 ]
+    ]
+  },
+  {
+    "qid": 6129,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 8247,
+    "duration": 150,
+    "relevant_windows": [
+      [ 34, 52 ]
+    ]
+  },
+  {
+    "qid": 8778,
+    "duration": 150,
+    "relevant_windows": [
+      [ 128, 142 ]
+    ]
+  },
+  {
+    "qid": 5979,
+    "duration": 150,
+    "relevant_windows": [
+      [ 44, 136 ]
+    ]
+  },
+  {
+    "qid": 7803,
+    "duration": 150,
+    "relevant_windows": [
+      [ 26, 46 ]
+    ]
+  },
+  {
+    "qid": 1872,
+    "duration": 150,
+    "relevant_windows": [
+      [ 122, 132 ],
+      [ 134, 144 ],
+      [ 146, 150 ]
+    ]
+  },
+  {
+    "qid": 5612,
+    "duration": 150,
+    "relevant_windows": [
+      [ 10, 26 ]
+    ]
+  },
+  {
+    "qid": 7484,
+    "duration": 150,
+    "relevant_windows": [
+      [ 4, 22 ]
+    ]
+  },
+  {
+    "qid": 7218,
+    "duration": 150,
+    "relevant_windows": [
+      [ 60, 84 ]
+    ]
+  },
+  {
+    "qid": 7002,
+    "duration": 150,
+    "relevant_windows": [
+      [ 82, 84 ],
+      [ 106, 124 ]
+    ]
+  },
+  {
+    "qid": 1276,
+    "duration": 150,
+    "relevant_windows": [
+      [ 8, 22 ],
+      [ 36, 38 ],
+      [ 50, 54 ],
+      [ 68, 78 ],
+      [ 132, 140 ]
+    ]
+  },
+  {
+    "qid": 8187,
+    "duration": 150,
+    "relevant_windows": [
+      [ 24, 46 ]
+    ]
+  },
+  {
+    "qid": 4548,
+    "duration": 150,
+    "relevant_windows": [
+      [ 96, 130 ]
+    ]
+  },
+  {
+    "qid": 9979,
+    "duration": 150,
+    "relevant_windows": [
+      [ 20, 24 ],
+      [ 60, 78 ],
+      [ 80, 84 ],
+      [ 104, 110 ],
+      [ 132, 144 ]
+    ]
+  },
+  {
+    "qid": 298,
+    "duration": 150,
+    "relevant_windows": [
+      [ 34, 48 ]
+    ]
+  },
+  {
+    "qid": 9053,
+    "duration": 150,
+    "relevant_windows": [
+      [ 54, 70 ]
+    ]
+  },
+  {
+    "qid": 9899,
+    "duration": 150,
+    "relevant_windows": [
+      [ 2, 34 ]
+    ]
+  },
+  {
+    "qid": 7547,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 44 ]
+    ]
+  },
+  {
+    "qid": 2511,
+    "duration": 150,
+    "relevant_windows": [
+      [ 20, 150 ]
+    ]
+  },
+  {
+    "qid": 6831,
+    "duration": 150,
+    "relevant_windows": [
+      [ 78, 92 ],
+      [ 96, 116 ]
+    ]
+  },
+  {
+    "qid": 6117,
+    "duration": 150,
+    "relevant_windows": [
+      [ 108, 122 ]
+    ]
+  },
+  {
+    "qid": 5651,
+    "duration": 150,
+    "relevant_windows": [
+      [ 54, 70 ]
+    ]
+  },
+  {
+    "qid": 4468,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 20 ],
+      [ 42, 48 ]
+    ]
+  },
+  {
+    "qid": 7581,
+    "duration": 150,
+    "relevant_windows": [
+      [ 88, 142 ]
+    ]
+  },
+  {
+    "qid": 6978,
+    "duration": 150,
+    "relevant_windows": [
+      [ 122, 150 ]
+    ]
+  },
+  {
+    "qid": 4425,
+    "duration": 150,
+    "relevant_windows": [
+      [ 72, 108 ]
+    ]
+  },
+  {
+    "qid": 4029,
+    "duration": 150,
+    "relevant_windows": [
+      [ 114, 126 ],
+      [ 128, 150 ]
+    ]
+  },
+  {
+    "qid": 6950,
+    "duration": 150,
+    "relevant_windows": [
+      [ 48, 76 ]
+    ]
+  },
+  {
+    "qid": 7622,
+    "duration": 150,
+    "relevant_windows": [
+      [ 134, 150 ]
+    ]
+  },
+  {
+    "qid": 7770,
+    "duration": 150,
+    "relevant_windows": [
+      [ 12, 30 ]
+    ]
+  },
+  {
+    "qid": 7264,
+    "duration": 136,
+    "relevant_windows": [
+      [ 24, 60 ]
+    ]
+  },
+  {
+    "qid": 6885,
+    "duration": 150,
+    "relevant_windows": [
+      [ 114, 130 ],
+      [ 136, 140 ]
+    ]
+  },
+  {
+    "qid": 3378,
+    "duration": 150,
+    "relevant_windows": [
+      [ 10, 12 ],
+      [ 16, 36 ]
+    ]
+  },
+  {
+    "qid": 561,
+    "duration": 150,
+    "relevant_windows": [
+      [ 92, 102 ],
+      [ 112, 124 ],
+      [ 148, 150 ]
+    ]
+  },
+  {
+    "qid": 1891,
+    "duration": 150,
+    "relevant_windows": [
+      [ 98, 136 ]
+    ]
+  },
+  {
+    "qid": 7533,
+    "duration": 150,
+    "relevant_windows": [
+      [ 134, 150 ]
+    ]
+  },
+  {
+    "qid": 9471,
+    "duration": 148,
+    "relevant_windows": [
+      [ 0, 24 ]
+    ]
+  },
+  {
+    "qid": 939,
+    "duration": 150,
+    "relevant_windows": [
+      [ 42, 96 ],
+      [ 98, 118 ],
+      [ 124, 150 ]
+    ]
+  },
+  {
+    "qid": 5239,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 134 ]
+    ]
+  },
+  {
+    "qid": 1875,
+    "duration": 150,
+    "relevant_windows": [
+      [ 10, 34 ]
+    ]
+  },
+  {
+    "qid": 10203,
+    "duration": 150,
+    "relevant_windows": [
+      [ 6, 14 ],
+      [ 16, 24 ],
+      [ 36, 48 ],
+      [ 72, 82 ],
+      [ 96, 100 ],
+      [ 108, 112 ],
+      [ 118, 124 ],
+      [ 136, 144 ]
+    ]
+  },
+  {
+    "qid": 244,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 5406,
+    "duration": 150,
+    "relevant_windows": [
+      [ 102, 132 ]
+    ]
+  },
+  {
+    "qid": 5049,
+    "duration": 150,
+    "relevant_windows": [
+      [ 100, 114 ],
+      [ 122, 130 ]
+    ]
+  },
+  {
+    "qid": 7308,
+    "duration": 150,
+    "relevant_windows": [
+      [ 58, 72 ]
+    ]
+  },
+  {
+    "qid": 1689,
+    "duration": 150,
+    "relevant_windows": [
+      [ 12, 16 ],
+      [ 126, 150 ]
+    ]
+  },
+  {
+    "qid": 7061,
+    "duration": 150,
+    "relevant_windows": [
+      [ 28, 38 ],
+      [ 40, 44 ]
+    ]
+  },
+  {
+    "qid": 4892,
+    "duration": 150,
+    "relevant_windows": [
+      [ 60, 62 ],
+      [ 84, 108 ]
+    ]
+  },
+  {
+    "qid": 10157,
+    "duration": 150,
+    "relevant_windows": [
+      [ 30, 50 ],
+      [ 60, 68 ],
+      [ 72, 74 ],
+      [ 78, 82 ]
+    ]
+  },
+  {
+    "qid": 3007,
+    "duration": 150,
+    "relevant_windows": [
+      [ 86, 110 ],
+      [ 116, 126 ],
+      [ 144, 148 ]
+    ]
+  },
+  {
+    "qid": 5036,
+    "duration": 150,
+    "relevant_windows": [
+      [ 44, 60 ]
+    ]
+  },
+  {
+    "qid": 9528,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 3307,
+    "duration": 150,
+    "relevant_windows": [
+      [ 24, 54 ]
+    ]
+  },
+  {
+    "qid": 2264,
+    "duration": 150,
+    "relevant_windows": [
+      [ 88, 114 ]
+    ]
+  },
+  {
+    "qid": 5097,
+    "duration": 150,
+    "relevant_windows": [
+      [ 94, 124 ],
+      [ 128, 130 ],
+      [ 132, 136 ],
+      [ 144, 148 ]
+    ]
+  },
+  {
+    "qid": 6977,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 2 ],
+      [ 4, 16 ]
+    ]
+  },
+  {
+    "qid": 919,
+    "duration": 150,
+    "relevant_windows": [
+      [ 66, 80 ]
+    ]
+  },
+  {
+    "qid": 4649,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 12 ],
+      [ 14, 150 ]
+    ]
+  },
+  {
+    "qid": 7629,
+    "duration": 150,
+    "relevant_windows": [
+      [ 72, 104 ]
+    ]
+  },
+  {
+    "qid": 6656,
+    "duration": 150,
+    "relevant_windows": [
+      [ 32, 60 ]
+    ]
+  },
+  {
+    "qid": 10131,
+    "duration": 150,
+    "relevant_windows": [
+      [ 62, 68 ],
+      [ 72, 84 ]
+    ]
+  },
+  {
+    "qid": 5790,
+    "duration": 150,
+    "relevant_windows": [
+      [ 116, 138 ]
+    ]
+  },
+  {
+    "qid": 9987,
+    "duration": 150,
+    "relevant_windows": [
+      [ 92, 106 ]
+    ]
+  },
+  {
+    "qid": 3796,
+    "duration": 150,
+    "relevant_windows": [
+      [ 106, 150 ]
+    ]
+  },
+  {
+    "qid": 4069,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 10 ],
+      [ 12, 58 ],
+      [ 64, 130 ]
+    ]
+  },
+  {
+    "qid": 7309,
+    "duration": 150,
+    "relevant_windows": [
+      [ 136, 150 ]
+    ]
+  },
+  {
+    "qid": 10176,
+    "duration": 150,
+    "relevant_windows": [
+      [ 110, 128 ]
+    ]
+  },
+  {
+    "qid": 2537,
+    "duration": 150,
+    "relevant_windows": [
+      [ 86, 92 ],
+      [ 94, 150 ]
+    ]
+  },
+  {
+    "qid": 6162,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 24 ],
+      [ 26, 44 ]
+    ]
+  },
+  {
+    "qid": 9052,
+    "duration": 150,
+    "relevant_windows": [
+      [ 102, 126 ]
+    ]
+  },
+  {
+    "qid": 5275,
+    "duration": 150,
+    "relevant_windows": [
+      [ 110, 132 ]
+    ]
+  },
+  {
+    "qid": 6992,
+    "duration": 150,
+    "relevant_windows": [
+      [ 64, 82 ]
+    ]
+  },
+  {
+    "qid": 9289,
+    "duration": 150,
+    "relevant_windows": [
+      [ 108, 150 ]
+    ]
+  },
+  {
+    "qid": 6383,
+    "duration": 150,
+    "relevant_windows": [
+      [ 114, 142 ]
+    ]
+  },
+  {
+    "qid": 6809,
+    "duration": 150,
+    "relevant_windows": [
+      [ 26, 50 ]
+    ]
+  },
+  {
+    "qid": 1450,
+    "duration": 150,
+    "relevant_windows": [
+      [ 12, 48 ],
+      [ 60, 64 ]
+    ]
+  },
+  {
+    "qid": 8657,
+    "duration": 150,
+    "relevant_windows": [
+      [ 8, 26 ],
+      [ 32, 34 ],
+      [ 76, 78 ],
+      [ 112, 118 ]
+    ]
+  },
+  {
+    "qid": 5754,
+    "duration": 150,
+    "relevant_windows": [
+      [ 128, 150 ]
+    ]
+  },
+  {
+    "qid": 4112,
+    "duration": 150,
+    "relevant_windows": [
+      [ 66, 78 ],
+      [ 80, 112 ]
+    ]
+  },
+  {
+    "qid": 2616,
+    "duration": 150,
+    "relevant_windows": [
+      [ 92, 140 ]
+    ]
+  },
+  {
+    "qid": 8907,
+    "duration": 150,
+    "relevant_windows": [
+      [ 12, 30 ]
+    ]
+  },
+  {
+    "qid": 9927,
+    "duration": 150,
+    "relevant_windows": [
+      [ 128, 144 ]
+    ]
+  },
+  {
+    "qid": 5238,
+    "duration": 150,
+    "relevant_windows": [
+      [ 82, 132 ]
+    ]
+  },
+  {
+    "qid": 4203,
+    "duration": 150,
+    "relevant_windows": [
+      [ 94, 120 ]
+    ]
+  },
+  {
+    "qid": 2546,
+    "duration": 150,
+    "relevant_windows": [
+      [ 12, 42 ]
+    ]
+  },
+  {
+    "qid": 10209,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 14 ]
+    ]
+  },
+  {
+    "qid": 8627,
+    "duration": 150,
+    "relevant_windows": [
+      [ 108, 144 ]
+    ]
+  },
+  {
+    "qid": 9139,
+    "duration": 150,
+    "relevant_windows": [
+      [ 82, 98 ],
+      [ 108, 114 ],
+      [ 144, 150 ]
+    ]
+  },
+  {
+    "qid": 6275,
+    "duration": 150,
+    "relevant_windows": [
+      [ 88, 124 ]
+    ]
+  },
+  {
+    "qid": 9903,
+    "duration": 150,
+    "relevant_windows": [
+      [ 46, 68 ]
+    ]
+  },
+  {
+    "qid": 1158,
+    "duration": 150,
+    "relevant_windows": [
+      [ 122, 150 ]
+    ]
+  },
+  {
+    "qid": 7836,
+    "duration": 150,
+    "relevant_windows": [
+      [ 48, 88 ]
+    ]
+  },
+  {
+    "qid": 6053,
+    "duration": 150,
+    "relevant_windows": [
+      [ 72, 112 ]
+    ]
+  },
+  {
+    "qid": 10296,
+    "duration": 150,
+    "relevant_windows": [
+      [ 36, 46 ],
+      [ 48, 56 ],
+      [ 126, 138 ],
+      [ 142, 150 ]
+    ]
+  },
+  {
+    "qid": 5330,
+    "duration": 150,
+    "relevant_windows": [
+      [ 38, 74 ]
+    ]
+  },
+  {
+    "qid": 5667,
+    "duration": 150,
+    "relevant_windows": [
+      [ 122, 140 ]
+    ]
+  },
+  {
+    "qid": 7066,
+    "duration": 150,
+    "relevant_windows": [
+      [ 48, 74 ]
+    ]
+  },
+  {
+    "qid": 6836,
+    "duration": 150,
+    "relevant_windows": [
+      [ 58, 102 ]
+    ]
+  },
+  {
+    "qid": 5950,
+    "duration": 150,
+    "relevant_windows": [
+      [ 72, 92 ]
+    ]
+  },
+  {
+    "qid": 482,
+    "duration": 150,
+    "relevant_windows": [
+      [ 18, 42 ]
+    ]
+  },
+  {
+    "qid": 4510,
+    "duration": 150,
+    "relevant_windows": [
+      [ 58, 80 ],
+      [ 92, 104 ]
+    ]
+  },
+  {
+    "qid": 1739,
+    "duration": 150,
+    "relevant_windows": [
+      [ 10, 84 ]
+    ]
+  },
+  {
+    "qid": 6565,
+    "duration": 150,
+    "relevant_windows": [
+      [ 60, 118 ]
+    ]
+  },
+  {
+    "qid": 1800,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 60 ]
+    ]
+  },
+  {
+    "qid": 10082,
+    "duration": 150,
+    "relevant_windows": [
+      [ 128, 146 ]
+    ]
+  },
+  {
+    "qid": 6824,
+    "duration": 150,
+    "relevant_windows": [
+      [ 60, 86 ]
+    ]
+  },
+  {
+    "qid": 4099,
+    "duration": 150,
+    "relevant_windows": [
+      [ 92, 150 ]
+    ]
+  },
+  {
+    "qid": 10196,
+    "duration": 150,
+    "relevant_windows": [
+      [ 110, 130 ]
+    ]
+  },
+  {
+    "qid": 344,
+    "duration": 150,
+    "relevant_windows": [
+      [ 110, 114 ],
+      [ 126, 132 ],
+      [ 138, 142 ],
+      [ 148, 150 ]
+    ]
+  },
+  {
+    "qid": 3249,
+    "duration": 150,
+    "relevant_windows": [
+      [ 88, 122 ]
+    ]
+  },
+  {
+    "qid": 2791,
+    "duration": 150,
+    "relevant_windows": [
+      [ 94, 136 ]
+    ]
+  },
+  {
+    "qid": 10018,
+    "duration": 150,
+    "relevant_windows": [
+      [ 54, 108 ]
+    ]
+  },
+  {
+    "qid": 6316,
+    "duration": 150,
+    "relevant_windows": [
+      [ 38, 60 ]
+    ]
+  },
+  {
+    "qid": 1685,
+    "duration": 150,
+    "relevant_windows": [
+      [ 124, 150 ]
+    ]
+  },
+  {
+    "qid": 1054,
+    "duration": 150,
+    "relevant_windows": [
+      [ 72, 76 ],
+      [ 80, 82 ],
+      [ 86, 98 ],
+      [ 100, 104 ]
+    ]
+  },
+  {
+    "qid": 6519,
+    "duration": 150,
+    "relevant_windows": [
+      [ 40, 54 ]
+    ]
+  },
+  {
+    "qid": 4509,
+    "duration": 150,
+    "relevant_windows": [
+      [ 128, 150 ]
+    ]
+  },
+  {
+    "qid": 5879,
+    "duration": 150,
+    "relevant_windows": [
+      [ 104, 140 ]
+    ]
+  },
+  {
+    "qid": 2149,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 4 ],
+      [ 6, 34 ],
+      [ 46, 58 ]
+    ]
+  },
+  {
+    "qid": 1004,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 14 ]
+    ]
+  },
+  {
+    "qid": 6618,
+    "duration": 150,
+    "relevant_windows": [
+      [ 24, 68 ]
+    ]
+  },
+  {
+    "qid": 9485,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 8 ],
+      [ 40, 74 ],
+      [ 102, 118 ],
+      [ 120, 124 ],
+      [ 144, 150 ]
+    ]
+  },
+  {
+    "qid": 7000,
+    "duration": 150,
+    "relevant_windows": [
+      [ 98, 112 ]
+    ]
+  },
+  {
+    "qid": 1214,
+    "duration": 150,
+    "relevant_windows": [
+      [ 50, 76 ]
+    ]
+  },
+  {
+    "qid": 5821,
+    "duration": 150,
+    "relevant_windows": [
+      [ 120, 144 ]
+    ]
+  },
+  {
+    "qid": 2277,
+    "duration": 150,
+    "relevant_windows": [
+      [ 24, 56 ]
+    ]
+  },
+  {
+    "qid": 6370,
+    "duration": 150,
+    "relevant_windows": [
+      [ 24, 62 ]
+    ]
+  },
+  {
+    "qid": 6228,
+    "duration": 150,
+    "relevant_windows": [
+      [ 8, 12 ],
+      [ 24, 34 ]
+    ]
+  },
+  {
+    "qid": 2214,
+    "duration": 150,
+    "relevant_windows": [
+      [ 2, 4 ],
+      [ 16, 20 ],
+      [ 22, 24 ],
+      [ 28, 30 ],
+      [ 34, 36 ],
+      [ 40, 44 ],
+      [ 46, 48 ],
+      [ 54, 56 ],
+      [ 62, 64 ],
+      [ 68, 74 ],
+      [ 78, 82 ],
+      [ 86, 88 ],
+      [ 90, 92 ],
+      [ 96, 98 ],
+      [ 102, 104 ],
+      [ 108, 110 ],
+      [ 118, 120 ],
+      [ 128, 130 ],
+      [ 132, 134 ],
+      [ 136, 138 ],
+      [ 148, 150 ]
+    ]
+  },
+  {
+    "qid": 3703,
+    "duration": 150,
+    "relevant_windows": [
+      [ 50, 60 ],
+      [ 66, 92 ],
+      [ 96, 100 ],
+      [ 102, 122 ],
+      [ 126, 132 ]
+    ]
+  },
+  {
+    "qid": 6019,
+    "duration": 150,
+    "relevant_windows": [
+      [ 66, 68 ],
+      [ 90, 92 ],
+      [ 138, 150 ]
+    ]
+  },
+  {
+    "qid": 5772,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 110 ]
+    ]
+  },
+  {
+    "qid": 507,
+    "duration": 150,
+    "relevant_windows": [
+      [ 20, 48 ]
+    ]
+  },
+  {
+    "qid": 2783,
+    "duration": 150,
+    "relevant_windows": [
+      [ 96, 118 ]
+    ]
+  },
+  {
+    "qid": 1304,
+    "duration": 150,
+    "relevant_windows": [
+      [ 100, 104 ],
+      [ 118, 142 ]
+    ]
+  },
+  {
+    "qid": 3164,
+    "duration": 150,
+    "relevant_windows": [
+      [ 12, 52 ],
+      [ 56, 62 ],
+      [ 66, 72 ]
+    ]
+  },
+  {
+    "qid": 2355,
+    "duration": 150,
+    "relevant_windows": [
+      [ 38, 60 ]
+    ]
+  },
+  {
+    "qid": 3629,
+    "duration": 150,
+    "relevant_windows": [
+      [ 124, 150 ]
+    ]
+  },
+  {
+    "qid": 8206,
+    "duration": 150,
+    "relevant_windows": [
+      [ 28, 52 ]
+    ]
+  },
+  {
+    "qid": 5394,
+    "duration": 150,
+    "relevant_windows": [
+      [ 86, 108 ]
+    ]
+  },
+  {
+    "qid": 10117,
+    "duration": 150,
+    "relevant_windows": [
+      [ 8, 10 ],
+      [ 14, 118 ]
+    ]
+  },
+  {
+    "qid": 682,
+    "duration": 150,
+    "relevant_windows": [
+      [ 2, 20 ],
+      [ 30, 32 ]
+    ]
+  },
+  {
+    "qid": 2309,
+    "duration": 150,
+    "relevant_windows": [
+      [ 8, 52 ]
+    ]
+  },
+  {
+    "qid": 6778,
+    "duration": 150,
+    "relevant_windows": [
+      [ 124, 132 ],
+      [ 134, 150 ]
+    ]
+  },
+  {
+    "qid": 3070,
+    "duration": 150,
+    "relevant_windows": [
+      [ 24, 32 ],
+      [ 58, 66 ],
+      [ 78, 84 ],
+      [ 96, 106 ]
+    ]
+  },
+  {
+    "qid": 7314,
+    "duration": 150,
+    "relevant_windows": [
+      [ 44, 148 ]
+    ]
+  },
+  {
+    "qid": 6226,
+    "duration": 150,
+    "relevant_windows": [
+      [ 4, 30 ]
+    ]
+  },
+  {
+    "qid": 5301,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 18 ]
+    ]
+  },
+  {
+    "qid": 6411,
+    "duration": 150,
+    "relevant_windows": [
+      [ 40, 62 ]
+    ]
+  },
+  {
+    "qid": 7424,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 10075,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 32 ],
+      [ 40, 112 ],
+      [ 132, 150 ]
+    ]
+  },
+  {
+    "qid": 4181,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 10 ],
+      [ 54, 60 ],
+      [ 62, 76 ]
+    ]
+  },
+  {
+    "qid": 4941,
+    "duration": 150,
+    "relevant_windows": [
+      [ 20, 28 ],
+      [ 30, 32 ],
+      [ 34, 36 ],
+      [ 54, 58 ],
+      [ 60, 64 ]
+    ]
+  },
+  {
+    "qid": 2441,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 22 ],
+      [ 24, 132 ],
+      [ 138, 150 ]
+    ]
+  },
+  {
+    "qid": 2136,
+    "duration": 150,
+    "relevant_windows": [
+      [ 64, 132 ],
+      [ 134, 150 ]
+    ]
+  },
+  {
+    "qid": 1440,
+    "duration": 150,
+    "relevant_windows": [
+      [ 2, 40 ]
+    ]
+  },
+  {
+    "qid": 8470,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 16 ]
+    ]
+  },
+  {
+    "qid": 1548,
+    "duration": 150,
+    "relevant_windows": [
+      [ 104, 124 ],
+      [ 132, 146 ]
+    ]
+  },
+  {
+    "qid": 4066,
+    "duration": 150,
+    "relevant_windows": [
+      [ 4, 20 ],
+      [ 68, 120 ]
+    ]
+  },
+  {
+    "qid": 2942,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 136 ]
+    ]
+  },
+  {
+    "qid": 9728,
+    "duration": 150,
+    "relevant_windows": [
+      [ 112, 128 ]
+    ]
+  },
+  {
+    "qid": 7307,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 52 ]
+    ]
+  },
+  {
+    "qid": 2894,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 30 ]
+    ]
+  },
+  {
+    "qid": 6741,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 150 ]
+    ]
+  },
+  {
+    "qid": 6903,
+    "duration": 150,
+    "relevant_windows": [
+      [ 96, 150 ]
+    ]
+  },
+  {
+    "qid": 4705,
+    "duration": 150,
+    "relevant_windows": [
+      [ 76, 126 ],
+      [ 132, 134 ],
+      [ 140, 150 ]
+    ]
+  },
+  {
+    "qid": 7945,
+    "duration": 150,
+    "relevant_windows": [
+      [ 62, 70 ],
+      [ 98, 102 ],
+      [ 112, 114 ],
+      [ 120, 128 ]
+    ]
+  },
+  {
+    "qid": 3664,
+    "duration": 150,
+    "relevant_windows": [
+      [ 8, 30 ]
+    ]
+  },
+  {
+    "qid": 10150,
+    "duration": 150,
+    "relevant_windows": [
+      [ 70, 86 ],
+      [ 90, 102 ]
+    ]
+  },
+  {
+    "qid": 1790,
+    "duration": 150,
+    "relevant_windows": [
+      [ 82, 150 ]
+    ]
+  },
+  {
+    "qid": 9045,
+    "duration": 150,
+    "relevant_windows": [
+      [ 32, 56 ]
+    ]
+  },
+  {
+    "qid": 2916,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 10 ],
+      [ 14, 58 ],
+      [ 60, 62 ]
+    ]
+  },
+  {
+    "qid": 6511,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 6 ],
+      [ 8, 10 ],
+      [ 12, 18 ],
+      [ 20, 22 ],
+      [ 122, 134 ]
+    ]
+  },
+  {
+    "qid": 9719,
+    "duration": 150,
+    "relevant_windows": [
+      [ 40, 70 ]
+    ]
+  },
+  {
+    "qid": 9171,
+    "duration": 136,
+    "relevant_windows": [
+      [ 0, 76 ]
+    ]
+  },
+  {
+    "qid": 7650,
+    "duration": 150,
+    "relevant_windows": [
+      [ 116, 150 ]
+    ]
+  },
+  {
+    "qid": 6646,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 14 ]
+    ]
+  },
+  {
+    "qid": 2245,
+    "duration": 150,
+    "relevant_windows": [
+      [ 8, 24 ],
+      [ 36, 46 ]
+    ]
+  },
+  {
+    "qid": 526,
+    "duration": 150,
+    "relevant_windows": [
+      [ 0, 16 ],
+      [ 28, 32 ]
+    ]
+  },
+  {
+    "qid": 5698,
+    "duration": 150,
+    "relevant_windows": [
+      [ 28, 44 ]
+    ]
+  },
+  {
+    "qid": 2887,
+    "duration": 150,
+    "relevant_windows": [
+      [ 38, 92 ]
+    ]
+  },
+  {
+    "qid": 10053,
+    "duration": 150,
+    "relevant_windows": [
+      [ 96, 120 ]
+    ]
+  },
+  {
+    "qid": 10243,
+    "duration": 150,
+    "relevant_windows": [
+      [ 8, 18 ],
+      [ 22, 30 ],
+      [ 36, 42 ],
+      [ 46, 52 ],
+      [ 58, 66 ],
+      [ 82, 86 ],
+      [ 94, 102 ],
+      [ 104, 108 ]
+    ]
+  }
+]

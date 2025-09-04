@@ -1,0 +1,27 @@
+# Format:
+# unique_name:
+#   dir: dataset directory (str)
+#   prompt: which prompt variation to use (int)
+#   variation: actual number of variation that the dataset has
+#   num_frames: number of frames
+#   use_variation: number of variation to use
+#   corrected (bool): use the zero corrected version of the dataset
+
+main:
+  dir: qvhighlights-25frames
+  prompt: 2
+  variation: 3
+  num_frames: 25
+  use_variation: 3
+  version: 2
+  images_dir: videos
+
+test:
+  dir: qvhighlights-25frames-test
+  prompt: 2
+  variation: 1
+  num_frames: 25
+  use_variation: 1
+  version: 1
+  images_dir: videos
+

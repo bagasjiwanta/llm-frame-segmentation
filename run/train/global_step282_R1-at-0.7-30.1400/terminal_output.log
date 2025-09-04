@@ -1,0 +1,1120 @@
+[2025-08-04 19:46:07,106] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-08-04 19:46:12,925] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+[2025-08-04 19:46:16,152] [WARNING] [runner.py:220:fetch_hostfile] Unable to find hostfile, will proceed with training with local resources only.
+[2025-08-04 19:46:16,152] [INFO] [runner.py:610:main] cmd = /usr/local/bin/python -u -m deepspeed.launcher.launch --world_info=eyJsb2NhbGhvc3QiOiBbMCwgMV19 --master_addr=127.0.0.1 --master_port=29500 --enable_each_rank_log=None open_flamingo/train/finetune.py --vision_encoder_path google/siglip-so400m-patch14-384 --vision_encoder_precision bf16 --num_vision_tokens 128 --vision_tokenizer_precision bf16 --vision_encoder_compile --vision_tokenizer_compile --lang_model_path microsoft/Phi-3-mini-4k-instruct --lang_model_precision bf16 --lang_model_lora --gradient_checkpointing --pretrained base_model_weight/xgen-mm-phi3-mini-instruct-interleave-r-v1.5.pt --base_data_dir datasets --dataset_config config.yaml --dataset_name main --num_train_workers 16 --num_val_workers 8 --sampler stratified --anyres_patch_sampling --compile_transforms --train_micro_batch_size_per_gpu 16 --do_train --num_epochs 20 --warmup_steps 336 --training_precision bf16 --lora_r 16 --lora_dropout 0.025 --gradient_accumulation_steps 4 --learning_rate 3e-5 --weight_decay 0.005 --loss_ce_weight 1.0 --ce_pos_weight 1.0 --loss_bce_weight 0.0 --bce_pos_weight 2.3378 --loss_gd_weight 0.0 --gd_norm square --loss_tvl_weight 0.0 --tvl_beta 0.7 --soft_loss --deepspeed_config open_flamingo/deepspeed_config/zero2_offload.json --deepspeed --val_batch_size 2 --do_val --float_sanity_epoch 0.2 --num_val_samples 720 --num_val_beams 2 --num_val_per_epoch 1 --monitor R1-at-0.7 --logging_steps 2 --checkpoint_every_n_val 1 --checkpoint_save_top_k 12 --checkpoint_dir /checkpoints/blip3-mr --run_name v2_part1 --seed 2109 --resume_from_checkpoint global_step282
+[2025-08-04 19:46:19,135] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-08-04 19:46:25,273] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+[2025-08-04 19:46:28,720] [INFO] [launch.py:139:main] 0 NCCL_P2P_DISABLE=1
+[2025-08-04 19:46:28,720] [INFO] [launch.py:146:main] WORLD INFO DICT: {'localhost': [0, 1]}
+[2025-08-04 19:46:28,721] [INFO] [launch.py:152:main] nnodes=1, num_local_procs=2, node_rank=0
+[2025-08-04 19:46:28,721] [INFO] [launch.py:163:main] global_rank_mapping=defaultdict(<class 'list'>, {'localhost': [0, 1]})
+[2025-08-04 19:46:28,721] [INFO] [launch.py:164:main] dist_world_size=2
+[2025-08-04 19:46:28,721] [INFO] [launch.py:168:main] Setting CUDA_VISIBLE_DEVICES=0,1
+[2025-08-04 19:46:28,723] [INFO] [launch.py:256:main] process 30621 spawned with command: ['/usr/local/bin/python', '-u', 'open_flamingo/train/finetune.py', '--local_rank=0', '--vision_encoder_path', 'google/siglip-so400m-patch14-384', '--vision_encoder_precision', 'bf16', '--num_vision_tokens', '128', '--vision_tokenizer_precision', 'bf16', '--vision_encoder_compile', '--vision_tokenizer_compile', '--lang_model_path', 'microsoft/Phi-3-mini-4k-instruct', '--lang_model_precision', 'bf16', '--lang_model_lora', '--gradient_checkpointing', '--pretrained', 'base_model_weight/xgen-mm-phi3-mini-instruct-interleave-r-v1.5.pt', '--base_data_dir', 'datasets', '--dataset_config', 'config.yaml', '--dataset_name', 'main', '--num_train_workers', '16', '--num_val_workers', '8', '--sampler', 'stratified', '--anyres_patch_sampling', '--compile_transforms', '--train_micro_batch_size_per_gpu', '16', '--do_train', '--num_epochs', '20', '--warmup_steps', '336', '--training_precision', 'bf16', '--lora_r', '16', '--lora_dropout', '0.025', '--gradient_accumulation_steps', '4', '--learning_rate', '3e-5', '--weight_decay', '0.005', '--loss_ce_weight', '1.0', '--ce_pos_weight', '1.0', '--loss_bce_weight', '0.0', '--bce_pos_weight', '2.3378', '--loss_gd_weight', '0.0', '--gd_norm', 'square', '--loss_tvl_weight', '0.0', '--tvl_beta', '0.7', '--soft_loss', '--deepspeed_config', 'open_flamingo/deepspeed_config/zero2_offload.json', '--deepspeed', '--val_batch_size', '2', '--do_val', '--float_sanity_epoch', '0.2', '--num_val_samples', '720', '--num_val_beams', '2', '--num_val_per_epoch', '1', '--monitor', 'R1-at-0.7', '--logging_steps', '2', '--checkpoint_every_n_val', '1', '--checkpoint_save_top_k', '12', '--checkpoint_dir', '/checkpoints/blip3-mr', '--run_name', 'v2_part1', '--seed', '2109', '--resume_from_checkpoint', 'global_step282']
+[2025-08-04 19:46:28,725] [INFO] [launch.py:256:main] process 30622 spawned with command: ['/usr/local/bin/python', '-u', 'open_flamingo/train/finetune.py', '--local_rank=1', '--vision_encoder_path', 'google/siglip-so400m-patch14-384', '--vision_encoder_precision', 'bf16', '--num_vision_tokens', '128', '--vision_tokenizer_precision', 'bf16', '--vision_encoder_compile', '--vision_tokenizer_compile', '--lang_model_path', 'microsoft/Phi-3-mini-4k-instruct', '--lang_model_precision', 'bf16', '--lang_model_lora', '--gradient_checkpointing', '--pretrained', 'base_model_weight/xgen-mm-phi3-mini-instruct-interleave-r-v1.5.pt', '--base_data_dir', 'datasets', '--dataset_config', 'config.yaml', '--dataset_name', 'main', '--num_train_workers', '16', '--num_val_workers', '8', '--sampler', 'stratified', '--anyres_patch_sampling', '--compile_transforms', '--train_micro_batch_size_per_gpu', '16', '--do_train', '--num_epochs', '20', '--warmup_steps', '336', '--training_precision', 'bf16', '--lora_r', '16', '--lora_dropout', '0.025', '--gradient_accumulation_steps', '4', '--learning_rate', '3e-5', '--weight_decay', '0.005', '--loss_ce_weight', '1.0', '--ce_pos_weight', '1.0', '--loss_bce_weight', '0.0', '--bce_pos_weight', '2.3378', '--loss_gd_weight', '0.0', '--gd_norm', 'square', '--loss_tvl_weight', '0.0', '--tvl_beta', '0.7', '--soft_loss', '--deepspeed_config', 'open_flamingo/deepspeed_config/zero2_offload.json', '--deepspeed', '--val_batch_size', '2', '--do_val', '--float_sanity_epoch', '0.2', '--num_val_samples', '720', '--num_val_beams', '2', '--num_val_per_epoch', '1', '--monitor', 'R1-at-0.7', '--logging_steps', '2', '--checkpoint_every_n_val', '1', '--checkpoint_save_top_k', '12', '--checkpoint_dir', '/checkpoints/blip3-mr', '--run_name', 'v2_part1', '--seed', '2109', '--resume_from_checkpoint', 'global_step282']
+[2025-08-04 19:46:31,957] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-08-04 19:46:31,959] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-08-04 19:46:38,062] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+[2025-08-04 19:46:38,062] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+
+[08/04 19:46:44] TF32 and TF32 matmul is set to True since GPU is capable
+--- Parsed Arguments by Group ---
+
+--- positional arguments ---[2025-08-04 19:46:44,613] [INFO] [comm.py:821:init_distributed] cdb=None
+
+
+--- options ---
+  (No arguments explicitly defined in this group)
+
+--- Vision Encoder ---
+  vision_encoder_path: google/siglip-so400m-patch14-384
+  vision_encoder_precision: bf16
+  vision_encoder_compile: True
+
+--- Vision Tokenizer ---
+  num_vision_tokens: 128
+  pretrained_vision_tokenizer: None
+  vision_tokenizer_precision: bf16
+  vision_tokenizer_time_embeds: None
+  vision_tokenizer_train: False
+  vision_tokenizer_lora: False
+  vision_tokenizer_compile: True
+
+--- Language Model ---
+  lang_model_path: microsoft/Phi-3-mini-4k-instruct
+  tokenizer_path: microsoft/Phi-3-mini-4k-instruct
+  lang_model_precision: bf16
+  lang_model_train: True
+  lang_model_lora: True
+
+--- Training ---
+  run_name: v2_part1
+  gradient_accumulation_steps: 4
+  learning_rate: 3e-05
+  warmup_steps: 336
+  training_precision: bf16
+  gradient_checkpointing: True
+  num_epochs: 20
+  lora: True
+  lora_r: 16
+  lora_dropout: 0.025
+  float_sanity_epoch: 0.2
+  num_sanity_steps: 0
+  use_generation_scores_for_eval: False
+  num_val_beams: 2
+  weight_decay: 0.005
+  val_thresholds: [0.1, 0.125, 0.15000000000000002, 0.17500000000000002, 0.2, 0.225, 0.25, 0.275, 0.30000000000000004, 0.325, 0.35000000000000003, 0.375, 0.4, 0.42500000000000004, 0.45, 0.47500000000000003, 0.5]
+  do_val: True
+  do_train: True
+  num_val_per_epoch: 1
+
+--- Loss ---
+  loss_ce_weight: 1.0
+  loss_gd_weight: 0.0
+  loss_bce_weight: 0.0
+  bce_pos_weight: 2.3378
+  soft_loss: True
+  ce_pos_weight: 1.0
+  gd_norm: square
+  loss_tvl_weight: 0.0
+  tvl_beta: 0.7
+
+--- Checkpointing ---
+  pretrained: base_model_weight/xgen-mm-phi3-mini-instruct-interleave-r-v1.5.pt
+  lora_pretrained: None
+  checkpoint_dir: /checkpoints/blip3-mr
+  checkpoint_every_n_epoch: 1
+  checkpoint_save_top_k: 12
+  resume_from_checkpoint: global_step282
+  monitor: R1-at-0.7
+  load_module_only: False
+  checkpoint_save_frozen_parameters: False
+  resume_from_best: False
+  resume_from_latest: False
+  checkpoint_every_n_val: 1
+
+--- Data ---
+  base_data_dir: datasets
+  dataset_name: main
+  dataset_config: config.yaml
+  train_micro_batch_size_per_gpu: 16
+  val_batch_size: 2
+  num_train_workers: 16
+  num_val_workers: 8
+  image_aspect_ratio: anyres
+  anyres_patch_sampling: True
+  num_train_samples: 0
+  num_val_samples: 720
+  sampler: stratified
+  compile_transforms: True
+
+--- Distributed Training ---
+  local_rank: 0
+
+--- Logging ---
+  logging_steps: 2
+  report_to_wandb: False
+  wandb_project: None
+  wandb_entity: None
+
+--- Other ---
+  seed: 2109
+
+--- DeepSpeed ---
+  deepspeed: True
+  deepspeed_config: open_flamingo/deepspeed_config/zero2_offload.json
+
+--- Other Attributes Added After Parsing ---
+  rank: 0
+  world_size: 2
+[2025-08-04 19:46:44,617] [INFO] [comm.py:821:init_distributed] cdb=None
+[2025-08-04 19:46:44,617] [INFO] [comm.py:852:init_distributed] Initializing TorchBackend in DeepSpeed with backend nccl
+
+[08/04 19:46:46] Loading HF model and tokenizer
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00, 50.98it/s]
+Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00, 54.18it/s]
+
+[08/04 19:46:52] Loading and testing datasets and dataloaders
+BLIP-3 model initialized with 3,931,031,619 trainable parameters
+==========Trainable Parameters
+Vision encoder: 0 trainable parameters
+Vision tokenizer: 109,901,568 trainable parameters
+Language model: 3,821,130,051 trainable parameters
+==========Total Parameters
+Vision encoder: 428,225,600 parameters
+Vision tokenizer: 109,901,568 parameters
+Language model: 3,821,130,051 parameters
+==========
+args.rank=1
+
+[08/04 19:46:53] Loading local model from pretrained
+Train collator labels, input_ids, and attention_mask (first item):
+labels.shape = torch.Size([2, 448])
+tensor([32001, 29900, 29900, 29900, 29900, 29900, 29900, 29900, 29900, 29900,
+        29900, 29900, 29900, 29896, 29896, 29896, 29896, 29896, 29896, 29896,
+        29896, 29896, 29896, 29900, 29896, 29900, 32007])
+tensor([32011, 32011, 32011, 32011, 29871, 32006,  3492,   526,   263, 15040,
+         4863,  5663, 16837, 20255, 29889,   887,   674,  7150,   263,  4863,
+          322,   263,  5199,  6354,  2346,  2183,   491,   278,  1404, 29889,
+         7106,   278, 16608,   393,  7087,   278,  6354,  2346, 29889, 10306,
+          278,  1962,  3402,  2183,   491,   278,  1404, 29889, 29871, 32007,
+        32010,  3492,   526,  2183, 29871, 29906, 29945, 16608,  4559, 29881,
+          515,   263,  4863, 29892, 10372,   322, 13055,   491, 25899,  4890,
+        29892, 27541,   515, 29871, 29900,   304, 29871, 29906, 29946, 29901,
+           13,  4308, 29871, 29900, 29901, 29871, 32012,    13,  4308, 29871,
+        29896, 29901, 29871, 32012,    13,  4308, 29871, 29906, 29901, 29871,
+        32012,    13,  4308, 29871, 29941, 29901, 29871, 32012,    13,  4308,
+        29871, 29946, 29901, 29871, 32012,    13,  4308, 29871, 29945, 29901,
+        29871, 32012,    13,  4308, 29871, 29953, 29901, 29871, 32012,    13,
+         4308, 29871, 29955, 29901, 29871, 32012,    13,  4308, 29871, 29947,
+        29901, 29871, 32012,    13,  4308, 29871, 29929, 29901, 29871, 32012,
+           13,  4308, 29871, 29896, 29900, 29901, 29871, 32012,    13,  4308,
+        29871, 29896, 29896, 29901, 29871, 32012,    13,  4308, 29871, 29896,
+        29906, 29901, 29871, 32012,    13,  4308, 29871, 29896, 29941, 29901,
+        29871, 32012,    13,  4308, 29871, 29896, 29946, 29901, 29871, 32012,
+           13,  4308, 29871, 29896, 29945, 29901, 29871, 32012,    13,  4308,
+        29871, 29896, 29953, 29901, 29871, 32012,    13,  4308, 29871, 29896,
+        29955, 29901, 29871, 32012,    13,  4308, 29871, 29896, 29947, 29901,
+        29871, 32012,    13,  4308, 29871, 29896, 29929, 29901, 29871, 32012,
+           13,  4308, 29871, 29906, 29900, 29901, 29871, 32012,    13,  4308,
+        29871, 29906, 29896, 29901, 29871, 32012,    13,  4308, 29871, 29906,
+        29906, 29901, 29871, 32012,    13,  4308, 29871, 29906, 29941, 29901,
+        29871, 32012,    13,  4308, 29871, 29906, 29946, 29901, 29871, 32012,
+           13,    13,  1068, 10858,  3414,  1068, 29901,  2183,   385,  6354,
+        29892, 27599,   278,  4863, 16608,   304, 12439,   607,  6743,  1712,
+          278,  6790,  6354, 29889,    13,    13,  1068,  6466,  3402,  1068,
+        29901,  3867,   263, 29871, 29906, 29945,  2931,  7581, 10768,   362,
+        11105, 29892, 10816, 29901,    13,   448,   525, 29896, 29915,  2794,
+          278,  3515,   472,   393,  2602,  5517,  7087,   304,   278,  6354,
+        29889,    13,   448,   525, 29900, 29915,  2794,   278,  3515,   472,
+          393,  2602,  5517,   947,   451,  1993,   304,   278,  6354, 29889,
+           13,   448,  3575,  1962,  1818,   367,  3721, 29871, 29906, 29945,
+         4890,  1472,   322,  1712,   871,   525, 29896, 29915, 29879,   322,
+          525, 29900, 29915, 29879, 29892,   411,   694,  8162,   470,   916,
+          628, 13083,   414,   322,   694,  7309,   800, 29889,    13,    13,
+         1068,  3886,  1068, 29901,   777,  9121, 16967,  1862,  4893,   502,
+         1549,  1009, 15332, 28648,   322, 15366, 29889,    13,    13,  1068,
+        16492,  1068, 29901,  8449, 16608,  3743,   278,  6354, 29973,    13,
+        32007, 32001, 29900, 29900, 29900, 29900, 29900, 29900, 29900, 29900,
+        29900, 29900, 29900, 29900, 29896, 29896, 29896, 29896, 29896, 29896,
+        29896, 29896, 29896, 29896, 29900, 29896, 29900, 32007])
+tensor([0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+Val collator labels, input_ids, and attention_mask (first item):
+labels.shape = torch.Size([2, 25, 2])
+tensor([[1.0000, 0.0000],
+        [1.0000, 0.0000],
+        [1.0000, 0.0000],
+        [1.0000, 0.0000],
+        [1.0000, 0.0000],
+        [1.0000, 0.0000],
+        [1.0000, 0.0000],
+        [1.0000, 0.0000],
+        [1.0000, 0.0000],
+        [1.0000, 0.0000],
+        [1.0000, 0.0000],
+        [1.0000, 0.0000],
+        [1.0000, 0.0000],
+        [0.9815, 0.0185],
+        [0.5833, 0.4167],
+        [0.6667, 0.3333],
+        [0.4167, 0.5833],
+        [0.4167, 0.5833],
+        [0.3333, 0.6667],
+        [0.3333, 0.6667],
+        [0.3333, 0.6667],
+        [0.3333, 0.6667],
+        [0.4167, 0.5833],
+        [0.3333, 0.6667],
+        [0.4167, 0.5833]])
+tensor([32011, 32011, 32011, 29871, 32006,  3492,   526,   263, 15040,  4863,
+         5663, 16837, 20255, 29889,   887,   674,  7150,   263,  4863,   322,
+          263,  5199,  6354,  2346,  2183,   491,   278,  1404, 29889,  7106,
+          278, 16608,   393,  7087,   278,  6354,  2346, 29889, 10306,   278,
+         1962,  3402,  2183,   491,   278,  1404, 29889, 29871, 32007, 32010,
+         3492,   526,  2183, 29871, 29906, 29945, 16608,  4559, 29881,   515,
+          263,  4863, 29892, 10372,   322, 13055,   491, 25899,  4890, 29892,
+        27541,   515, 29871, 29900,   304, 29871, 29906, 29946, 29901,    13,
+         4308, 29871, 29900, 29901, 29871, 32012,    13,  4308, 29871, 29896,
+        29901, 29871, 32012,    13,  4308, 29871, 29906, 29901, 29871, 32012,
+           13,  4308, 29871, 29941, 29901, 29871, 32012,    13,  4308, 29871,
+        29946, 29901, 29871, 32012,    13,  4308, 29871, 29945, 29901, 29871,
+        32012,    13,  4308, 29871, 29953, 29901, 29871, 32012,    13,  4308,
+        29871, 29955, 29901, 29871, 32012,    13,  4308, 29871, 29947, 29901,
+        29871, 32012,    13,  4308, 29871, 29929, 29901, 29871, 32012,    13,
+         4308, 29871, 29896, 29900, 29901, 29871, 32012,    13,  4308, 29871,
+        29896, 29896, 29901, 29871, 32012,    13,  4308, 29871, 29896, 29906,
+        29901, 29871, 32012,    13,  4308, 29871, 29896, 29941, 29901, 29871,
+        32012,    13,  4308, 29871, 29896, 29946, 29901, 29871, 32012,    13,
+         4308, 29871, 29896, 29945, 29901, 29871, 32012,    13,  4308, 29871,
+        29896, 29953, 29901, 29871, 32012,    13,  4308, 29871, 29896, 29955,
+        29901, 29871, 32012,    13,  4308, 29871, 29896, 29947, 29901, 29871,
+        32012,    13,  4308, 29871, 29896, 29929, 29901, 29871, 32012,    13,
+         4308, 29871, 29906, 29900, 29901, 29871, 32012,    13,  4308, 29871,
+        29906, 29896, 29901, 29871, 32012,    13,  4308, 29871, 29906, 29906,
+        29901, 29871, 32012,    13,  4308, 29871, 29906, 29941, 29901, 29871,
+        32012,    13,  4308, 29871, 29906, 29946, 29901, 29871, 32012,    13,
+           13,  1068, 10858,  3414,  1068, 29901,  2183,   385,  6354, 29892,
+        27599,   278,  4863, 16608,   304, 12439,   607,  6743,  1712,   278,
+         6790,  6354, 29889,    13,    13,  1068,  6466,  3402,  1068, 29901,
+         3867,   263, 29871, 29906, 29945,  2931,  7581, 10768,   362, 11105,
+        29892, 10816, 29901,    13,   448,   525, 29896, 29915,  2794,   278,
+         3515,   472,   393,  2602,  5517,  7087,   304,   278,  6354, 29889,
+           13,   448,   525, 29900, 29915,  2794,   278,  3515,   472,   393,
+         2602,  5517,   947,   451,  1993,   304,   278,  6354, 29889,    13,
+          448,  3575,  1962,  1818,   367,  3721, 29871, 29906, 29945,  4890,
+         1472,   322,  1712,   871,   525, 29896, 29915, 29879,   322,   525,
+        29900, 29915, 29879, 29892,   411,   694,  8162,   470,   916,   628,
+        13083,   414,   322,   694,  7309,   800, 29889,    13,    13,  1068,
+         3886,  1068, 29901,   319,  7826,   322,   902,  5637,  7984,   287,
+         1550,  9963,   411,  1269,   916,   373,  4024,  5410, 29889,    13,
+           13,  1068, 16492,  1068, 29901,  8449, 16608,  3743,   278,  6354,
+        29973,    13, 32007, 32001])
+tensor([0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+Num train iter per epoch per gpu (rank 0): 226. Num val iter per epoch per gpu (rank 0): 180
+args.rank=0
+Rank 1 Missing keys: Rank 0 Missing keys:[]
+ Rank 1 Unexpected keys: [][]
+
+Rank 0 Unexpected keys: []
+
+[08/04 19:47:08] Wrapping model in LoRA
+lang model only
+trainable params: 25,165,824 || all params: 3,846,295,875 || trainable%: 0.6543
+args.rank=1
+args.rank=1
+
+[08/04 19:47:09] Initializing gradient checkpointing
+Vision encoder: 0 trainable parameters
+Vision tokenizer: 109,901,568 trainable parameters
+Language model: 25,165,824 trainable parameters
+args.rank=0
+Trainable parameters:
+Vision encoder: 0 trainable parameters
+Vision tokenizer: 109,901,568 trainable parameters
+Language model: 25,165,824 trainable parameters
+args.rank=0
+args.rank=1
+args.rank=1
+[2025-08-04 19:47:09,868] [INFO] [config.py:684:__init__] Config mesh_device None world_size = 2
+args.rank=0
+args.rank=0
+[2025-08-04 19:47:09,873] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed info: version=0.17.4, git-hash=unknown, git-branch=unknown
+[2025-08-04 19:47:09,874] [INFO] [config.py:684:__init__] Config mesh_device None world_size = 2
+[2025-08-04 19:47:12,096] [INFO] [engine.py:1339:_configure_distributed_model] ********** distributed groups summary **********
+	 self.dp_world_size=2
+	 self.mp_world_size=1
+	 self.seq_dp_world_size=2
+	 self.sequence_parallel_size=1
+***********************************************
+[2025-08-04 19:47:12,231] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed Flops Profiler Enabled: False
+Using /root/.cache/torch_extensions/py312_cu128 as PyTorch extensions root...
+Using /root/.cache/torch_extensions/py312_cu128 as PyTorch extensions root...
+Detected CUDA files, patching ldflags
+Emitting ninja build file /root/.cache/torch_extensions/py312_cu128/cpu_adam/build.ninja...
+/usr/local/lib/python3.12/site-packages/torch/utils/cpp_extension.py:2356: UserWarning: TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation. 
+If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'].
+  warnings.warn(
+Building extension module cpu_adam...
+Allowing ninja to set a default number of workers... (overridable by setting the environment variable MAX_JOBS=N)
+ninja: no work to do.
+Loading extension module cpu_adam...
+Time to load cpu_adam op: 0.5267653465270996 seconds
+Adam Optimizer #0 is created with AVX512 arithmetic capability.
+Config: alpha=0.000030, betas=(0.900000, 0.999000), weight_decay=0.005000, adam_w=1
+[2025-08-04 19:47:13,065] [INFO] [logging.py:107:log_dist] [Rank 0] Using DeepSpeed Optimizer param name adamw as basic optimizer
+[2025-08-04 19:47:13,065] [INFO] [logging.py:107:log_dist] [Rank 0] Removing param_group that has no 'params' in the basic Optimizer
+Loading extension module cpu_adam...
+Time to load cpu_adam op: 0.5863945484161377 seconds
+Adam Optimizer #0 is created with AVX512 arithmetic capability.
+Config: alpha=0.000030, betas=(0.900000, 0.999000), weight_decay=0.005000, adam_w=1
+[2025-08-04 19:47:13,214] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed Basic Optimizer = DeepSpeedCPUAdam
+[2025-08-04 19:47:13,214] [INFO] [utils.py:59:is_zero_supported_optimizer] Checking ZeRO support for optimizer=DeepSpeedCPUAdam type=<class 'deepspeed.ops.adam.cpu_adam.DeepSpeedCPUAdam'>
+[2025-08-04 19:47:13,215] [INFO] [logging.py:107:log_dist] [Rank 0] Creating torch.bfloat16 ZeRO stage 2 optimizer
+[2025-08-04 19:47:13,215] [INFO] [stage_1_and_2.py:172:__init__] Reduce bucket size 600000000
+[2025-08-04 19:47:13,215] [INFO] [stage_1_and_2.py:173:__init__] Allgather bucket size 600000000
+[2025-08-04 19:47:13,215] [INFO] [stage_1_and_2.py:174:__init__] CPU Offload: True
+[2025-08-04 19:47:13,215] [INFO] [stage_1_and_2.py:175:__init__] Round robin gradient partitioning: False
+[2025-08-04 19:47:14,181] [INFO] [utils.py:781:see_memory_usage] Before initializing optimizer states
+[2025-08-04 19:47:14,183] [INFO] [utils.py:782:see_memory_usage] MA 8.19 GB         Max_MA 8.19 GB         CA 8.24 GB         Max_CA 8 GB 
+[2025-08-04 19:47:14,210] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 20.18 GB, percent = 5.9%
+[2025-08-04 19:47:14,311] [WARNING] [lr_schedules.py:858:get_lr] Attempting to get learning rate from scheduler before it has started
+/checkpoints/blip3-mr/v2_part1
+
+[08/04 19:47:14] Loading checkpoint from /checkpoints/blip3-mr/v2_part1/global_step282 with load_module_only=False
+[2025-08-04 19:47:14,806] [INFO] [utils.py:781:see_memory_usage] After initializing optimizer states
+[2025-08-04 19:47:14,807] [INFO] [utils.py:782:see_memory_usage] MA 8.19 GB         Max_MA 8.19 GB         CA 8.24 GB         Max_CA 8 GB 
+[2025-08-04 19:47:14,816] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 20.79 GB, percent = 6.1%
+[2025-08-04 19:47:14,817] [INFO] [stage_1_and_2.py:599:__init__] optimizer state initialized
+[2025-08-04 19:47:15,117] [INFO] [utils.py:781:see_memory_usage] After initializing ZeRO optimizer
+[2025-08-04 19:47:15,118] [INFO] [utils.py:782:see_memory_usage] MA 8.19 GB         Max_MA 8.19 GB         CA 8.24 GB         Max_CA 8 GB 
+[2025-08-04 19:47:15,128] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 21.1 GB, percent = 6.2%
+[2025-08-04 19:47:15,130] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed Final Optimizer = DeepSpeedZeroOptimizer
+[2025-08-04 19:47:15,131] [WARNING] [lr_schedules.py:858:get_lr] Attempting to get learning rate from scheduler before it has started
+[2025-08-04 19:47:15,131] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed using configured LR scheduler = WarmupCosineLR
+[2025-08-04 19:47:15,131] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed LR Scheduler = <deepspeed.runtime.lr_schedules.WarmupCosineLR object at 0x2a5f43f09010>
+[2025-08-04 19:47:15,131] [INFO] [logging.py:107:log_dist] [Rank 0] step=0, skipped=0, lr=[0.0], mom=[[0.9, 0.999]]
+[2025-08-04 19:47:15,137] [INFO] [logging.py:107:log_dist] [Rank 0] [TorchCheckpointEngine] Initialized with serialization = True
+[2025-08-04 19:47:15,137] [INFO] [config.py:954:print] DeepSpeedEngine configuration:
+[2025-08-04 19:47:15,138] [INFO] [config.py:958:print]   activation_checkpointing_config  {
+    "partition_activations": false, 
+    "contiguous_memory_optimization": false, 
+    "cpu_checkpointing": false, 
+    "number_checkpoints": null, 
+    "synchronize_checkpoint_boundary": false, 
+    "profile": false
+}
+[2025-08-04 19:47:15,138] [INFO] [config.py:958:print]   aio_config ................... {'block_size': 1048576, 'queue_depth': 8, 'intra_op_parallelism': 1, 'single_submit': False, 'overlap_events': True, 'use_gds': False}
+[2025-08-04 19:47:15,138] [INFO] [config.py:958:print]   amp_enabled .................. False
+[2025-08-04 19:47:15,138] [INFO] [config.py:958:print]   amp_params ................... False
+[2025-08-04 19:47:15,138] [INFO] [config.py:958:print]   autotuning_config ............ {
+    "enabled": false, 
+    "start_step": null, 
+    "end_step": null, 
+    "metric_path": null, 
+    "arg_mappings": null, 
+    "metric": "throughput", 
+    "model_info": null, 
+    "results_dir": "autotuning_results", 
+    "exps_dir": "autotuning_exps", 
+    "overwrite": true, 
+    "fast": true, 
+    "start_profile_step": 3, 
+    "end_profile_step": 5, 
+    "tuner_type": "gridsearch", 
+    "tuner_early_stopping": 5, 
+    "tuner_num_trials": 50, 
+    "model_info_path": null, 
+    "mp_size": 1, 
+    "max_train_batch_size": null, 
+    "min_train_batch_size": 1, 
+    "max_train_micro_batch_size_per_gpu": 1.024000e+03, 
+    "min_train_micro_batch_size_per_gpu": 1, 
+    "num_tuning_micro_batch_sizes": 3
+}
+[2025-08-04 19:47:15,138] [INFO] [config.py:958:print]   bfloat16_config .............. enabled=True immediate_grad_update=False check_grad_overflow=False
+[2025-08-04 19:47:15,138] [INFO] [config.py:958:print]   checkpoint_config ............ {'tag_validation': 'WARN', 'checkpoint_serialization': True, 'writer': None}
+[2025-08-04 19:47:15,138] [INFO] [config.py:958:print]   checkpoint_parallel_write_pipeline  False
+[2025-08-04 19:47:15,138] [INFO] [config.py:958:print]   checkpoint_tag_validation_enabled  True
+[2025-08-04 19:47:15,138] [INFO] [config.py:958:print]   checkpoint_tag_validation_fail  False
+[2025-08-04 19:47:15,138] [INFO] [config.py:958:print]   comms_config ................. <deepspeed.comm.config.DeepSpeedCommsConfig object at 0x2a5f5425a180>
+[2025-08-04 19:47:15,139] [INFO] [config.py:958:print]   communication_data_type ...... None
+[2025-08-04 19:47:15,139] [INFO] [config.py:958:print]   compile_config ............... deepcompile=False free_activation=False offload_activation=False offload_opt_states=False double_buffer=True symmetric_memory=False debug_log=False offload_parameters=False sync_before_reduce=False sync_after_reduce=False sync_before_allgather=False sync_after_allgather=False keep_int_input_tensors=True keep_all_input_tensors=False
+[2025-08-04 19:47:15,139] [INFO] [config.py:958:print]   compression_config ........... {'weight_quantization': {'shared_parameters': {'enabled': False, 'quantizer_kernel': False, 'schedule_offset': 0, 'quantize_groups': 1, 'quantize_verbose': False, 'quantization_type': 'symmetric', 'quantize_weight_in_forward': False, 'rounding': 'nearest', 'fp16_mixed_quantize': False, 'quantize_change_ratio': 0.001}, 'different_groups': {}}, 'activation_quantization': {'shared_parameters': {'enabled': False, 'quantization_type': 'symmetric', 'range_calibration': 'dynamic', 'schedule_offset': 1000}, 'different_groups': {}}, 'sparse_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'row_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'head_pruning': {'shared_parameters': {'enabled': False, 'method': 'topk', 'schedule_offset': 1000}, 'different_groups': {}}, 'channel_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'layer_reduction': {'enabled': False}}
+[2025-08-04 19:47:15,139] [INFO] [config.py:958:print]   curriculum_enabled_legacy .... False
+[2025-08-04 19:47:15,139] [INFO] [config.py:958:print]   curriculum_params_legacy ..... False
+[2025-08-04 19:47:15,139] [INFO] [config.py:958:print]   data_efficiency_config ....... {'enabled': False, 'seed': 1234, 'data_sampling': {'enabled': False, 'num_epochs': 1000, 'num_workers': 0, 'pin_memory': False, 'curriculum_learning': {'enabled': False}, 'dynamic_batching': {'enabled': False, 'lr_scaling_method': 'linear', 'min_batch_size': 1, 'max_batch_size': None, 'sequence_picking_order': 'dataloader', 'verbose': False}}, 'data_routing': {'enabled': False, 'random_ltd': {'enabled': False, 'layer_token_lr_schedule': {'enabled': False}}}}
+[2025-08-04 19:47:15,139] [INFO] [config.py:958:print]   data_efficiency_enabled ...... False
+[2025-08-04 19:47:15,140] [INFO] [config.py:958:print]   dataloader_drop_last ......... False
+[2025-08-04 19:47:15,140] [INFO] [config.py:958:print]   disable_allgather ............ False
+[2025-08-04 19:47:15,140] [INFO] [config.py:958:print]   dump_state ................... False
+[2025-08-04 19:47:15,140] [INFO] [config.py:958:print]   eigenvalue_enabled ........... False
+[2025-08-04 19:47:15,140] [INFO] [config.py:958:print]   eigenvalue_gas_boundary_resolution  1
+[2025-08-04 19:47:15,140] [INFO] [config.py:958:print]   eigenvalue_layer_name ........ bert.encoder.layer
+[2025-08-04 19:47:15,140] [INFO] [config.py:958:print]   eigenvalue_layer_num ......... 0
+[2025-08-04 19:47:15,140] [INFO] [config.py:958:print]   eigenvalue_max_iter .......... 100
+[2025-08-04 19:47:15,140] [INFO] [config.py:958:print]   eigenvalue_stability ......... 1e-06
+[2025-08-04 19:47:15,140] [INFO] [config.py:958:print]   eigenvalue_tol ............... 0.01
+[2025-08-04 19:47:15,140] [INFO] [config.py:958:print]   eigenvalue_verbose ........... False
+[2025-08-04 19:47:15,140] [INFO] [config.py:958:print]   elasticity_enabled ........... False
+[2025-08-04 19:47:15,140] [INFO] [config.py:958:print]   float16_config ............... enabled=False auto_cast=False loss_scale=0.0 initial_scale_power=16 loss_scale_window=1000 hysteresis=2 consecutive_hysteresis=False min_loss_scale=1 fp16_master_weights_and_grads=False
+[2025-08-04 19:47:15,140] [INFO] [config.py:958:print]   flops_profiler_config ........ {
+    "enabled": false, 
+    "recompute_fwd_factor": 0.0, 
+    "profile_step": 1, 
+    "module_depth": -1, 
+    "top_modules": 1, 
+    "detailed": true, 
+    "output_file": null
+}
+[2025-08-04 19:47:15,140] [INFO] [config.py:958:print]   global_rank .................. 0
+[2025-08-04 19:47:15,141] [INFO] [config.py:958:print]   grad_accum_dtype ............. None
+[2025-08-04 19:47:15,141] [INFO] [config.py:958:print]   gradient_accumulation_steps .. 4
+[2025-08-04 19:47:15,141] [INFO] [config.py:958:print]   gradient_clipping ............ 1.0
+[2025-08-04 19:47:15,141] [INFO] [config.py:958:print]   gradient_predivide_factor .... 1.0
+[2025-08-04 19:47:15,141] [INFO] [config.py:958:print]   graph_harvesting ............. False
+[2025-08-04 19:47:15,141] [INFO] [config.py:958:print]   hybrid_engine ................ enabled=False max_out_tokens=512 inference_tp_size=1 release_inference_cache=False pin_parameters=True tp_gather_partition_size=8
+[2025-08-04 19:47:15,141] [INFO] [config.py:958:print]   load_universal_checkpoint .... True
+[2025-08-04 19:47:15,141] [INFO] [config.py:958:print]   memory_breakdown ............. False
+[2025-08-04 19:47:15,141] [INFO] [config.py:958:print]   mics_hierarchial_params_gather  False
+[2025-08-04 19:47:15,141] [INFO] [config.py:958:print]   mics_shard_size .............. -1
+[2025-08-04 19:47:15,142] [INFO] [config.py:958:print]   monitor_config ............... tensorboard=TensorBoardConfig(enabled=False, output_path='', job_name='DeepSpeedJobName') comet=CometConfig(enabled=False, samples_log_interval=100, project=None, workspace=None, api_key=None, experiment_name=None, experiment_key=None, online=None, mode=None) wandb=WandbConfig(enabled=False, group=None, team=None, project='deepspeed') csv_monitor=CSVConfig(enabled=False, output_path='', job_name='DeepSpeedJobName')
+[2025-08-04 19:47:15,142] [INFO] [config.py:958:print]   nebula_config ................ {
+    "enabled": false, 
+    "persistent_storage_path": null, 
+    "persistent_time_interval": 100, 
+    "num_of_version_in_retention": 2, 
+    "enable_nebula_load": true, 
+    "load_path": null
+}
+[2025-08-04 19:47:15,142] [INFO] [config.py:958:print]   optimizer_legacy_fusion ...... False
+[2025-08-04 19:47:15,142] [INFO] [config.py:958:print]   optimizer_name ............... adamw
+[2025-08-04 19:47:15,142] [INFO] [config.py:958:print]   optimizer_params ............. {'lr': 3e-05, 'betas': [0.9, 0.999], 'eps': 1e-08, 'weight_decay': 0.005}
+[2025-08-04 19:47:15,142] [INFO] [config.py:958:print]   pipeline ..................... {'stages': 'auto', 'partition': 'best', 'seed_layers': False, 'activation_checkpoint_interval': 0, 'pipe_partitioned': True, 'grad_partitioned': True}
+[2025-08-04 19:47:15,142] [INFO] [config.py:958:print]   pld_enabled .................. False
+[2025-08-04 19:47:15,142] [INFO] [config.py:958:print]   pld_params ................... False
+[2025-08-04 19:47:15,142] [INFO] [config.py:958:print]   prescale_gradients ........... False
+[2025-08-04 19:47:15,142] [INFO] [config.py:958:print]   scheduler_name ............... WarmupCosineLR
+[2025-08-04 19:47:15,142] [INFO] [config.py:958:print]   scheduler_params ............. {'warmup_min_ratio': 1e-08, 'warmup_num_steps': 336, 'total_num_steps': 1130, 'cos_min_ratio': 0.1, 'warmup_type': 'linear'}
+[2025-08-04 19:47:15,142] [INFO] [config.py:958:print]   seq_parallel_communication_data_type  torch.float32
+[2025-08-04 19:47:15,142] [INFO] [config.py:958:print]   sparse_attention ............. None
+[2025-08-04 19:47:15,142] [INFO] [config.py:958:print]   sparse_gradients_enabled ..... False
+[2025-08-04 19:47:15,143] [INFO] [config.py:958:print]   steps_per_print .............. None
+[2025-08-04 19:47:15,143] [INFO] [config.py:958:print]   tensor_parallel_config ....... dtype=torch.float16 autotp_size=0 tp_overlap_comm=False tensor_parallel=TPConfig(tp_size=1, tp_grain_size=1, mpu=None, tp_group=None) injection_policy_tuple=None keep_module_on_host=False replace_with_kernel_inject=False
+[2025-08-04 19:47:15,143] [INFO] [config.py:958:print]   timers_config ................ enabled=True synchronized=True
+[2025-08-04 19:47:15,143] [INFO] [config.py:958:print]   torch_autocast_dtype ......... None
+[2025-08-04 19:47:15,143] [INFO] [config.py:958:print]   torch_autocast_enabled ....... False
+[2025-08-04 19:47:15,143] [INFO] [config.py:958:print]   torch_autocast_lower_precision_safe_modules  None
+[2025-08-04 19:47:15,143] [INFO] [config.py:958:print]   train_batch_size ............. 128
+[2025-08-04 19:47:15,143] [INFO] [config.py:958:print]   train_micro_batch_size_per_gpu  16
+[2025-08-04 19:47:15,143] [INFO] [config.py:958:print]   use_data_before_expert_parallel_  False
+[2025-08-04 19:47:15,143] [INFO] [config.py:958:print]   use_node_local_storage ....... False
+[2025-08-04 19:47:15,143] [INFO] [config.py:958:print]   wall_clock_breakdown ......... False
+[2025-08-04 19:47:15,143] [INFO] [config.py:958:print]   weight_quantization_config ... None
+[2025-08-04 19:47:15,143] [INFO] [config.py:958:print]   world_size ................... 2
+[2025-08-04 19:47:15,143] [INFO] [config.py:958:print]   zero_allow_untested_optimizer  False
+[2025-08-04 19:47:15,143] [INFO] [config.py:958:print]   zero_config .................. stage=2 contiguous_gradients=True reduce_scatter=True reduce_bucket_size=600000000 use_multi_rank_bucket_allreduce=True allgather_partitions=True allgather_bucket_size=600000000 overlap_comm=True load_from_fp32_weights=True elastic_checkpoint=False offload_param=None offload_optimizer=DeepSpeedZeroOffloadOptimizerConfig(device='cpu', nvme_path=None, buffer_count=4, pin_memory=True, pipeline_read=False, pipeline_write=False, fast_init=False, ratio=1.0) sub_group_size=1000000000 cpu_offload_param=None cpu_offload_use_pin_memory=None cpu_offload=None prefetch_bucket_size=50000000 param_persistence_threshold=100000 model_persistence_threshold=9223372036854775807 max_live_parameters=1000000000 max_reuse_distance=1000000000 gather_16bit_weights_on_model_save=False module_granularity_threshold=0 use_all_reduce_for_fetch_params=False stage3_gather_fp16_weights_on_model_save=False ignore_unused_parameters=True legacy_stage1=False round_robin_gradients=False zero_hpz_partition_size=1 zero_quantized_weights=False zero_quantized_nontrainable_weights=False zero_quantized_gradients=False zeropp_loco_param=None mics_shard_size=-1 mics_hierarchical_params_gather=False memory_efficient_linear=True pipeline_loading_checkpoint=False override_module_apply=True log_trace_cache_warnings=False
+[2025-08-04 19:47:15,143] [INFO] [config.py:958:print]   zero_enabled ................. True
+[2025-08-04 19:47:15,144] [INFO] [config.py:958:print]   zero_force_ds_cpu_optimizer .. True
+[2025-08-04 19:47:15,144] [INFO] [config.py:958:print]   zero_optimization_stage ...... 2
+[2025-08-04 19:47:15,144] [INFO] [config.py:944:print_user_config]   json = {
+    "bf16": {
+        "enabled": true
+    }, 
+    "zero_optimization": {
+        "stage": 2, 
+        "overlap_comm": true, 
+        "contiguous_gradients": true, 
+        "reduce_bucket_size": 6.000000e+08, 
+        "allgather_bucket_size": 6.000000e+08, 
+        "reduce_scatter": true, 
+        "offload_optimizer": {
+            "device": "cpu", 
+            "pin_memory": true
+        }, 
+        "load_from_fp32_weights": true
+    }, 
+    "optimizer": {
+        "type": "AdamW", 
+        "params": {
+            "lr": 3e-05, 
+            "betas": [0.9, 0.999], 
+            "eps": 1e-08, 
+            "weight_decay": 0.005
+        }
+    }, 
+    "gradient_clipping": 1.0, 
+    "scheduler": {
+        "type": "WarmupCosineLR", 
+        "params": {
+            "warmup_min_ratio": 1e-08, 
+            "warmup_num_steps": 336, 
+            "total_num_steps": 1.130000e+03, 
+            "cos_min_ratio": 0.1, 
+            "warmup_type": "linear"
+        }
+    }, 
+    "checkpoint": {
+        "load_universal": true
+    }, 
+    "train_micro_batch_size_per_gpu": 16, 
+    "gradient_accumulation_steps": 4
+}
+/checkpoints/blip3-mr/v2_part1
+[2025-08-04 19:47:15,145] [INFO] [logging.py:107:log_dist] [Rank 0] [Torch] Begin Load checkpoint from /checkpoints/blip3-mr/v2_part1/global_step282/mp_rank_00_model_states.pt...
+[2025-08-04 19:47:22,700] [INFO] [logging.py:107:log_dist] [Rank 0] [Torch] End Load checkpoint from /checkpoints/blip3-mr/v2_part1/global_step282/mp_rank_00_model_states.pt...
+[2025-08-04 19:47:22,716] [INFO] [logging.py:107:log_dist] [Rank 0] [Torch] Begin Load checkpoint from /checkpoints/blip3-mr/v2_part1/global_step282/mp_rank_00_model_states.pt...
+[2025-08-04 19:47:28,876] [WARNING] [base_optimizer.py:32:load_hp_checkpoint_state_from_checkpoint_dir] MPU is not provided, setting tp size to 1 in checkpoint loading.
+[2025-08-04 19:47:29,882] [INFO] [logging.py:107:log_dist] [Rank 0] [Torch] End Load checkpoint from /checkpoints/blip3-mr/v2_part1/global_step282/mp_rank_00_model_states.pt...
+[2025-08-04 19:47:29,905] [WARNING] [base_optimizer.py:32:load_hp_checkpoint_state_from_checkpoint_dir] MPU is not provided, setting tp size to 1 in checkpoint loading.
+[2025-08-04 19:47:31,579] [INFO] [engine.py:3243:_load_zero_checkpoint] loaded universal zero checkpoints from /checkpoints/blip3-mr/v2_part1/global_step282 for rank 0
+/checkpoints/blip3-mr/v2_part1/global_step282/mp_rank_00_model_states.pt
+  global_samples: 36096
+  ds_config: {'bf16': {'enabled': True}, 'zero_optimization': {'stage': 2, 'overlap_comm': True, 'contiguous_gradients': True, 'reduce_bucket_size': 600000000.0, 'allgather_bucket_size': 600000000.0, 'reduce_scatter': True, 'offload_optimizer': {'device': 'cpu', 'pin_memory': True}, 'load_from_fp32_weights': True}, 'optimizer': {'type': 'AdamW', 'params': {'lr': 3e-05, 'betas': [0.9, 0.999], 'eps': 1e-08, 'weight_decay': 0.005}}, 'gradient_clipping': 1.0, 'scheduler': {'type': 'WarmupCosineLR', 'params': {'warmup_min_ratio': 1e-08, 'warmup_num_steps': 336, 'total_num_steps': 1130, 'cos_min_ratio': 0.1, 'warmup_type': 'linear'}}, 'train_micro_batch_size_per_gpu': 8, 'gradient_accumulation_steps': 4}
+  ds_version: 0.17.3
+  bce_loss: 0.20660955111185708
+  ce_loss: 0.036460387706756595
+  gd_loss: 0.19768648147583007
+  tv_loss: 0.1289945125579834
+  lr: 2.5000000050000004e-05
+  step_time_s: 64.46343994140625
+  data_time_ms: 1.7364025115966797
+  tokens_k: 3.567
+  positive_ratio: 0.16108795166015624
+  mAP: 24.527498245239258
+  mAP-at-0.5: 42.73500061035156
+  mAP-at-0.7: 24.030000686645508
+  R1-at-0.5: 48.88750076293945
+  R1-at-0.7: 30.139999389648438
+  member: 1.0
+  threshold: 0.5
+  step: 1129
+  epoch: 4
+args.rank=0
+[2025-08-04 19:49:35,180] [INFO] [engine.py:3243:_load_zero_checkpoint] loaded universal zero checkpoints from /checkpoints/blip3-mr/v2_part1/global_step282 for rank 1
+/checkpoints/blip3-mr/v2_part1/global_step282/mp_rank_00_model_states.pt
+
+[08/04 19:49:35] Checkpoint Keys:
+args.rank=1
+1 module.vision_tokenizer.latents 	 -2.57874e-03 torch.bfloat16 False
+1 module.vision_tokenizer.projection.weight 	 -4.67896e-06 torch.bfloat16 False
+1 module.vision_tokenizer.projection.bias 	 1.21117e-04 torch.bfloat16 False
+1 module.vision_tokenizer.layers.0.0.norm_media.weight 	 9.57031e-01 torch.bfloat16 False
+1 module.vision_tokenizer.layers.0.0.norm_media.bias 	 3.60489e-04 torch.bfloat16 False
+1 module.vision_tokenizer.layers.0.0.norm_latents.weight 	 9.60938e-01 torch.bfloat16 False
+1 module.vision_tokenizer.layers.0.0.norm_latents.bias 	 4.82559e-04 torch.bfloat16 False
+1 module.vision_tokenizer.layers.0.0.to_q.weight 	 -3.62098e-06 torch.bfloat16 False
+1 module.vision_tokenizer.layers.0.0.to_kv.weight 	 1.35899e-05 torch.bfloat16 False
+1 module.vision_tokenizer.layers.0.0.to_out.weight 	 2.16067e-07 torch.bfloat16 False
+1 module.vision_tokenizer.layers.0.1.0.weight 	 9.10156e-01 torch.bfloat16 False
+1 module.vision_tokenizer.layers.0.1.0.bias 	 3.40939e-05 torch.bfloat16 False
+1 module.vision_tokenizer.layers.0.1.1.weight 	 5.27501e-06 torch.bfloat16 False
+1 module.vision_tokenizer.layers.0.1.3.weight 	 2.72691e-06 torch.bfloat16 False
+1 module.vision_tokenizer.layers.1.0.norm_media.weight 	 9.53125e-01 torch.bfloat16 False
+1 module.vision_tokenizer.layers.1.0.norm_media.bias 	 4.81606e-05 torch.bfloat16 False
+1 module.vision_tokenizer.layers.1.0.norm_latents.weight 	 9.84375e-01 torch.bfloat16 False
+1 module.vision_tokenizer.layers.1.0.norm_latents.bias 	 1.34468e-04 torch.bfloat16 False
+1 module.vision_tokenizer.layers.1.0.to_q.weight 	 -4.05312e-06 torch.bfloat16 False
+1 module.vision_tokenizer.layers.1.0.to_kv.weight 	 -2.00234e-07 torch.bfloat16 False
+1 module.vision_tokenizer.layers.1.0.to_out.weight 	 -1.13249e-05 torch.bfloat16 False
+1 module.vision_tokenizer.layers.1.1.0.weight 	 9.21875e-01 torch.bfloat16 False
+1 module.vision_tokenizer.layers.1.1.0.bias 	 -4.36783e-04 torch.bfloat16 False
+1 module.vision_tokenizer.layers.1.1.1.weight 	 2.05040e-05 torch.bfloat16 False
+1 module.vision_tokenizer.layers.1.1.3.weight 	 7.86781e-06 torch.bfloat16 False
+1 module.vision_tokenizer.layers.2.0.norm_media.weight 	 9.76562e-01 torch.bfloat16 False
+1 module.vision_tokenizer.layers.2.0.norm_media.bias 	 1.16825e-04 torch.bfloat16 False
+1 module.vision_tokenizer.layers.2.0.norm_latents.weight 	 1.02344e+00 torch.bfloat16 False
+1 module.vision_tokenizer.layers.2.0.norm_latents.bias 	 -2.25067e-04 torch.bfloat16 False
+1 module.vision_tokenizer.layers.2.0.to_q.weight 	 -4.50760e-07 torch.bfloat16 False
+1 module.vision_tokenizer.layers.2.0.to_kv.weight 	 -1.18017e-05 torch.bfloat16 False
+1 module.vision_tokenizer.layers.2.0.to_out.weight 	 5.72205e-06 torch.bfloat16 False
+1 module.vision_tokenizer.layers.2.1.0.weight 	 9.29688e-01 torch.bfloat16 False
+1 module.vision_tokenizer.layers.2.1.0.bias 	 2.31266e-05 torch.bfloat16 False
+1 module.vision_tokenizer.layers.2.1.1.weight 	 -2.98023e-06 torch.bfloat16 False
+1 module.vision_tokenizer.layers.2.1.3.weight 	 4.07919e-07 torch.bfloat16 False
+1 module.vision_tokenizer.layers.3.0.norm_media.weight 	 9.88281e-01 torch.bfloat16 False
+1 module.vision_tokenizer.layers.3.0.norm_media.bias 	 1.98364e-04 torch.bfloat16 False
+1 module.vision_tokenizer.layers.3.0.norm_latents.weight 	 1.07031e+00 torch.bfloat16 False
+1 module.vision_tokenizer.layers.3.0.norm_latents.bias 	 -1.12057e-04 torch.bfloat16 False
+1 module.vision_tokenizer.layers.3.0.to_q.weight 	 1.80006e-05 torch.bfloat16 False
+1 module.vision_tokenizer.layers.3.0.to_kv.weight 	 2.77162e-06 torch.bfloat16 False
+1 module.vision_tokenizer.layers.3.0.to_out.weight 	 1.19209e-05 torch.bfloat16 False
+1 module.vision_tokenizer.layers.3.1.0.weight 	 9.37500e-01 torch.bfloat16 False
+1 module.vision_tokenizer.layers.3.1.0.bias 	 -4.83990e-05 torch.bfloat16 False
+1 module.vision_tokenizer.layers.3.1.1.weight 	 1.23978e-05 torch.bfloat16 False
+1 module.vision_tokenizer.layers.3.1.3.weight 	 2.84612e-06 torch.bfloat16 False
+1 module.vision_tokenizer.layers.4.0.norm_media.weight 	 1.00781e+00 torch.bfloat16 False
+1 module.vision_tokenizer.layers.4.0.norm_media.bias 	 -2.03133e-04 torch.bfloat16 False
+1 module.vision_tokenizer.layers.4.0.norm_latents.weight 	 1.06250e+00 torch.bfloat16 False
+1 module.vision_tokenizer.layers.4.0.norm_latents.bias 	 -5.72205e-05 torch.bfloat16 False
+1 module.vision_tokenizer.layers.4.0.to_q.weight 	 -9.35793e-06 torch.bfloat16 False
+1 module.vision_tokenizer.layers.4.0.to_kv.weight 	 -1.16229e-05 torch.bfloat16 False
+1 module.vision_tokenizer.layers.4.0.to_out.weight 	 -1.00136e-05 torch.bfloat16 False
+1 module.vision_tokenizer.layers.4.1.0.weight 	 9.53125e-01 torch.bfloat16 False
+1 module.vision_tokenizer.layers.4.1.0.bias 	 -1.83582e-05 torch.bfloat16 False
+1 module.vision_tokenizer.layers.4.1.1.weight 	 1.69128e-06 torch.bfloat16 False
+1 module.vision_tokenizer.layers.4.1.3.weight 	 -1.34856e-06 torch.bfloat16 False
+1 module.vision_tokenizer.layers.5.0.norm_media.weight 	 1.03125e+00 torch.bfloat16 False
+1 module.vision_tokenizer.layers.5.0.norm_media.bias 	 7.86781e-06 torch.bfloat16 False
+1 module.vision_tokenizer.layers.5.0.norm_latents.weight 	 1.11719e+00 torch.bfloat16 False
+1 module.vision_tokenizer.layers.5.0.norm_latents.bias 	 -3.73840e-04 torch.bfloat16 False
+1 module.vision_tokenizer.layers.5.0.to_q.weight 	 4.35114e-06 torch.bfloat16 False
+1 module.vision_tokenizer.layers.5.0.to_kv.weight 	 -2.94447e-05 torch.bfloat16 False
+1 module.vision_tokenizer.layers.5.0.to_out.weight 	 7.80821e-06 torch.bfloat16 False
+1 module.vision_tokenizer.layers.5.1.0.weight 	 9.68750e-01 torch.bfloat16 False
+1 module.vision_tokenizer.layers.5.1.0.bias 	 3.14713e-05 torch.bfloat16 False
+1 module.vision_tokenizer.layers.5.1.1.weight 	 -5.40167e-07 torch.bfloat16 False
+1 module.vision_tokenizer.layers.5.1.3.weight 	 2.99513e-06 torch.bfloat16 False
+1 module.vision_tokenizer.norm.weight 	 9.17969e-01 torch.bfloat16 False
+1 module.vision_tokenizer.norm.bias 	 -9.01222e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.embed_tokens.weight 	 -1.09673e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.embed_tokens.additional_embedding.weight 	 4.41074e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.0.self_attn.o_proj.base_layer.weight 	 -1.93715e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.0.self_attn.o_proj.lora_A.default.weight 	 -4.67300e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.0.self_attn.o_proj.lora_B.default.weight 	 5.45979e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.0.self_attn.qkv_proj.base_layer.weight 	 -3.83705e-07 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.0.self_attn.qkv_proj.lora_A.default.weight 	 1.74522e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.0.self_attn.qkv_proj.lora_B.default.weight 	 -4.64916e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.0.mlp.gate_up_proj.base_layer.weight 	 -3.06964e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.0.mlp.gate_up_proj.lora_A.default.weight 	 1.42097e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.0.mlp.gate_up_proj.lora_B.default.weight 	 -7.78198e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.0.mlp.down_proj.base_layer.weight 	 2.59280e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.0.mlp.down_proj.lora_A.default.weight 	 2.18153e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.0.mlp.down_proj.lora_B.default.weight 	 -1.48773e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.0.input_layernorm.weight 	 7.93457e-03 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.0.post_attention_layernorm.weight 	 3.90625e-02 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.1.self_attn.o_proj.base_layer.weight 	 -2.62260e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.1.self_attn.o_proj.lora_A.default.weight 	 -1.64986e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.1.self_attn.o_proj.lora_B.default.weight 	 4.57764e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.1.self_attn.qkv_proj.base_layer.weight 	 -2.38419e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.1.self_attn.qkv_proj.lora_A.default.weight 	 -3.07560e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.1.self_attn.qkv_proj.lora_B.default.weight 	 -1.78814e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.1.mlp.gate_up_proj.base_layer.weight 	 -2.59280e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.1.mlp.gate_up_proj.lora_A.default.weight 	 1.16825e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.1.mlp.gate_up_proj.lora_B.default.weight 	 6.37054e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.1.mlp.down_proj.base_layer.weight 	 -6.25849e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.1.mlp.down_proj.lora_A.default.weight 	 8.82149e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.1.mlp.down_proj.lora_B.default.weight 	 -1.51634e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.1.input_layernorm.weight 	 2.44141e-02 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.1.post_attention_layernorm.weight 	 8.15430e-02 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.2.self_attn.o_proj.base_layer.weight 	 -3.38256e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.2.self_attn.o_proj.lora_A.default.weight 	 -6.81877e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.2.self_attn.o_proj.lora_B.default.weight 	 -1.72853e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.2.self_attn.qkv_proj.base_layer.weight 	 9.41753e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.2.self_attn.qkv_proj.lora_A.default.weight 	 -1.76430e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.2.self_attn.qkv_proj.lora_B.default.weight 	 1.52588e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.2.mlp.gate_up_proj.base_layer.weight 	 -3.47197e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.2.mlp.gate_up_proj.lora_A.default.weight 	 -1.67847e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.2.mlp.gate_up_proj.lora_B.default.weight 	 6.48499e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.2.mlp.down_proj.base_layer.weight 	 -1.34110e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.2.mlp.down_proj.lora_A.default.weight 	 5.21541e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.2.mlp.down_proj.lora_B.default.weight 	 8.48770e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.2.input_layernorm.weight 	 4.37012e-02 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.2.post_attention_layernorm.weight 	 1.09863e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.3.self_attn.o_proj.base_layer.weight 	 9.00030e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.3.self_attn.o_proj.lora_A.default.weight 	 -2.77758e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.3.self_attn.o_proj.lora_B.default.weight 	 -1.93119e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.3.self_attn.qkv_proj.base_layer.weight 	 -1.42306e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.3.self_attn.qkv_proj.lora_A.default.weight 	 2.86102e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.3.self_attn.qkv_proj.lora_B.default.weight 	 -5.07832e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.3.mlp.gate_up_proj.base_layer.weight 	 -6.23986e-08 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.3.mlp.gate_up_proj.lora_A.default.weight 	 -1.28746e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.3.mlp.gate_up_proj.lora_B.default.weight 	 7.62939e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.3.mlp.down_proj.base_layer.weight 	 -5.88596e-07 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.3.mlp.down_proj.lora_A.default.weight 	 3.14713e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.3.mlp.down_proj.lora_B.default.weight 	 2.87294e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.3.input_layernorm.weight 	 1.30859e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.3.post_attention_layernorm.weight 	 1.23047e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.4.self_attn.o_proj.base_layer.weight 	 -6.63102e-07 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.4.self_attn.o_proj.lora_A.default.weight 	 2.11000e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.4.self_attn.o_proj.lora_B.default.weight 	 1.24931e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.4.self_attn.qkv_proj.base_layer.weight 	 -7.74860e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.4.self_attn.qkv_proj.lora_A.default.weight 	 3.43323e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.4.self_attn.qkv_proj.lora_B.default.weight 	 3.12328e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.4.mlp.gate_up_proj.base_layer.weight 	 -3.79980e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.4.mlp.gate_up_proj.lora_A.default.weight 	 -6.15120e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.4.mlp.gate_up_proj.lora_B.default.weight 	 -5.76019e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.4.mlp.down_proj.base_layer.weight 	 7.30157e-07 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.4.mlp.down_proj.lora_A.default.weight 	 5.65052e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.4.mlp.down_proj.lora_B.default.weight 	 -5.10216e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.4.input_layernorm.weight 	 2.02148e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.4.post_attention_layernorm.weight 	 1.39648e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.5.self_attn.o_proj.base_layer.weight 	 -1.11461e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.5.self_attn.o_proj.lora_A.default.weight 	 -1.63078e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.5.self_attn.o_proj.lora_B.default.weight 	 5.84126e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.5.self_attn.qkv_proj.base_layer.weight 	 -7.80821e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.5.self_attn.qkv_proj.lora_A.default.weight 	 4.07696e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.5.self_attn.qkv_proj.lora_B.default.weight 	 -2.52724e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.5.mlp.gate_up_proj.base_layer.weight 	 6.59376e-07 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.5.mlp.gate_up_proj.lora_A.default.weight 	 -1.77622e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.5.mlp.gate_up_proj.lora_B.default.weight 	 7.32422e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.5.mlp.down_proj.base_layer.weight 	 3.75509e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.5.mlp.down_proj.lora_A.default.weight 	 -7.86781e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.5.mlp.down_proj.lora_B.default.weight 	 -2.31266e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.5.input_layernorm.weight 	 2.25586e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.5.post_attention_layernorm.weight 	 1.57227e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.6.self_attn.o_proj.base_layer.weight 	 -5.66244e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.6.self_attn.o_proj.lora_A.default.weight 	 5.12600e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.6.self_attn.o_proj.lora_B.default.weight 	 -1.63317e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.6.self_attn.qkv_proj.base_layer.weight 	 -4.88758e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.6.self_attn.qkv_proj.lora_A.default.weight 	 8.20160e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.6.self_attn.qkv_proj.lora_B.default.weight 	 -5.33462e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.6.mlp.gate_up_proj.base_layer.weight 	 7.15256e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.6.mlp.gate_up_proj.lora_A.default.weight 	 1.14441e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.6.mlp.gate_up_proj.lora_B.default.weight 	 5.07355e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.6.mlp.down_proj.base_layer.weight 	 1.23978e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.6.mlp.down_proj.lora_A.default.weight 	 3.24249e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.6.mlp.down_proj.lora_B.default.weight 	 1.43051e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.6.input_layernorm.weight 	 2.59766e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.6.post_attention_layernorm.weight 	 1.70898e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.7.self_attn.o_proj.base_layer.weight 	 1.53780e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.7.self_attn.o_proj.lora_A.default.weight 	 -3.83854e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.7.self_attn.o_proj.lora_B.default.weight 	 -1.52588e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.7.self_attn.qkv_proj.base_layer.weight 	 5.48363e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.7.self_attn.qkv_proj.lora_A.default.weight 	 1.59442e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.7.self_attn.qkv_proj.lora_B.default.weight 	 4.83990e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.7.mlp.gate_up_proj.base_layer.weight 	 -5.09620e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.7.mlp.gate_up_proj.lora_A.default.weight 	 1.65939e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.7.mlp.gate_up_proj.lora_B.default.weight 	 2.63214e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.7.mlp.down_proj.base_layer.weight 	 -1.46627e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.7.mlp.down_proj.lora_A.default.weight 	 -4.14848e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.7.mlp.down_proj.lora_B.default.weight 	 -2.49863e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.7.input_layernorm.weight 	 2.91016e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.7.post_attention_layernorm.weight 	 1.88477e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.8.self_attn.o_proj.base_layer.weight 	 -4.47035e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.8.self_attn.o_proj.lora_A.default.weight 	 1.07765e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.8.self_attn.o_proj.lora_B.default.weight 	 -3.17097e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.8.self_attn.qkv_proj.base_layer.weight 	 1.57356e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.8.self_attn.qkv_proj.lora_A.default.weight 	 -3.01600e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.8.self_attn.qkv_proj.lora_B.default.weight 	 3.33786e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.8.mlp.gate_up_proj.base_layer.weight 	 -4.23193e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.8.mlp.gate_up_proj.lora_A.default.weight 	 -3.64304e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.8.mlp.gate_up_proj.lora_B.default.weight 	 6.71387e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.8.mlp.down_proj.base_layer.weight 	 -5.63264e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.8.mlp.down_proj.lora_A.default.weight 	 -1.30534e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.8.mlp.down_proj.lora_B.default.weight 	 -1.02997e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.8.input_layernorm.weight 	 3.10547e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.8.post_attention_layernorm.weight 	 2.02148e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.9.self_attn.o_proj.base_layer.weight 	 2.92063e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.9.self_attn.o_proj.lora_A.default.weight 	 1.44005e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.9.self_attn.o_proj.lora_B.default.weight 	 -7.82013e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.9.self_attn.qkv_proj.base_layer.weight 	 -1.64658e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.9.self_attn.qkv_proj.lora_A.default.weight 	 -1.01924e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.9.self_attn.qkv_proj.lora_B.default.weight 	 -1.08242e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.9.mlp.gate_up_proj.base_layer.weight 	 4.58211e-07 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.9.mlp.gate_up_proj.lora_A.default.weight 	 1.13010e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.9.mlp.gate_up_proj.lora_B.default.weight 	 5.68390e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.9.mlp.down_proj.base_layer.weight 	 3.38256e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.9.mlp.down_proj.lora_A.default.weight 	 6.72340e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.9.mlp.down_proj.lora_B.default.weight 	 3.68059e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.9.input_layernorm.weight 	 2.98828e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.9.post_attention_layernorm.weight 	 2.12891e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.10.self_attn.o_proj.base_layer.weight 	 6.82473e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.10.self_attn.o_proj.lora_A.default.weight 	 -1.60933e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.10.self_attn.o_proj.lora_B.default.weight 	 9.77516e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.10.self_attn.qkv_proj.base_layer.weight 	 1.27554e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.10.self_attn.qkv_proj.lora_A.default.weight 	 1.64986e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.10.self_attn.qkv_proj.lora_B.default.weight 	 8.20160e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.10.mlp.gate_up_proj.base_layer.weight 	 -3.96371e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.10.mlp.gate_up_proj.lora_A.default.weight 	 1.07765e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.10.mlp.gate_up_proj.lora_B.default.weight 	 4.00543e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.10.mlp.down_proj.base_layer.weight 	 -1.32918e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.10.mlp.down_proj.lora_A.default.weight 	 5.30481e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.10.mlp.down_proj.lora_B.default.weight 	 -9.48906e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.10.input_layernorm.weight 	 3.51562e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.10.post_attention_layernorm.weight 	 2.24609e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.11.self_attn.o_proj.base_layer.weight 	 -9.59635e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.11.self_attn.o_proj.lora_A.default.weight 	 -1.99080e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.11.self_attn.o_proj.lora_B.default.weight 	 4.10080e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.11.self_attn.qkv_proj.base_layer.weight 	 -8.10623e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.11.self_attn.qkv_proj.lora_A.default.weight 	 -1.75476e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.11.self_attn.qkv_proj.lora_B.default.weight 	 -1.00613e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.11.mlp.gate_up_proj.base_layer.weight 	 4.73857e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.11.mlp.gate_up_proj.lora_A.default.weight 	 -1.53780e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.11.mlp.gate_up_proj.lora_B.default.weight 	 3.66211e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.11.mlp.down_proj.base_layer.weight 	 8.82149e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.11.mlp.down_proj.lora_A.default.weight 	 2.46763e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.11.mlp.down_proj.lora_B.default.weight 	 7.86781e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.11.input_layernorm.weight 	 3.45703e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.11.post_attention_layernorm.weight 	 2.31445e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.12.self_attn.o_proj.base_layer.weight 	 8.70228e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.12.self_attn.o_proj.lora_A.default.weight 	 -9.44138e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.12.self_attn.o_proj.lora_B.default.weight 	 8.24928e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.12.self_attn.qkv_proj.base_layer.weight 	 -1.67638e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.12.self_attn.qkv_proj.lora_A.default.weight 	 4.12464e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.12.self_attn.qkv_proj.lora_B.default.weight 	 -7.24792e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.12.mlp.gate_up_proj.base_layer.weight 	 4.76837e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.12.mlp.gate_up_proj.lora_A.default.weight 	 -1.96457e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.12.mlp.gate_up_proj.lora_B.default.weight 	 2.70844e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.12.mlp.down_proj.base_layer.weight 	 4.61936e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.12.mlp.down_proj.lora_A.default.weight 	 1.26958e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.12.mlp.down_proj.lora_B.default.weight 	 1.66893e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.12.input_layernorm.weight 	 3.78906e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.12.post_attention_layernorm.weight 	 2.34375e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.13.self_attn.o_proj.base_layer.weight 	 -1.69277e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.13.self_attn.o_proj.lora_A.default.weight 	 3.86238e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.13.self_attn.o_proj.lora_B.default.weight 	 2.97546e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.13.self_attn.qkv_proj.base_layer.weight 	 -4.70877e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.13.self_attn.qkv_proj.lora_A.default.weight 	 -1.71661e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.13.self_attn.qkv_proj.lora_B.default.weight 	 -9.01222e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.13.mlp.gate_up_proj.base_layer.weight 	 2.58908e-07 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.13.mlp.gate_up_proj.lora_A.default.weight 	 1.41144e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.13.mlp.gate_up_proj.lora_B.default.weight 	 1.29700e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.13.mlp.down_proj.base_layer.weight 	 -1.31130e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.13.mlp.down_proj.lora_A.default.weight 	 7.05719e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.13.mlp.down_proj.lora_B.default.weight 	 -3.01600e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.13.input_layernorm.weight 	 4.02344e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.13.post_attention_layernorm.weight 	 2.47070e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.14.self_attn.o_proj.base_layer.weight 	 -5.21541e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.14.self_attn.o_proj.lora_A.default.weight 	 -7.15256e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.14.self_attn.o_proj.lora_B.default.weight 	 1.79291e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.14.self_attn.qkv_proj.base_layer.weight 	 -3.56138e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.14.self_attn.qkv_proj.lora_A.default.weight 	 9.67979e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.14.self_attn.qkv_proj.lora_B.default.weight 	 4.52995e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.14.mlp.gate_up_proj.base_layer.weight 	 8.40425e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.14.mlp.gate_up_proj.lora_A.default.weight 	 -2.59399e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.14.mlp.gate_up_proj.lora_B.default.weight 	 -3.09944e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.14.mlp.down_proj.base_layer.weight 	 2.40281e-07 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.14.mlp.down_proj.lora_A.default.weight 	 3.07560e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.14.mlp.down_proj.lora_B.default.weight 	 -5.53131e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.14.input_layernorm.weight 	 3.94531e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.14.post_attention_layernorm.weight 	 2.51953e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.15.self_attn.o_proj.base_layer.weight 	 -4.38094e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.15.self_attn.o_proj.lora_A.default.weight 	 -1.77622e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.15.self_attn.o_proj.lora_B.default.weight 	 5.24521e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.15.self_attn.qkv_proj.base_layer.weight 	 9.77516e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.15.self_attn.qkv_proj.lora_A.default.weight 	 5.86510e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.15.self_attn.qkv_proj.lora_B.default.weight 	 3.84450e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.15.mlp.gate_up_proj.base_layer.weight 	 3.63588e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.15.mlp.gate_up_proj.lora_A.default.weight 	 -3.62396e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.15.mlp.gate_up_proj.lora_B.default.weight 	 -1.91689e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.15.mlp.down_proj.base_layer.weight 	 4.91738e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.15.mlp.down_proj.lora_A.default.weight 	 -5.93662e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.15.mlp.down_proj.lora_B.default.weight 	 1.23024e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.15.input_layernorm.weight 	 4.08203e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.15.post_attention_layernorm.weight 	 2.59766e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.16.self_attn.o_proj.base_layer.weight 	 -4.38094e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.16.self_attn.o_proj.lora_A.default.weight 	 -1.31726e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.16.self_attn.o_proj.lora_B.default.weight 	 2.18153e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.16.self_attn.qkv_proj.base_layer.weight 	 9.83477e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.16.self_attn.qkv_proj.lora_A.default.weight 	 -6.77109e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.16.self_attn.qkv_proj.lora_B.default.weight 	 -4.67300e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.16.mlp.gate_up_proj.base_layer.weight 	 7.92742e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.16.mlp.gate_up_proj.lora_A.default.weight 	 -4.74453e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.16.mlp.gate_up_proj.lora_B.default.weight 	 -3.18527e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.16.mlp.down_proj.base_layer.weight 	 2.75671e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.16.mlp.down_proj.lora_A.default.weight 	 -4.98295e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.16.mlp.down_proj.lora_B.default.weight 	 4.11272e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.16.input_layernorm.weight 	 4.29688e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.16.post_attention_layernorm.weight 	 2.71484e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.17.self_attn.o_proj.base_layer.weight 	 -8.46386e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.17.self_attn.o_proj.lora_A.default.weight 	 -2.08616e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.17.self_attn.o_proj.lora_B.default.weight 	 2.98023e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.17.self_attn.qkv_proj.base_layer.weight 	 -7.86781e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.17.self_attn.qkv_proj.lora_A.default.weight 	 1.07765e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.17.self_attn.qkv_proj.lora_B.default.weight 	 1.44243e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.17.mlp.gate_up_proj.base_layer.weight 	 1.04904e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.17.mlp.gate_up_proj.lora_A.default.weight 	 1.01089e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.17.mlp.gate_up_proj.lora_B.default.weight 	 -2.65121e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.17.mlp.down_proj.base_layer.weight 	 1.17421e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.17.mlp.down_proj.lora_A.default.weight 	 2.19047e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.17.mlp.down_proj.lora_B.default.weight 	 -1.16825e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.17.input_layernorm.weight 	 4.47266e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.17.post_attention_layernorm.weight 	 2.87109e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.18.self_attn.o_proj.base_layer.weight 	 -1.09673e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.18.self_attn.o_proj.lora_A.default.weight 	 4.00543e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.18.self_attn.o_proj.lora_B.default.weight 	 8.82149e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.18.self_attn.qkv_proj.base_layer.weight 	 -1.53780e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.18.self_attn.qkv_proj.lora_A.default.weight 	 -3.95775e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.18.self_attn.qkv_proj.lora_B.default.weight 	 2.07424e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.18.mlp.gate_up_proj.base_layer.weight 	 7.74860e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.18.mlp.gate_up_proj.lora_A.default.weight 	 -1.20640e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.18.mlp.gate_up_proj.lora_B.default.weight 	 -1.26839e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.18.mlp.down_proj.base_layer.weight 	 5.57303e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.18.mlp.down_proj.lora_A.default.weight 	 -4.05312e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.18.mlp.down_proj.lora_B.default.weight 	 1.32561e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.18.input_layernorm.weight 	 4.45312e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.18.post_attention_layernorm.weight 	 3.02734e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.19.self_attn.o_proj.base_layer.weight 	 1.03116e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.19.self_attn.o_proj.lora_A.default.weight 	 -6.31809e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.19.self_attn.o_proj.lora_B.default.weight 	 -3.43323e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.19.self_attn.qkv_proj.base_layer.weight 	 -1.40071e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.19.self_attn.qkv_proj.lora_A.default.weight 	 4.72069e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.19.self_attn.qkv_proj.lora_B.default.weight 	 8.44002e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.19.mlp.gate_up_proj.base_layer.weight 	 7.98702e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.19.mlp.gate_up_proj.lora_A.default.weight 	 -2.31743e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.19.mlp.gate_up_proj.lora_B.default.weight 	 1.55449e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.19.mlp.down_proj.base_layer.weight 	 4.56348e-07 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.19.mlp.down_proj.lora_A.default.weight 	 -2.14577e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.19.mlp.down_proj.lora_B.default.weight 	 -2.44141e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.19.input_layernorm.weight 	 4.64844e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.19.post_attention_layernorm.weight 	 3.22266e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.20.self_attn.o_proj.base_layer.weight 	 3.99351e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.20.self_attn.o_proj.lora_A.default.weight 	 -4.00543e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.20.self_attn.o_proj.lora_B.default.weight 	 5.33462e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.20.self_attn.qkv_proj.base_layer.weight 	 -3.23355e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.20.self_attn.qkv_proj.lora_A.default.weight 	 -1.03712e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.20.self_attn.qkv_proj.lora_B.default.weight 	 -6.07967e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.20.mlp.gate_up_proj.base_layer.weight 	 1.17719e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.20.mlp.gate_up_proj.lora_A.default.weight 	 2.69711e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.20.mlp.gate_up_proj.lora_B.default.weight 	 1.18732e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.20.mlp.down_proj.base_layer.weight 	 7.21216e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.20.mlp.down_proj.lora_A.default.weight 	 2.64645e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.20.mlp.down_proj.lora_B.default.weight 	 2.07901e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.20.input_layernorm.weight 	 4.84375e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.20.post_attention_layernorm.weight 	 3.37891e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.21.self_attn.o_proj.base_layer.weight 	 -1.91927e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.21.self_attn.o_proj.lora_A.default.weight 	 4.29153e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.21.self_attn.o_proj.lora_B.default.weight 	 -7.82013e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.21.self_attn.qkv_proj.base_layer.weight 	 5.30481e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.21.self_attn.qkv_proj.lora_A.default.weight 	 -1.88351e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.21.self_attn.qkv_proj.lora_B.default.weight 	 5.00679e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.21.mlp.gate_up_proj.base_layer.weight 	 -4.20213e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.21.mlp.gate_up_proj.lora_A.default.weight 	 2.58442e-08 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.21.mlp.gate_up_proj.lora_B.default.weight 	 1.69754e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.21.mlp.down_proj.base_layer.weight 	 -1.44839e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.21.mlp.down_proj.lora_A.default.weight 	 -3.52859e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.21.mlp.down_proj.lora_B.default.weight 	 1.03951e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.21.input_layernorm.weight 	 4.94141e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.21.post_attention_layernorm.weight 	 3.55469e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.22.self_attn.o_proj.base_layer.weight 	 2.34842e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.22.self_attn.o_proj.lora_A.default.weight 	 -9.82285e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.22.self_attn.o_proj.lora_B.default.weight 	 -7.34329e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.22.self_attn.qkv_proj.base_layer.weight 	 1.62125e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.22.self_attn.qkv_proj.lora_A.default.weight 	 -2.74181e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.22.self_attn.qkv_proj.lora_B.default.weight 	 -4.14848e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.22.mlp.gate_up_proj.base_layer.weight 	 -4.52995e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.22.mlp.gate_up_proj.lora_A.default.weight 	 -6.81877e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.22.mlp.gate_up_proj.lora_B.default.weight 	 1.58310e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.22.mlp.down_proj.base_layer.weight 	 -1.16825e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.22.mlp.down_proj.lora_A.default.weight 	 -2.27690e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.22.mlp.down_proj.lora_B.default.weight 	 9.20296e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.22.input_layernorm.weight 	 5.11719e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.22.post_attention_layernorm.weight 	 3.76953e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.23.self_attn.o_proj.base_layer.weight 	 -8.10623e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.23.self_attn.o_proj.lora_A.default.weight 	 -1.47820e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.23.self_attn.o_proj.lora_B.default.weight 	 1.05381e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.23.self_attn.qkv_proj.base_layer.weight 	 -3.50177e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.23.self_attn.qkv_proj.lora_A.default.weight 	 -1.41144e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.23.self_attn.qkv_proj.lora_B.default.weight 	 3.52859e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.23.mlp.gate_up_proj.base_layer.weight 	 -5.48363e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.23.mlp.gate_up_proj.lora_A.default.weight 	 -1.43051e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.23.mlp.gate_up_proj.lora_B.default.weight 	 -1.29700e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.23.mlp.down_proj.base_layer.weight 	 -8.40425e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.23.mlp.down_proj.lora_A.default.weight 	 -7.62939e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.23.mlp.down_proj.lora_B.default.weight 	 1.19686e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.23.input_layernorm.weight 	 5.35156e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.23.post_attention_layernorm.weight 	 3.98438e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.24.self_attn.o_proj.base_layer.weight 	 -5.75185e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.24.self_attn.o_proj.lora_A.default.weight 	 1.18732e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.24.self_attn.o_proj.lora_B.default.weight 	 7.82013e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.24.self_attn.qkv_proj.base_layer.weight 	 3.50177e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.24.self_attn.qkv_proj.lora_A.default.weight 	 -1.37091e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.24.self_attn.qkv_proj.lora_B.default.weight 	 5.24521e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.24.mlp.gate_up_proj.base_layer.weight 	 -1.30534e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.24.mlp.gate_up_proj.lora_A.default.weight 	 -1.22070e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.24.mlp.gate_up_proj.lora_B.default.weight 	 7.10487e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.24.mlp.down_proj.base_layer.weight 	 1.66148e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.24.mlp.down_proj.lora_A.default.weight 	 5.33462e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.24.mlp.down_proj.lora_B.default.weight 	 -6.91414e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.24.input_layernorm.weight 	 5.46875e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.24.post_attention_layernorm.weight 	 4.23828e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.25.self_attn.o_proj.base_layer.weight 	 -1.47820e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.25.self_attn.o_proj.lora_A.default.weight 	 1.26362e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.25.self_attn.o_proj.lora_B.default.weight 	 -1.97887e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.25.self_attn.qkv_proj.base_layer.weight 	 -2.30968e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.25.self_attn.qkv_proj.lora_A.default.weight 	 2.09808e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.25.self_attn.qkv_proj.lora_B.default.weight 	 3.36170e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.25.mlp.gate_up_proj.base_layer.weight 	 -6.61612e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.25.mlp.gate_up_proj.lora_A.default.weight 	 -2.03848e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.25.mlp.gate_up_proj.lora_B.default.weight 	 -2.21252e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.25.mlp.down_proj.base_layer.weight 	 1.32918e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.25.mlp.down_proj.lora_A.default.weight 	 -3.95775e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.25.mlp.down_proj.lora_B.default.weight 	 3.43323e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.25.input_layernorm.weight 	 5.78125e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.25.post_attention_layernorm.weight 	 4.47266e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.26.self_attn.o_proj.base_layer.weight 	 -5.96046e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.26.self_attn.o_proj.lora_A.default.weight 	 -6.38962e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.26.self_attn.o_proj.lora_B.default.weight 	 2.65837e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.26.self_attn.qkv_proj.base_layer.weight 	 -2.23517e-07 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.26.self_attn.qkv_proj.lora_A.default.weight 	 1.16825e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.26.self_attn.qkv_proj.lora_B.default.weight 	 1.62423e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.26.mlp.gate_up_proj.base_layer.weight 	 4.94719e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.26.mlp.gate_up_proj.lora_A.default.weight 	 3.38554e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.26.mlp.gate_up_proj.lora_B.default.weight 	 -5.87463e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.26.mlp.down_proj.base_layer.weight 	 -8.22544e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.26.mlp.down_proj.lora_A.default.weight 	 3.14713e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.26.mlp.down_proj.lora_B.default.weight 	 9.91821e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.26.input_layernorm.weight 	 5.97656e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.26.post_attention_layernorm.weight 	 4.70703e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.27.self_attn.o_proj.base_layer.weight 	 1.82390e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.27.self_attn.o_proj.lora_A.default.weight 	 -1.38283e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.27.self_attn.o_proj.lora_B.default.weight 	 1.58310e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.27.self_attn.qkv_proj.base_layer.weight 	 -3.05474e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.27.self_attn.qkv_proj.lora_A.default.weight 	 -5.55515e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.27.self_attn.qkv_proj.lora_B.default.weight 	 1.78814e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.27.mlp.gate_up_proj.base_layer.weight 	 9.77516e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.27.mlp.gate_up_proj.lora_A.default.weight 	 8.63075e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.27.mlp.gate_up_proj.lora_B.default.weight 	 -1.60217e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.27.mlp.down_proj.base_layer.weight 	 -8.76188e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.27.mlp.down_proj.lora_A.default.weight 	 -1.62125e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.27.mlp.down_proj.lora_B.default.weight 	 -7.00951e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.27.input_layernorm.weight 	 6.28906e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.27.post_attention_layernorm.weight 	 5.00000e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.28.self_attn.o_proj.base_layer.weight 	 6.85453e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.28.self_attn.o_proj.lora_A.default.weight 	 1.09673e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.28.self_attn.o_proj.lora_B.default.weight 	 4.61936e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.28.self_attn.qkv_proj.base_layer.weight 	 1.58548e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.28.self_attn.qkv_proj.lora_A.default.weight 	 2.98023e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.28.self_attn.qkv_proj.lora_B.default.weight 	 -2.30074e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.28.mlp.gate_up_proj.base_layer.weight 	 3.50177e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.28.mlp.gate_up_proj.lora_A.default.weight 	 -6.24657e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.28.mlp.gate_up_proj.lora_B.default.weight 	 7.40051e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.28.mlp.down_proj.base_layer.weight 	 -3.11434e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.28.mlp.down_proj.lora_A.default.weight 	 -1.35303e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.28.mlp.down_proj.lora_B.default.weight 	 -1.26839e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.28.input_layernorm.weight 	 6.44531e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.28.post_attention_layernorm.weight 	 5.23438e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.29.self_attn.o_proj.base_layer.weight 	 9.59635e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.29.self_attn.o_proj.lora_A.default.weight 	 -4.02927e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.29.self_attn.o_proj.lora_B.default.weight 	 -1.80006e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.29.self_attn.qkv_proj.base_layer.weight 	 -2.50340e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.29.self_attn.qkv_proj.lora_A.default.weight 	 2.64645e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.29.self_attn.qkv_proj.lora_B.default.weight 	 -1.84774e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.29.mlp.gate_up_proj.base_layer.weight 	 4.70877e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.29.mlp.gate_up_proj.lora_A.default.weight 	 -1.95503e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.29.mlp.gate_up_proj.lora_B.default.weight 	 -2.57492e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.29.mlp.down_proj.base_layer.weight 	 -1.43051e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.29.mlp.down_proj.lora_A.default.weight 	 -3.95775e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.29.mlp.down_proj.lora_B.default.weight 	 -2.28882e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.29.input_layernorm.weight 	 6.71875e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.29.post_attention_layernorm.weight 	 5.54688e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.30.self_attn.o_proj.base_layer.weight 	 -2.55108e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.30.self_attn.o_proj.lora_A.default.weight 	 7.15256e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.30.self_attn.o_proj.lora_B.default.weight 	 3.52859e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.30.self_attn.qkv_proj.base_layer.weight 	 -6.07967e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.30.self_attn.qkv_proj.lora_A.default.weight 	 -4.60148e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.30.self_attn.qkv_proj.lora_B.default.weight 	 -5.65052e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.30.mlp.gate_up_proj.base_layer.weight 	 -8.52346e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.30.mlp.gate_up_proj.lora_A.default.weight 	 -7.96318e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.30.mlp.gate_up_proj.lora_B.default.weight 	 1.75476e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.30.mlp.down_proj.base_layer.weight 	 -7.86781e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.30.mlp.down_proj.lora_A.default.weight 	 -5.10216e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.30.mlp.down_proj.lora_B.default.weight 	 8.48770e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.30.input_layernorm.weight 	 6.67969e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.30.post_attention_layernorm.weight 	 5.82031e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.31.self_attn.o_proj.base_layer.weight 	 -3.45707e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.31.self_attn.o_proj.lora_A.default.weight 	 2.88486e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.31.self_attn.o_proj.lora_B.default.weight 	 -8.20160e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.31.self_attn.qkv_proj.base_layer.weight 	 -5.24521e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.31.self_attn.qkv_proj.lora_A.default.weight 	 -1.36375e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.31.self_attn.qkv_proj.lora_B.default.weight 	 -7.48634e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.31.mlp.gate_up_proj.base_layer.weight 	 -5.39422e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.31.mlp.gate_up_proj.lora_A.default.weight 	 -2.15530e-04 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.31.mlp.gate_up_proj.lora_B.default.weight 	 8.04663e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.31.mlp.down_proj.base_layer.weight 	 5.33462e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.31.mlp.down_proj.lora_A.default.weight 	 -8.40425e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.31.mlp.down_proj.lora_B.default.weight 	 4.67300e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.31.input_layernorm.weight 	 6.48438e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.layers.31.post_attention_layernorm.weight 	 5.66406e-01 torch.bfloat16 False
+1 module.lang_model.base_model.model.model.norm.weight 	 1.52344e+00 torch.bfloat16 False
+1 module.lang_model.base_model.model.lm_head.weight 	 6.15120e-05 torch.bfloat16 False
+1 module.lang_model.base_model.model.lm_head.bias 	 -2.18201e-03 torch.bfloat16 False
+1 module.lang_model.base_model.model.lm_head.additional_fc.weight 	 -2.32458e-06 torch.bfloat16 False
+1 module.lang_model.base_model.model.lm_head.additional_fc.bias 	 -1.31226e-02 torch.bfloat16 False
+[2025-08-04 19:49:43,894] [INFO] [logging.py:107:log_dist] [Rank 0] [Torch] Checkpoint global_step282_R1-at-0.7-30.1400 is begin to save!
+[2025-08-04 19:49:43,982] [INFO] [logging.py:107:log_dist] [Rank 0] Saving model checkpoint: /checkpoints/blip3-mr/v2_part1/global_step282_R1-at-0.7-30.1400/mp_rank_00_model_states.pt

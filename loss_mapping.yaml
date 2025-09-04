@@ -1,0 +1,36 @@
+# Format:
+# key: epoch number
+# value: list of:
+#   - cross entropy weight
+#   - binary cross entropy weight
+#   - tversky loss weight
+#   - generalized dice weight
+
+# If current epoch is larger than the max epoch, then it will use the latest
+# e.g. if current epoch is 10, but the max here is 4, then it will use weights from epoch 4
+
+'0':
+- 1
+- 0
+- 0
+- 0
+'1':
+- 12
+- 1
+- 1
+- 1
+'2':
+- 9
+- 2
+- 2
+- 2
+'3':
+- 6
+- 3
+- 3
+- 3
+'4':
+- 3
+- 4
+- 4
+- 4

@@ -1,0 +1,49 @@
+{
+    "bf16": {
+        "enabled": false
+    },
+    "fp16": {
+        "enabled": false,
+        "loss_scale": 0,
+        "loss_scale_window": 1000,
+        "initial_scale_power": 16,
+        "hysteresis": 2,
+        "min_loss_scale": 1
+    },
+    "zero_optimization": {
+        "stage": 2,
+        "overlap_comm": true,
+        "contiguous_gradients": true,
+        "reduce_bucket_size": 5e8,
+        "allgather_bucket_size": 5e8,
+        "reduce_scatter": true, 
+        "offload_optimizer": {
+            "device": "cpu",
+            "pin_memory": true
+        },
+        "load_from_fp32_weights": true
+    },
+    "optimizer": {
+        "type": "AdamW",
+        "params": {
+            "lr": 1e-5,
+            "betas": [
+                0.9,
+                0.999
+            ],
+            "eps": 1e-8,
+            "weight_decay": 0.0
+        }
+    },
+    "gradient_clipping": 1.0,
+    "scheduler": {
+        "type": "WarmupCosineLR",
+        "params": {
+            "warmup_min_ratio": 1e-8,
+            "warmup_num_steps": 168,
+            "total_num_steps": 1120,
+            "cos_min_ratio": 0.1,
+            "warmup_type": "linear"
+        }
+    }
+}

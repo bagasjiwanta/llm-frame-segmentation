@@ -1,0 +1,652 @@
+[2025-08-06 12:27:27,628] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-08-06 12:27:34,892] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+[2025-08-06 12:27:38,541] [WARNING] [runner.py:220:fetch_hostfile] Unable to find hostfile, will proceed with training with local resources only.
+[2025-08-06 12:27:38,542] [INFO] [runner.py:610:main] cmd = /usr/local/bin/python -u -m deepspeed.launcher.launch --world_info=eyJsb2NhbGhvc3QiOiBbMCwgMV19 --master_addr=127.0.0.1 --master_port=29500 --enable_each_rank_log=None blip3_mr/finetune.py --vision_tokenizer_train --lang_model_lora --lora_r 16 --lora_dropout 0.025 --training_precision bf16 --compile_all --gradient_checkpointing --gradient_accumulation_steps 4 --base_data_dir datasets --dataset_config config.yaml --dataset_name main --num_train_workers 12 --num_val_workers 8 --sampler pytorch --compile_transforms --train_micro_batch_size_per_gpu 16 --do_train --num_epochs 20 --learning_rate 2e-5 --weight_decay 0.005 --warmup_steps 282 --ce_pos_weight 1.0 --bce_pos_weight 2.3378 --gd_norm square --tvl_beta 0.7 --loss_mapping_path loss_mapping.yaml --soft_loss --deepspeed_config deepspeed_configs/zero2_offload.json --deepspeed --val_batch_size 8 --do_val --float_sanity_epoch 0.0 --num_val_samples 1550 --num_val_beams 2 --num_val_per_epoch 1 --monitor R1-at-0.7 --logging_steps 4 --checkpoint_every_n_val 1 --checkpoint_dir /checkpoints/blip3-mr --run_name v2_part1 --resume_from_latest --seed 2109 --report_to_wandb --wandb_project blip3-mr --wandb_entity bagas-jiwanta
+[2025-08-06 12:27:42,171] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-08-06 12:27:49,735] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+[2025-08-06 12:27:53,421] [INFO] [launch.py:139:main] 0 NCCL_P2P_DISABLE=1
+[2025-08-06 12:27:53,421] [INFO] [launch.py:146:main] WORLD INFO DICT: {'localhost': [0, 1]}
+[2025-08-06 12:27:53,421] [INFO] [launch.py:152:main] nnodes=1, num_local_procs=2, node_rank=0
+[2025-08-06 12:27:53,421] [INFO] [launch.py:163:main] global_rank_mapping=defaultdict(<class 'list'>, {'localhost': [0, 1]})
+[2025-08-06 12:27:53,421] [INFO] [launch.py:164:main] dist_world_size=2
+[2025-08-06 12:27:53,421] [INFO] [launch.py:168:main] Setting CUDA_VISIBLE_DEVICES=0,1
+[2025-08-06 12:27:53,423] [INFO] [launch.py:256:main] process 16888 spawned with command: ['/usr/local/bin/python', '-u', 'blip3_mr/finetune.py', '--local_rank=0', '--vision_tokenizer_train', '--lang_model_lora', '--lora_r', '16', '--lora_dropout', '0.025', '--training_precision', 'bf16', '--compile_all', '--gradient_checkpointing', '--gradient_accumulation_steps', '4', '--base_data_dir', 'datasets', '--dataset_config', 'config.yaml', '--dataset_name', 'main', '--num_train_workers', '12', '--num_val_workers', '8', '--sampler', 'pytorch', '--compile_transforms', '--train_micro_batch_size_per_gpu', '16', '--do_train', '--num_epochs', '20', '--learning_rate', '2e-5', '--weight_decay', '0.005', '--warmup_steps', '282', '--ce_pos_weight', '1.0', '--bce_pos_weight', '2.3378', '--gd_norm', 'square', '--tvl_beta', '0.7', '--loss_mapping_path', 'loss_mapping.yaml', '--soft_loss', '--deepspeed_config', 'deepspeed_configs/zero2_offload.json', '--deepspeed', '--val_batch_size', '8', '--do_val', '--float_sanity_epoch', '0.0', '--num_val_samples', '1550', '--num_val_beams', '2', '--num_val_per_epoch', '1', '--monitor', 'R1-at-0.7', '--logging_steps', '4', '--checkpoint_every_n_val', '1', '--checkpoint_dir', '/checkpoints/blip3-mr', '--run_name', 'v2_part1', '--resume_from_latest', '--seed', '2109', '--report_to_wandb', '--wandb_project', 'blip3-mr', '--wandb_entity', 'bagas-jiwanta']
+[2025-08-06 12:27:53,426] [INFO] [launch.py:256:main] process 16889 spawned with command: ['/usr/local/bin/python', '-u', 'blip3_mr/finetune.py', '--local_rank=1', '--vision_tokenizer_train', '--lang_model_lora', '--lora_r', '16', '--lora_dropout', '0.025', '--training_precision', 'bf16', '--compile_all', '--gradient_checkpointing', '--gradient_accumulation_steps', '4', '--base_data_dir', 'datasets', '--dataset_config', 'config.yaml', '--dataset_name', 'main', '--num_train_workers', '12', '--num_val_workers', '8', '--sampler', 'pytorch', '--compile_transforms', '--train_micro_batch_size_per_gpu', '16', '--do_train', '--num_epochs', '20', '--learning_rate', '2e-5', '--weight_decay', '0.005', '--warmup_steps', '282', '--ce_pos_weight', '1.0', '--bce_pos_weight', '2.3378', '--gd_norm', 'square', '--tvl_beta', '0.7', '--loss_mapping_path', 'loss_mapping.yaml', '--soft_loss', '--deepspeed_config', 'deepspeed_configs/zero2_offload.json', '--deepspeed', '--val_batch_size', '8', '--do_val', '--float_sanity_epoch', '0.0', '--num_val_samples', '1550', '--num_val_beams', '2', '--num_val_per_epoch', '1', '--monitor', 'R1-at-0.7', '--logging_steps', '4', '--checkpoint_every_n_val', '1', '--checkpoint_dir', '/checkpoints/blip3-mr', '--run_name', 'v2_part1', '--resume_from_latest', '--seed', '2109', '--report_to_wandb', '--wandb_project', 'blip3-mr', '--wandb_entity', 'bagas-jiwanta']
+[2025-08-06 12:27:57,470] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-08-06 12:27:57,470] [INFO] [real_accelerator.py:254:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-08-06 12:28:04,562] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+[2025-08-06 12:28:04,562] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+
+[08/06 12:28:11] TF32 and TF32 matmul is set to True since GPU is capable
+--- Parsed Arguments by Group ---
+
+--- positional arguments ---
+
+--- options ---
+  (No arguments explicitly defined in this group)
+
+--- Vision Encoder ---
+  vision_encoder_compile: True
+
+--- Vision Tokenizer ---
+  vision_tokenizer_train: True
+  vision_tokenizer_lora: False
+  vision_tokenizer_compile: True
+
+--- Language Model ---
+  lang_model_train: True
+  lang_model_lora: True
+  lang_model_compile: True
+
+--- Training ---
+  compile_all: True
+  run_name: v2_part1
+  gradient_accumulation_steps: 4
+  learning_rate: 2e-05
+  warmup_steps: 282
+  training_precision: bf16
+  gradient_checkpointing: True
+  num_epochs: 20
+  lora: True
+  lora_r: 16
+  lora_dropout: 0.025
+  float_sanity_epoch: 0.0
+  num_sanity_steps: 0
+  use_generation_scores_for_eval: False
+  num_val_beams: 2
+  weight_decay: 0.005
+  val_thresholds: [0.1, 0.125, 0.15000000000000002, 0.17500000000000002, 0.2, 0.225, 0.25, 0.275, 0.30000000000000004, 0.325, 0.35000000000000003, 0.375, 0.4, 0.42500000000000004, 0.45, 0.47500000000000003, 0.5]
+  do_val: True
+  do_train: True
+  num_val_per_epoch: 1
+
+--- Loss ---
+  loss_mapping_path: loss_mapping.yaml
+  loss_ce_weight: 0.25
+  loss_gd_weight: 0.25
+  loss_bce_weight: 0.25
+  bce_pos_weight: 2.3378
+  soft_loss: True
+  ce_pos_weight: 1.0
+  gd_norm: square
+  loss_tvl_weight: 0.25
+  tvl_beta: 0.7
+
+--- Checkpointing ---
+  pretrained: base_model_weight/xgen-mm-phi3-mini-instruct-interleave-r-v1.5.pt
+  load_adapter: 
+  lora_pretrained: None
+  checkpoint_dir: /checkpoints/blip3-mr
+  checkpoint_every_n_epoch: 1
+  resume_from_checkpoint: None
+  monitor: R1-at-0.7
+  load_module_only: False
+  checkpoint_save_frozen_parameters: False
+  resume_from_best: False
+  resume_from_latest: True
+  checkpoint_every_n_val: 1
+  deepspeed_from_universal: False
+
+--- Data ---
+  base_data_dir: datasets
+  dataset_name: main
+  dataset_config: config.yaml
+  train_micro_batch_size_per_gpu: 16
+  val_batch_size: 8
+  num_train_workers: 12
+[2025-08-06 12:28:11,679] [INFO] [comm.py:821:init_distributed] cdb=None
+  num_val_workers: 8
+  image_aspect_ratio: anyres
+  anyres_patch_sampling: False
+  num_train_samples: 0
+  num_val_samples: 1550
+  sampler: pytorch
+  compile_transforms: True
+
+--- Distributed Training ---
+  local_rank: 0
+
+--- Logging ---
+  logging_steps: 4
+  report_to_wandb: True
+  wandb_project: blip3-mr
+  wandb_entity: bagas-jiwanta
+
+--- Other ---
+  seed: 2109
+
+--- DeepSpeed ---
+  deepspeed: True
+  deepspeed_config: deepspeed_configs/zero2_offload.json
+
+--- Other Attributes Added After Parsing ---
+  rank: 0
+  world_size: 2
+[2025-08-06 12:28:11,684] [INFO] [comm.py:821:init_distributed] cdb=None
+[2025-08-06 12:28:11,684] [INFO] [comm.py:852:init_distributed] Initializing TorchBackend in DeepSpeed with backend nccl
+
+[08/06 12:28:14] Initialize wandb logging
+wandb: Currently logged in as: bagasjwnt (bagas-jiwanta) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.21.0
+wandb: Run data is saved locally in /root/blip3-mr/wandb/run-20250806_122814-fjrxnstm
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run v2_part1
+wandb: ⭐️ View project at https://wandb.ai/bagas-jiwanta/blip3-mr
+wandb: 🚀 View run at https://wandb.ai/bagas-jiwanta/blip3-mr/runs/fjrxnstm
+
+[08/06 12:28:15] Loading HF model and tokenizer. Using local model = True
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00, 57.05it/s]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00, 62.23it/s]
+BLIP-3 model initialized with 3,931,031,619 trainable parameters
+==========Trainable Parameters
+Vision encoder: 0 trainable parameters
+Vision tokenizer: 109,901,568 trainable parameters
+Language model: 3,821,130,051 trainable parameters
+==========Total Parameters
+Vision encoder: 428,225,600 parameters
+Vision tokenizer: 109,901,568 parameters
+Language model: 3,821,130,051 parameters
+==========
+Rank 1 Missing keys: []
+Rank 1 Unexpected keys: []
+Rank 0 Missing keys: []
+Rank 0 Unexpected keys: []
+[2025-08-06 12:28:33,635] [INFO] [config.py:684:__init__] Config mesh_device None world_size = 2
+
+[08/06 12:28:33] Loading and testing datasets and dataloaders
+Num train iter per epoch: 225. Num val iter per epoch: 96
+
+[08/06 12:28:34] Wrapping model in LoRA with get_peft_model
+Trainable parameters:
+Vision encoder: 0 trainable parameters
+Vision tokenizer: 109,901,568 trainable parameters
+Language model: 25,165,824 trainable parameters
+
+[08/06 12:28:34] Initializing gradient checkpointing
+[2025-08-06 12:28:35,162] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed info: version=0.17.4, git-hash=unknown, git-branch=unknown
+[2025-08-06 12:28:35,162] [INFO] [config.py:684:__init__] Config mesh_device None world_size = 2
+[2025-08-06 12:28:39,410] [INFO] [engine.py:1339:_configure_distributed_model] ********** distributed groups summary **********
+	 self.dp_world_size=2
+	 self.mp_world_size=1
+	 self.seq_dp_world_size=2
+	 self.sequence_parallel_size=1
+***********************************************
+[2025-08-06 12:28:39,557] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed Flops Profiler Enabled: False
+Using /root/.cache/torch_extensions/py312_cu128 as PyTorch extensions root...
+Detected CUDA files, patching ldflags
+Emitting ninja build file /root/.cache/torch_extensions/py312_cu128/cpu_adam/build.ninja...
+Using /root/.cache/torch_extensions/py312_cu128 as PyTorch extensions root.../usr/local/lib/python3.12/site-packages/torch/utils/cpp_extension.py:2356: UserWarning: TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation. 
+If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'].
+  warnings.warn(
+
+Building extension module cpu_adam...
+Allowing ninja to set a default number of workers... (overridable by setting the environment variable MAX_JOBS=N)
+ninja: no work to do.
+Loading extension module cpu_adam...
+Time to load cpu_adam op: 0.6785013675689697 seconds
+Adam Optimizer #0 is created with AVX2 arithmetic capability.
+Config: alpha=0.000020, betas=(0.900000, 0.999000), weight_decay=0.005000, adam_w=1
+[2025-08-06 12:28:40,592] [INFO] [logging.py:107:log_dist] [Rank 0] Using DeepSpeed Optimizer param name adamw as basic optimizer
+[2025-08-06 12:28:40,592] [INFO] [logging.py:107:log_dist] [Rank 0] Removing param_group that has no 'params' in the basic Optimizer
+Loading extension module cpu_adam...
+Time to load cpu_adam op: 0.7606940269470215 seconds
+Adam Optimizer #0 is created with AVX2 arithmetic capability.
+Config: alpha=0.000020, betas=(0.900000, 0.999000), weight_decay=0.005000, adam_w=1
+[2025-08-06 12:28:40,708] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed Basic Optimizer = DeepSpeedCPUAdam
+[2025-08-06 12:28:40,708] [INFO] [utils.py:59:is_zero_supported_optimizer] Checking ZeRO support for optimizer=DeepSpeedCPUAdam type=<class 'deepspeed.ops.adam.cpu_adam.DeepSpeedCPUAdam'>
+[2025-08-06 12:28:40,708] [INFO] [logging.py:107:log_dist] [Rank 0] Creating torch.bfloat16 ZeRO stage 2 optimizer
+[2025-08-06 12:28:40,709] [INFO] [stage_1_and_2.py:172:__init__] Reduce bucket size 500000000
+[2025-08-06 12:28:40,709] [INFO] [stage_1_and_2.py:173:__init__] Allgather bucket size 500000000
+[2025-08-06 12:28:40,709] [INFO] [stage_1_and_2.py:174:__init__] CPU Offload: True
+[2025-08-06 12:28:40,710] [INFO] [stage_1_and_2.py:175:__init__] Round robin gradient partitioning: False
+[2025-08-06 12:28:47,995] [INFO] [utils.py:781:see_memory_usage] Before initializing optimizer states
+[2025-08-06 12:28:47,996] [INFO] [utils.py:782:see_memory_usage] MA 8.19 GB         Max_MA 8.19 GB         CA 8.24 GB         Max_CA 8 GB 
+[2025-08-06 12:28:48,027] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 25.64 GB, percent = 1.6%
+[2025-08-06 12:28:48,222] [WARNING] [lr_schedules.py:858:get_lr] Attempting to get learning rate from scheduler before it has started
+[2025-08-06 12:28:48,536] [INFO] [utils.py:781:see_memory_usage] After initializing optimizer states
+[2025-08-06 12:28:48,538] [INFO] [utils.py:782:see_memory_usage] MA 8.19 GB         Max_MA 8.19 GB         CA 8.24 GB         Max_CA 8 GB 
+[2025-08-06 12:28:48,556] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 26.15 GB, percent = 1.6%
+[2025-08-06 12:28:48,557] [INFO] [stage_1_and_2.py:599:__init__] optimizer state initialized
+[2025-08-06 12:28:48,873] [INFO] [utils.py:781:see_memory_usage] After initializing ZeRO optimizer
+[2025-08-06 12:28:48,874] [INFO] [utils.py:782:see_memory_usage] MA 8.19 GB         Max_MA 8.19 GB         CA 8.24 GB         Max_CA 8 GB 
+[2025-08-06 12:28:48,890] [INFO] [utils.py:789:see_memory_usage] CPU Virtual Memory:  used = 26.45 GB, percent = 1.7%
+[2025-08-06 12:28:48,894] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed Final Optimizer = DeepSpeedZeroOptimizer
+[2025-08-06 12:28:48,894] [WARNING] [lr_schedules.py:858:get_lr] Attempting to get learning rate from scheduler before it has started
+[2025-08-06 12:28:48,895] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed using configured LR scheduler = WarmupCosineLR
+[2025-08-06 12:28:48,895] [INFO] [logging.py:107:log_dist] [Rank 0] DeepSpeed LR Scheduler = <deepspeed.runtime.lr_schedules.WarmupCosineLR object at 0x2b11dcc8e5a0>
+[2025-08-06 12:28:48,896] [INFO] [logging.py:107:log_dist] [Rank 0] step=0, skipped=0, lr=[0.0], mom=[[0.9, 0.999]]
+[2025-08-06 12:28:48,903] [INFO] [logging.py:107:log_dist] [Rank 0] [TorchCheckpointEngine] Initialized with serialization = True
+[2025-08-06 12:28:48,903] [INFO] [config.py:954:print] DeepSpeedEngine configuration:
+[2025-08-06 12:28:48,904] [INFO] [config.py:958:print]   activation_checkpointing_config  {
+    "partition_activations": false, 
+    "contiguous_memory_optimization": false, 
+    "cpu_checkpointing": false, 
+    "number_checkpoints": null, 
+    "synchronize_checkpoint_boundary": false, 
+    "profile": false
+}
+[2025-08-06 12:28:48,905] [INFO] [config.py:958:print]   aio_config ................... {'block_size': 1048576, 'queue_depth': 8, 'intra_op_parallelism': 1, 'single_submit': False, 'overlap_events': True, 'use_gds': False}
+[2025-08-06 12:28:48,905] [INFO] [config.py:958:print]   amp_enabled .................. False
+[2025-08-06 12:28:48,905] [INFO] [config.py:958:print]   amp_params ................... False
+[2025-08-06 12:28:48,906] [INFO] [config.py:958:print]   autotuning_config ............ {
+    "enabled": false, 
+    "start_step": null, 
+    "end_step": null, 
+    "metric_path": null, 
+    "arg_mappings": null, 
+    "metric": "throughput", 
+    "model_info": null, 
+    "results_dir": "autotuning_results", 
+    "exps_dir": "autotuning_exps", 
+    "overwrite": true, 
+    "fast": true, 
+    "start_profile_step": 3, 
+    "end_profile_step": 5, 
+    "tuner_type": "gridsearch", 
+    "tuner_early_stopping": 5, 
+    "tuner_num_trials": 50, 
+    "model_info_path": null, 
+    "mp_size": 1, 
+    "max_train_batch_size": null, 
+    "min_train_batch_size": 1, 
+    "max_train_micro_batch_size_per_gpu": 1.024000e+03, 
+    "min_train_micro_batch_size_per_gpu": 1, 
+    "num_tuning_micro_batch_sizes": 3
+}
+[2025-08-06 12:28:48,906] [INFO] [config.py:958:print]   bfloat16_config .............. enabled=True immediate_grad_update=False check_grad_overflow=False
+[2025-08-06 12:28:48,907] [INFO] [config.py:958:print]   checkpoint_config ............ {'tag_validation': 'WARN', 'checkpoint_serialization': True, 'writer': None}
+[2025-08-06 12:28:48,907] [INFO] [config.py:958:print]   checkpoint_parallel_write_pipeline  False
+[2025-08-06 12:28:48,907] [INFO] [config.py:958:print]   checkpoint_tag_validation_enabled  True
+[2025-08-06 12:28:48,907] [INFO] [config.py:958:print]   checkpoint_tag_validation_fail  False
+[2025-08-06 12:28:48,907] [INFO] [config.py:958:print]   comms_config ................. <deepspeed.comm.config.DeepSpeedCommsConfig object at 0x2b1171d6f650>
+[2025-08-06 12:28:48,908] [INFO] [config.py:958:print]   communication_data_type ...... None
+[2025-08-06 12:28:48,908] [INFO] [config.py:958:print]   compile_config ............... deepcompile=False free_activation=False offload_activation=False offload_opt_states=False double_buffer=True symmetric_memory=False debug_log=False offload_parameters=False sync_before_reduce=False sync_after_reduce=False sync_before_allgather=False sync_after_allgather=False keep_int_input_tensors=True keep_all_input_tensors=False
+[2025-08-06 12:28:48,908] [INFO] [config.py:958:print]   compression_config ........... {'weight_quantization': {'shared_parameters': {'enabled': False, 'quantizer_kernel': False, 'schedule_offset': 0, 'quantize_groups': 1, 'quantize_verbose': False, 'quantization_type': 'symmetric', 'quantize_weight_in_forward': False, 'rounding': 'nearest', 'fp16_mixed_quantize': False, 'quantize_change_ratio': 0.001}, 'different_groups': {}}, 'activation_quantization': {'shared_parameters': {'enabled': False, 'quantization_type': 'symmetric', 'range_calibration': 'dynamic', 'schedule_offset': 1000}, 'different_groups': {}}, 'sparse_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'row_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'head_pruning': {'shared_parameters': {'enabled': False, 'method': 'topk', 'schedule_offset': 1000}, 'different_groups': {}}, 'channel_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'layer_reduction': {'enabled': False}}
+[2025-08-06 12:28:48,909] [INFO] [config.py:958:print]   curriculum_enabled_legacy .... False
+[2025-08-06 12:28:48,909] [INFO] [config.py:958:print]   curriculum_params_legacy ..... False
+[2025-08-06 12:28:48,909] [INFO] [config.py:958:print]   data_efficiency_config ....... {'enabled': False, 'seed': 1234, 'data_sampling': {'enabled': False, 'num_epochs': 1000, 'num_workers': 0, 'pin_memory': False, 'curriculum_learning': {'enabled': False}, 'dynamic_batching': {'enabled': False, 'lr_scaling_method': 'linear', 'min_batch_size': 1, 'max_batch_size': None, 'sequence_picking_order': 'dataloader', 'verbose': False}}, 'data_routing': {'enabled': False, 'random_ltd': {'enabled': False, 'layer_token_lr_schedule': {'enabled': False}}}}
+[2025-08-06 12:28:48,909] [INFO] [config.py:958:print]   data_efficiency_enabled ...... False
+[2025-08-06 12:28:48,910] [INFO] [config.py:958:print]   dataloader_drop_last ......... False
+[2025-08-06 12:28:48,910] [INFO] [config.py:958:print]   disable_allgather ............ False
+[2025-08-06 12:28:48,910] [INFO] [config.py:958:print]   dump_state ................... False
+[2025-08-06 12:28:48,910] [INFO] [config.py:958:print]   eigenvalue_enabled ........... False
+[2025-08-06 12:28:48,911] [INFO] [config.py:958:print]   eigenvalue_gas_boundary_resolution  1
+[2025-08-06 12:28:48,911] [INFO] [config.py:958:print]   eigenvalue_layer_name ........ bert.encoder.layer
+[2025-08-06 12:28:48,911] [INFO] [config.py:958:print]   eigenvalue_layer_num ......... 0
+[2025-08-06 12:28:48,911] [INFO] [config.py:958:print]   eigenvalue_max_iter .......... 100
+[2025-08-06 12:28:48,912] [INFO] [config.py:958:print]   eigenvalue_stability ......... 1e-06
+[2025-08-06 12:28:48,912] [INFO] [config.py:958:print]   eigenvalue_tol ............... 0.01
+[2025-08-06 12:28:48,912] [INFO] [config.py:958:print]   eigenvalue_verbose ........... False
+[2025-08-06 12:28:48,912] [INFO] [config.py:958:print]   elasticity_enabled ........... False
+[2025-08-06 12:28:48,912] [INFO] [config.py:958:print]   float16_config ............... enabled=False auto_cast=False loss_scale=0.0 initial_scale_power=16 loss_scale_window=1000 hysteresis=2 consecutive_hysteresis=False min_loss_scale=1 fp16_master_weights_and_grads=False
+[2025-08-06 12:28:48,913] [INFO] [config.py:958:print]   flops_profiler_config ........ {
+    "enabled": false, 
+    "recompute_fwd_factor": 0.0, 
+    "profile_step": 1, 
+    "module_depth": -1, 
+    "top_modules": 1, 
+    "detailed": true, 
+    "output_file": null
+}
+[2025-08-06 12:28:48,913] [INFO] [config.py:958:print]   global_rank .................. 0
+[2025-08-06 12:28:48,913] [INFO] [config.py:958:print]   grad_accum_dtype ............. None
+[2025-08-06 12:28:48,914] [INFO] [config.py:958:print]   gradient_accumulation_steps .. 4
+[2025-08-06 12:28:48,914] [INFO] [config.py:958:print]   gradient_clipping ............ 1.0
+[2025-08-06 12:28:48,914] [INFO] [config.py:958:print]   gradient_predivide_factor .... 1.0
+[2025-08-06 12:28:48,914] [INFO] [config.py:958:print]   graph_harvesting ............. False
+[2025-08-06 12:28:48,915] [INFO] [config.py:958:print]   hybrid_engine ................ enabled=False max_out_tokens=512 inference_tp_size=1 release_inference_cache=False pin_parameters=True tp_gather_partition_size=8
+[2025-08-06 12:28:48,915] [INFO] [config.py:958:print]   load_universal_checkpoint .... False
+[2025-08-06 12:28:48,915] [INFO] [config.py:958:print]   memory_breakdown ............. False
+[2025-08-06 12:28:48,915] [INFO] [config.py:958:print]   mics_hierarchial_params_gather  False
+[2025-08-06 12:28:48,915] [INFO] [config.py:958:print]   mics_shard_size .............. -1
+[2025-08-06 12:28:48,916] [INFO] [config.py:958:print]   monitor_config ............... tensorboard=TensorBoardConfig(enabled=False, output_path='', job_name='DeepSpeedJobName') comet=CometConfig(enabled=False, samples_log_interval=100, project=None, workspace=None, api_key=None, experiment_name=None, experiment_key=None, online=None, mode=None) wandb=WandbConfig(enabled=False, group=None, team=None, project='deepspeed') csv_monitor=CSVConfig(enabled=False, output_path='', job_name='DeepSpeedJobName')
+[2025-08-06 12:28:48,916] [INFO] [config.py:958:print]   nebula_config ................ {
+    "enabled": false, 
+    "persistent_storage_path": null, 
+    "persistent_time_interval": 100, 
+    "num_of_version_in_retention": 2, 
+    "enable_nebula_load": true, 
+    "load_path": null
+}
+[2025-08-06 12:28:48,916] [INFO] [config.py:958:print]   optimizer_legacy_fusion ...... False
+[2025-08-06 12:28:48,917] [INFO] [config.py:958:print]   optimizer_name ............... adamw
+[2025-08-06 12:28:48,917] [INFO] [config.py:958:print]   optimizer_params ............. {'lr': 2e-05, 'betas': [0.9, 0.999], 'eps': 1e-08, 'weight_decay': 0.005}
+[2025-08-06 12:28:48,917] [INFO] [config.py:958:print]   pipeline ..................... {'stages': 'auto', 'partition': 'best', 'seed_layers': False, 'activation_checkpoint_interval': 0, 'pipe_partitioned': True, 'grad_partitioned': True}
+[2025-08-06 12:28:48,918] [INFO] [config.py:958:print]   pld_enabled .................. False
+[2025-08-06 12:28:48,918] [INFO] [config.py:958:print]   pld_params ................... False
+[2025-08-06 12:28:48,919] [INFO] [config.py:958:print]   prescale_gradients ........... False
+[2025-08-06 12:28:48,919] [INFO] [config.py:958:print]   scheduler_name ............... WarmupCosineLR
+[2025-08-06 12:28:48,919] [INFO] [config.py:958:print]   scheduler_params ............. {'warmup_min_ratio': 1e-08, 'warmup_num_steps': 282, 'total_num_steps': 1125, 'cos_min_ratio': 0.1, 'warmup_type': 'linear'}
+[2025-08-06 12:28:48,919] [INFO] [config.py:958:print]   seq_parallel_communication_data_type  torch.float32
+[2025-08-06 12:28:48,919] [INFO] [config.py:958:print]   sparse_attention ............. None
+[2025-08-06 12:28:48,920] [INFO] [config.py:958:print]   sparse_gradients_enabled ..... False
+[2025-08-06 12:28:48,920] [INFO] [config.py:958:print]   steps_per_print .............. None
+[2025-08-06 12:28:48,920] [INFO] [config.py:958:print]   tensor_parallel_config ....... dtype=torch.float16 autotp_size=0 tp_overlap_comm=False tensor_parallel=TPConfig(tp_size=1, tp_grain_size=1, mpu=None, tp_group=None) injection_policy_tuple=None keep_module_on_host=False replace_with_kernel_inject=False
+[2025-08-06 12:28:48,920] [INFO] [config.py:958:print]   timers_config ................ enabled=True synchronized=True
+[2025-08-06 12:28:48,921] [INFO] [config.py:958:print]   torch_autocast_dtype ......... None
+[2025-08-06 12:28:48,921] [INFO] [config.py:958:print]   torch_autocast_enabled ....... False
+[2025-08-06 12:28:48,921] [INFO] [config.py:958:print]   torch_autocast_lower_precision_safe_modules  None
+[2025-08-06 12:28:48,921] [INFO] [config.py:958:print]   train_batch_size ............. 128
+[2025-08-06 12:28:48,921] [INFO] [config.py:958:print]   train_micro_batch_size_per_gpu  16
+[2025-08-06 12:28:48,922] [INFO] [config.py:958:print]   use_data_before_expert_parallel_  False
+[2025-08-06 12:28:48,922] [INFO] [config.py:958:print]   use_node_local_storage ....... False
+[2025-08-06 12:28:48,922] [INFO] [config.py:958:print]   wall_clock_breakdown ......... False
+[2025-08-06 12:28:48,922] [INFO] [config.py:958:print]   weight_quantization_config ... None
+[2025-08-06 12:28:48,922] [INFO] [config.py:958:print]   world_size ................... 2
+[2025-08-06 12:28:48,922] [INFO] [config.py:958:print]   zero_allow_untested_optimizer  False
+[2025-08-06 12:28:48,922] [INFO] [config.py:958:print]   zero_config .................. stage=2 contiguous_gradients=True reduce_scatter=True reduce_bucket_size=500000000 use_multi_rank_bucket_allreduce=True allgather_partitions=True allgather_bucket_size=500000000 overlap_comm=True load_from_fp32_weights=True elastic_checkpoint=False offload_param=None offload_optimizer=DeepSpeedZeroOffloadOptimizerConfig(device='cpu', nvme_path=None, buffer_count=4, pin_memory=True, pipeline_read=False, pipeline_write=False, fast_init=False, ratio=1.0) sub_group_size=1000000000 cpu_offload_param=None cpu_offload_use_pin_memory=None cpu_offload=None prefetch_bucket_size=50000000 param_persistence_threshold=100000 model_persistence_threshold=9223372036854775807 max_live_parameters=1000000000 max_reuse_distance=1000000000 gather_16bit_weights_on_model_save=False module_granularity_threshold=0 use_all_reduce_for_fetch_params=False stage3_gather_fp16_weights_on_model_save=False ignore_unused_parameters=True legacy_stage1=False round_robin_gradients=False zero_hpz_partition_size=1 zero_quantized_weights=False zero_quantized_nontrainable_weights=False zero_quantized_gradients=False zeropp_loco_param=None mics_shard_size=-1 mics_hierarchical_params_gather=False memory_efficient_linear=True pipeline_loading_checkpoint=False override_module_apply=True log_trace_cache_warnings=False
+[2025-08-06 12:28:48,923] [INFO] [config.py:958:print]   zero_enabled ................. True
+[2025-08-06 12:28:48,923] [INFO] [config.py:958:print]   zero_force_ds_cpu_optimizer .. True
+[2025-08-06 12:28:48,923] [INFO] [config.py:958:print]   zero_optimization_stage ...... 2
+[2025-08-06 12:28:48,923] [INFO] [config.py:944:print_user_config]   json = {
+    "bf16": {
+        "enabled": true
+    }, 
+    "zero_optimization": {
+        "stage": 2, 
+        "overlap_comm": true, 
+        "contiguous_gradients": true, 
+        "reduce_bucket_size": 5.000000e+08, 
+        "allgather_bucket_size": 5.000000e+08, 
+        "reduce_scatter": true, 
+        "offload_optimizer": {
+            "device": "cpu", 
+            "pin_memory": true
+        }, 
+        "load_from_fp32_weights": true
+    }, 
+    "optimizer": {
+        "type": "AdamW", 
+        "params": {
+            "lr": 2e-05, 
+            "betas": [0.9, 0.999], 
+            "eps": 1e-08, 
+            "weight_decay": 0.005
+        }
+    }, 
+    "gradient_clipping": 1.0, 
+    "scheduler": {
+        "type": "WarmupCosineLR", 
+        "params": {
+            "warmup_min_ratio": 1e-08, 
+            "warmup_num_steps": 282, 
+            "total_num_steps": 1.125000e+03, 
+            "cos_min_ratio": 0.1, 
+            "warmup_type": "linear"
+        }
+    }, 
+    "train_micro_batch_size_per_gpu": 16, 
+    "gradient_accumulation_steps": 4
+}
+
+[08/06 12:28:48] Using latest checkpoint from /checkpoints/blip3-mr/v2_part1/global_step282_R1-at-0.7-30.1400
+
+[08/06 12:28:48] Loading checkpoint from /checkpoints/blip3-mr/v2_part1/global_step282_R1-at-0.7-30.1400 with load_module_only=False
+[2025-08-06 12:28:48,926] [INFO] [logging.py:107:log_dist] [Rank 0] [Torch] Begin Load checkpoint from /checkpoints/blip3-mr/v2_part1/global_step282_R1-at-0.7-30.1400/mp_rank_00_model_states.pt...
+[2025-08-06 12:28:56,950] [INFO] [logging.py:107:log_dist] [Rank 0] [Torch] End Load checkpoint from /checkpoints/blip3-mr/v2_part1/global_step282_R1-at-0.7-30.1400/mp_rank_00_model_states.pt...
+[2025-08-06 12:28:56,973] [INFO] [logging.py:107:log_dist] [Rank 0] [Torch] Begin Load checkpoint from /checkpoints/blip3-mr/v2_part1/global_step282_R1-at-0.7-30.1400/mp_rank_00_model_states.pt...
+[2025-08-06 12:29:05,082] [INFO] [logging.py:107:log_dist] [Rank 0] [Torch] End Load checkpoint from /checkpoints/blip3-mr/v2_part1/global_step282_R1-at-0.7-30.1400/mp_rank_00_model_states.pt...
+[2025-08-06 12:29:07,115] [INFO] [engine.py:3295:_get_all_zero_checkpoint_state_dicts] successfully read 2 ZeRO state_dicts for rank 1
+[2025-08-06 12:29:07,144] [INFO] [engine.py:3245:_load_zero_checkpoint] loading 2 zero partition checkpoints for rank 1
+[2025-08-06 12:29:07,181] [INFO] [logging.py:107:log_dist] [Rank 0] [Torch] Begin Load checkpoint from /checkpoints/blip3-mr/v2_part1/global_step282_R1-at-0.7-30.1400/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2025-08-06 12:29:07,848] [INFO] [logging.py:107:log_dist] [Rank 0] [Torch] End Load checkpoint from /checkpoints/blip3-mr/v2_part1/global_step282_R1-at-0.7-30.1400/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2025-08-06 12:29:07,849] [INFO] [engine.py:3295:_get_all_zero_checkpoint_state_dicts] successfully read 2 ZeRO state_dicts for rank 0
+[2025-08-06 12:29:07,883] [INFO] [engine.py:3245:_load_zero_checkpoint] loading 2 zero partition checkpoints for rank 0
+
+[08/06 12:29:07] Checkpoint Keys:
+  global_samples: 36096
+  ds_config: {'bf16': {'enabled': True}, 'zero_optimization': {'stage': 2, 'overlap_comm': True, 'contiguous_gradients': True, 'reduce_bucket_size': 600000000.0, 'allgather_bucket_size': 600000000.0, 'reduce_scatter': True, 'offload_optimizer': {'device': 'cpu', 'pin_memory': True}, 'load_from_fp32_weights': True}, 'optimizer': {'type': 'AdamW', 'params': {'lr': 3e-05, 'betas': [0.9, 0.999], 'eps': 1e-08, 'weight_decay': 0.005}}, 'gradient_clipping': 1.0, 'scheduler': {'type': 'WarmupCosineLR', 'params': {'warmup_min_ratio': 1e-08, 'warmup_num_steps': 336, 'total_num_steps': 1130, 'cos_min_ratio': 0.1, 'warmup_type': 'linear'}}, 'checkpoint': {'load_universal': True}, 'train_micro_batch_size_per_gpu': 16, 'gradient_accumulation_steps': 4}
+  ds_version: 0.17.4
+  bce_loss: 0.20660955111185708
+  ce_loss: 0.036460387706756595
+  gd_loss: 0.19768648147583007
+  tv_loss: 0.1289945125579834
+  lr: 2.5000000050000004e-05
+  step_time_s: 64.46343994140625
+  data_time_ms: 1.7364025115966797
+  tokens_k: 3.567
+  positive_ratio: 0.16108795166015624
+  mAP: 24.527498245239258
+  mAP-at-0.5: 42.73500061035156
+  mAP-at-0.7: 24.030000686645508
+  R1-at-0.5: 48.88750076293945
+  R1-at-0.7: 30.139999389648438
+  member: 1.0
+  threshold: 0.5
+  step: 1129
+  epoch: 4
+
+[08/06 12:29:07] Steps: 
+Total global steps: 1125
+Resume from step: 230
+Resume from epoch: 4
+
+[08/06 12:29:07] Validation steps:
+224, 449, 674, 899, 1124, 1349, 1574, 1799, 2024, 2249, 2474, 2699, 2924, 3149, 3374, 3599, 3824, 4049, 4274, 4499
+
+[08/06 12:29:07] Loss Weights: 
+  Cross Entropy Loss Weight: 0.2
+  Binary Cross Entropy Loss Weight: 0.26666666666666666
+  Tversky Loss Weight: 0.26666666666666666
+  Generalized Dice Loss Weight: 0.26666666666666666
+
+Run training on epoch: 4: 230it [00:00, ?it/s]Run training on epoch: 4: 230it [02:21, ?it/s]
+
+[08/06 12:31:29] Loss Weights: 
+  Cross Entropy Loss Weight: 0.2
+  Binary Cross Entropy Loss Weight: 0.26666666666666666
+  Tversky Loss Weight: 0.26666666666666666
+  Generalized Dice Loss Weight: 0.26666666666666666
+
+Run training on epoch: 5:   0%|                                                                 | 0/225 [00:00<?, ?it/s]using builtin loss
+Run training on epoch: 5:   0%|▏                                                      | 1/225 [01:13<4:34:46, 73.60s/it]Run training on epoch: 5:   1%|▍                                                      | 2/225 [01:41<2:53:19, 46.63s/it]                                                                                                                        [1127/4499]    bce_loss 0.8346 (0.8613)    ce_loss 0.2066 (0.2022)    gd_loss 0.7261 (0.7265)    tv_loss 0.4478 (0.4535)    lr 2.51e-05    step_time_s 15.0    data_time_ms 10.0    tokens_k 7.13    positive_ratio 0.22 (0.23)
+Run training on epoch: 5:   1%|▍                                                      | 2/225 [01:56<2:53:19, 46.63s/it]Run training on epoch: 5:   1%|▋                                                      | 3/225 [01:56<1:59:04, 32.18s/it]Run training on epoch: 5:   2%|▉                                                      | 4/225 [02:21<1:48:37, 29.49s/it]Run training on epoch: 5:   2%|█▏                                                     | 5/225 [02:36<1:28:54, 24.25s/it]Run training on epoch: 5:   3%|█▍                                                     | 6/225 [02:51<1:16:40, 21.01s/it]                                                                                                                        [1131/4499]    bce_loss 0.8293 (0.8689)    ce_loss 0.2487 (0.2084)    gd_loss 0.7035 (0.7167)    tv_loss 0.4370 (0.4498)    lr 2.00e-05    step_time_s 14.9    data_time_ms 12.3    tokens_k 7.11    positive_ratio 0.20 (0.23)
+Run training on epoch: 5:   3%|█▍                                                     | 6/225 [03:06<1:16:40, 21.01s/it]Run training on epoch: 5:   3%|█▋                                                     | 7/225 [03:06<1:09:06, 19.02s/it]Run training on epoch: 5:   4%|█▉                                                     | 8/225 [03:21<1:04:18, 17.78s/it]Run training on epoch: 5:   4%|██▏                                                    | 9/225 [03:36<1:00:55, 16.92s/it]Run training on epoch: 5:   4%|██▍                                                     | 10/225 [03:51<58:15, 16.26s/it]                                                                                                                        [1135/4499]    bce_loss 0.8647 (0.8630)    ce_loss 0.2718 (0.2072)    gd_loss 0.7075 (0.7177)    tv_loss 0.4512 (0.4507)    lr 2.00e-05    step_time_s 14.7    data_time_ms 10.8    tokens_k 7.09    positive_ratio 0.24 (0.23)
+Run training on epoch: 5:   4%|██▍                                                     | 10/225 [04:05<58:15, 16.26s/it]Run training on epoch: 5:   5%|██▋                                                     | 11/225 [04:05<56:20, 15.79s/it]Run training on epoch: 5:   5%|██▉                                                     | 12/225 [04:21<55:29, 15.63s/it]Run training on epoch: 5:   6%|███▏                                                    | 13/225 [04:37<55:22, 15.67s/it]Run training on epoch: 5:   6%|███▍                                                    | 14/225 [04:51<54:14, 15.42s/it]                                                                                                                        [1139/4499]    bce_loss 0.9404 (0.8612)    ce_loss 0.2065 (0.2048)    gd_loss 0.7175 (0.7186)    tv_loss 0.4591 (0.4511)    lr 2.00e-05    step_time_s 14.8    data_time_ms 10.4    tokens_k 7.11    positive_ratio 0.25 (0.23)
+Run training on epoch: 5:   6%|███▍                                                    | 14/225 [05:06<54:14, 15.42s/it]Run training on epoch: 5:   7%|███▋                                                    | 15/225 [05:06<53:22, 15.25s/it]Run training on epoch: 5:   7%|███▉                                                    | 16/225 [05:21<53:01, 15.22s/it]Run training on epoch: 5:   8%|████▏                                                   | 17/225 [05:36<52:20, 15.10s/it]Run training on epoch: 5:   8%|████▍                                                   | 18/225 [05:51<51:55, 15.05s/it]                                                                                                                        [1143/4499]    bce_loss 0.8812 (0.8610)    ce_loss 0.1885 (0.2046)    gd_loss 0.6861 (0.7185)    tv_loss 0.4268 (0.4515)    lr 2.00e-05    step_time_s 14.9    data_time_ms 11.8    tokens_k 7.11    positive_ratio 0.25 (0.23)
+Run training on epoch: 5:   8%|████▍                                                   | 18/225 [06:06<51:55, 15.05s/it]Run training on epoch: 5:   8%|████▋                                                   | 19/225 [06:06<51:31, 15.01s/it]Run training on epoch: 5:   9%|████▉                                                   | 20/225 [06:21<51:25, 15.05s/it]Run training on epoch: 5:   9%|█████▏                                                  | 21/225 [06:36<50:55, 14.98s/it]Run training on epoch: 5:  10%|█████▍                                                  | 22/225 [06:51<50:28, 14.92s/it]                                                                                                                        [1147/4499]    bce_loss 0.9229 (0.8609)    ce_loss 0.1512 (0.2044)    gd_loss 0.7339 (0.7188)    tv_loss 0.4697 (0.4517)    lr 2.00e-05    step_time_s 14.8    data_time_ms 13.5    tokens_k 7.17    positive_ratio 0.26 (0.23)
+Run training on epoch: 5:  10%|█████▍                                                  | 22/225 [07:06<50:28, 14.92s/it]Run training on epoch: 5:  10%|█████▋                                                  | 23/225 [07:06<50:04, 14.87s/it]Run training on epoch: 5:  11%|█████▉                                                  | 24/225 [07:21<50:09, 14.97s/it]Run training on epoch: 5:  11%|██████▏                                                 | 25/225 [07:36<49:43, 14.92s/it]Run training on epoch: 5:  12%|██████▍                                                 | 26/225 [07:50<49:17, 14.86s/it]                                                                                                                        [1151/4499]    bce_loss 0.8023 (0.8612)    ce_loss 0.1740 (0.2044)    gd_loss 0.7079 (0.7188)    tv_loss 0.4448 (0.4517)    lr 2.00e-05    step_time_s 14.8    data_time_ms 12.5    tokens_k 7.14    positive_ratio 0.19 (0.23)
+Run training on epoch: 5:  12%|██████▍                                                 | 26/225 [08:05<49:17, 14.86s/it]Run training on epoch: 5:  12%|██████▋                                                 | 27/225 [08:05<48:59, 14.84s/it]Run training on epoch: 5:  12%|██████▉                                                 | 28/225 [08:21<49:25, 15.05s/it]Run training on epoch: 5:  13%|███████▏                                                | 29/225 [08:35<49:00, 15.00s/it]Run training on epoch: 5:  13%|███████▍                                                | 30/225 [08:50<48:32, 14.94s/it]                                                                                                                        [1155/4499]    bce_loss 0.7891 (0.8610)    ce_loss 0.1730 (0.2043)    gd_loss 0.7490 (0.7189)    tv_loss 0.4470 (0.4517)    lr 2.00e-05    step_time_s 14.8    data_time_ms 13.0    tokens_k 7.12    positive_ratio 0.21 (0.23)
+Run training on epoch: 5:  13%|███████▍                                                | 30/225 [09:05<48:32, 14.94s/it]Run training on epoch: 5:  14%|███████▋                                                | 31/225 [09:05<48:11, 14.91s/it]Run training on epoch: 5:  14%|███████▉                                                | 32/225 [09:20<48:10, 14.98s/it]Run training on epoch: 5:  15%|████████▏                                               | 33/225 [09:35<47:44, 14.92s/it]Run training on epoch: 5:  15%|████████▍                                               | 34/225 [09:50<47:21, 14.88s/it]                                                                                                                        [1159/4499]    bce_loss 0.9435 (0.8610)    ce_loss 0.1829 (0.2043)    gd_loss 0.7161 (0.7189)    tv_loss 0.4354 (0.4517)    lr 2.00e-05    step_time_s 14.8    data_time_ms 11.5    tokens_k 7.14    positive_ratio 0.30 (0.23)
+Run training on epoch: 5:  15%|████████▍                                               | 34/225 [10:05<47:21, 14.88s/it]Run training on epoch: 5:  16%|████████▋                                               | 35/225 [10:05<47:00, 14.84s/it]Run training on epoch: 5:  16%|████████▉                                               | 36/225 [10:20<47:03, 14.94s/it]Run training on epoch: 5:  16%|█████████▏                                              | 37/225 [10:35<46:40, 14.90s/it]Run training on epoch: 5:  17%|█████████▍                                              | 38/225 [10:49<46:24, 14.89s/it]                                                                                                                        [1163/4499]    bce_loss 0.9013 (0.8610)    ce_loss 0.1569 (0.2042)    gd_loss 0.6866 (0.7189)    tv_loss 0.4491 (0.4517)    lr 2.00e-05    step_time_s 14.7    data_time_ms 11.5    tokens_k 7.10    positive_ratio 0.25 (0.23)
+Run training on epoch: 5:  17%|█████████▍                                              | 38/225 [11:04<46:24, 14.89s/it]Run training on epoch: 5:  17%|█████████▋                                              | 39/225 [11:04<46:01, 14.85s/it]Run training on epoch: 5:  18%|█████████▉                                              | 40/225 [11:19<46:04, 14.94s/it]Run training on epoch: 5:  18%|██████████▏                                             | 41/225 [11:34<45:40, 14.90s/it]Run training on epoch: 5:  19%|██████████▍                                             | 42/225 [11:49<45:17, 14.85s/it]                                                                                                                        [1167/4499]    bce_loss 0.8437 (0.8610)    ce_loss 0.1919 (0.2042)    gd_loss 0.7123 (0.7189)    tv_loss 0.4704 (0.4517)    lr 2.00e-05    step_time_s 14.8    data_time_ms 12.5    tokens_k 7.13    positive_ratio 0.21 (0.23)
+Run training on epoch: 5:  19%|██████████▍                                             | 42/225 [12:04<45:17, 14.85s/it]Run training on epoch: 5:  19%|██████████▋                                             | 43/225 [12:04<44:58, 14.83s/it]Run training on epoch: 5:  20%|██████████▉                                             | 44/225 [12:19<44:59, 14.91s/it]Run training on epoch: 5:  20%|███████████▏                                            | 45/225 [12:34<44:37, 14.87s/it]Run training on epoch: 5:  20%|███████████▍                                            | 46/225 [12:48<44:15, 14.83s/it]                                                                                                                        [1171/4499]    bce_loss 0.8172 (0.8610)    ce_loss 0.1856 (0.2042)    gd_loss 0.7301 (0.7189)    tv_loss 0.4665 (0.4517)    lr 2.00e-05    step_time_s 14.7    data_time_ms 12.5    tokens_k 7.17    positive_ratio 0.19 (0.23)
+Run training on epoch: 5:  20%|███████████▍                                            | 46/225 [13:03<44:15, 14.83s/it]Run training on epoch: 5:  21%|███████████▋                                            | 47/225 [13:03<43:56, 14.81s/it]Run training on epoch: 5:  21%|███████████▉                                            | 48/225 [13:18<43:57, 14.90s/it]Run training on epoch: 5:  22%|████████████▏                                           | 49/225 [13:33<43:38, 14.88s/it]Run training on epoch: 5:  22%|████████████▍                                           | 50/225 [13:48<43:17, 14.84s/it]                                                                                                                        [1175/4499]    bce_loss 0.8094 (0.8610)    ce_loss 0.1721 (0.2042)    gd_loss 0.7462 (0.7189)    tv_loss 0.4607 (0.4517)    lr 2.00e-05    step_time_s 14.7    data_time_ms 12.5    tokens_k 7.11    positive_ratio 0.20 (0.23)
+Run training on epoch: 5:  22%|████████████▍                                           | 50/225 [14:02<43:17, 14.84s/it]Run training on epoch: 5:  23%|████████████▋                                           | 51/225 [14:02<42:58, 14.82s/it]Run training on epoch: 5:  23%|████████████▉                                           | 52/225 [14:18<43:00, 14.91s/it]Run training on epoch: 5:  24%|█████████████▏                                          | 53/225 [14:33<43:02, 15.01s/it]Run training on epoch: 5:  24%|█████████████▍                                          | 54/225 [14:48<42:33, 14.93s/it]                                                                                                                        [1179/4499]    bce_loss 0.9013 (0.8610)    ce_loss 0.2039 (0.2042)    gd_loss 0.7068 (0.7189)    tv_loss 0.4415 (0.4517)    lr 2.00e-05    step_time_s 14.7    data_time_ms 11.1    tokens_k 7.11    positive_ratio 0.25 (0.23)
+Run training on epoch: 5:  24%|█████████████▍                                          | 54/225 [15:02<42:33, 14.93s/it]Run training on epoch: 5:  24%|█████████████▋                                          | 55/225 [15:02<42:08, 14.88s/it]Run training on epoch: 5:  25%|█████████████▉                                          | 56/225 [15:17<42:06, 14.95s/it]Run training on epoch: 5:  25%|██████████████▏                                         | 57/225 [15:32<41:45, 14.91s/it]Run training on epoch: 5:  26%|██████████████▍                                         | 58/225 [15:47<41:22, 14.87s/it]                                                                                                                        [1183/4499]    bce_loss 0.9828 (0.8610)    ce_loss 0.2371 (0.2042)    gd_loss 0.7100 (0.7189)    tv_loss 0.4544 (0.4517)    lr 2.00e-05    step_time_s 14.8    data_time_ms 11.7    tokens_k 7.12    positive_ratio 0.27 (0.23)
+Run training on epoch: 5:  26%|██████████████▍                                         | 58/225 [16:02<41:22, 14.87s/it]Run training on epoch: 5:  26%|██████████████▋                                         | 59/225 [16:02<41:03, 14.84s/it]Run training on epoch: 5:  27%|██████████████▉                                         | 60/225 [16:17<41:22, 15.05s/it]Run training on epoch: 5:  27%|███████████████▏                                        | 61/225 [16:32<40:54, 14.96s/it]Run training on epoch: 5:  28%|███████████████▍                                        | 62/225 [16:47<40:28, 14.90s/it]                                                                                                                        [1187/4499]    bce_loss 0.8934 (0.8610)    ce_loss 0.2031 (0.2042)    gd_loss 0.7059 (0.7189)    tv_loss 0.4323 (0.4517)    lr 2.00e-05    step_time_s 14.7    data_time_ms 11.4    tokens_k 7.13    positive_ratio 0.27 (0.23)
+Run training on epoch: 5:  28%|███████████████▍                                        | 62/225 [17:02<40:28, 14.90s/it]Run training on epoch: 5:  28%|███████████████▋                                        | 63/225 [17:02<40:05, 14.85s/it]Run training on epoch: 5:  28%|███████████████▉                                        | 64/225 [17:17<40:04, 14.94s/it]Run training on epoch: 5:  29%|████████████████▏                                       | 65/225 [17:32<39:42, 14.89s/it]Run training on epoch: 5:  29%|████████████████▍                                       | 66/225 [17:46<39:20, 14.84s/it]                                                                                                                        [1191/4499]    bce_loss 0.8772 (0.8610)    ce_loss 0.2093 (0.2042)    gd_loss 0.7040 (0.7189)    tv_loss 0.4323 (0.4517)    lr 2.00e-05    step_time_s 14.8    data_time_ms 11.8    tokens_k 7.12    positive_ratio 0.30 (0.23)
+Run training on epoch: 5:  29%|████████████████▍                                       | 66/225 [18:01<39:20, 14.84s/it]Run training on epoch: 5:  30%|████████████████▋                                       | 67/225 [18:01<39:02, 14.83s/it]Run training on epoch: 5:  30%|████████████████▉                                       | 68/225 [18:16<39:03, 14.92s/it]Run training on epoch: 5:  31%|█████████████████▏                                      | 69/225 [18:31<38:41, 14.88s/it]Run training on epoch: 5:  31%|█████████████████▍                                      | 70/225 [18:46<38:20, 14.84s/it]                                                                                                                        [1195/4499]    bce_loss 0.7794 (0.8610)    ce_loss 0.1997 (0.2042)    gd_loss 0.7624 (0.7189)    tv_loss 0.4804 (0.4517)    lr 2.00e-05    step_time_s 14.7    data_time_ms 12.3    tokens_k 7.09    positive_ratio 0.17 (0.23)
+Run training on epoch: 5:  31%|█████████████████▍                                      | 70/225 [19:00<38:20, 14.84s/it]Run training on epoch: 5:  32%|█████████████████▋                                      | 71/225 [19:00<38:00, 14.81s/it]Run training on epoch: 5:  32%|█████████████████▉                                      | 72/225 [19:16<38:01, 14.91s/it]Run training on epoch: 5:  32%|██████████████████▏                                     | 73/225 [19:30<37:40, 14.87s/it]Run training on epoch: 5:  33%|██████████████████▍                                     | 74/225 [19:45<37:21, 14.85s/it]                                                                                                                        [1199/4499]    bce_loss 0.8124 (0.8610)    ce_loss 0.2000 (0.2042)    gd_loss 0.7605 (0.7189)    tv_loss 0.5019 (0.4517)    lr 2.00e-05    step_time_s 14.8    data_time_ms 11.4    tokens_k 7.14    positive_ratio 0.16 (0.23)
+Run training on epoch: 5:  33%|██████████████████▍                                     | 74/225 [20:00<37:21, 14.85s/it]Run training on epoch: 5:  33%|██████████████████▋                                     | 75/225 [20:00<37:03, 14.82s/it]Run training on epoch: 5:  34%|██████████████████▉                                     | 76/225 [20:15<37:05, 14.93s/it]Run training on epoch: 5:  34%|███████████████████▏                                    | 77/225 [20:30<36:44, 14.89s/it]Run training on epoch: 5:  35%|███████████████████▍                                    | 78/225 [20:45<36:29, 14.89s/it]                                                                                                                        [1203/4499]    bce_loss 0.7350 (0.8610)    ce_loss 0.1669 (0.2042)    gd_loss 0.7701 (0.7189)    tv_loss 0.4854 (0.4517)    lr 2.00e-05    step_time_s 14.8    data_time_ms 12.2    tokens_k 7.09    positive_ratio 0.14 (0.23)
+Run training on epoch: 5:  35%|███████████████████▍                                    | 78/225 [21:00<36:29, 14.89s/it]Run training on epoch: 5:  35%|███████████████████▋                                    | 79/225 [21:00<36:08, 14.86s/it]Run training on epoch: 5:  36%|███████████████████▉                                    | 80/225 [21:15<36:05, 14.94s/it]Run training on epoch: 5:  36%|████████████████████▏                                   | 81/225 [21:30<36:01, 15.01s/it]Run training on epoch: 5:  36%|████████████████████▍                                   | 82/225 [21:45<35:35, 14.94s/it]                                                                                                                        [1207/4499]    bce_loss 0.8701 (0.8610)    ce_loss 0.2037 (0.2042)    gd_loss 0.7531 (0.7189)    tv_loss 0.4688 (0.4517)    lr 2.00e-05    step_time_s 14.7    data_time_ms 11.4    tokens_k 7.14    positive_ratio 0.23 (0.23)
+Run training on epoch: 5:  36%|████████████████████▍                                   | 82/225 [21:59<35:35, 14.94s/it]Run training on epoch: 5:  37%|████████████████████▋                                   | 83/225 [21:59<35:12, 14.88s/it]Run training on epoch: 5:  37%|████████████████████▉                                   | 84/225 [22:15<35:09, 14.96s/it]Run training on epoch: 5:  38%|█████████████████████▏                                  | 85/225 [22:29<34:46, 14.91s/it]Run training on epoch: 5:  38%|█████████████████████▍                                  | 86/225 [22:44<34:24, 14.85s/it]                                                                                                                        [1211/4499]    bce_loss 0.7643 (0.8610)    ce_loss 0.2261 (0.2042)    gd_loss 0.7423 (0.7189)    tv_loss 0.4632 (0.4517)    lr 2.00e-05    step_time_s 14.8    data_time_ms 14.2    tokens_k 7.10    positive_ratio 0.16 (0.23)
+Run training on epoch: 5:  38%|█████████████████████▍                                  | 86/225 [22:59<34:24, 14.85s/it]Run training on epoch: 5:  39%|█████████████████████▋                                  | 87/225 [22:59<34:06, 14.83s/it]Run training on epoch: 5:  39%|█████████████████████▉                                  | 88/225 [23:14<34:05, 14.93s/it]Run training on epoch: 5:  40%|██████████████████████▏                                 | 89/225 [23:29<34:00, 15.00s/it]Run training on epoch: 5:  40%|██████████████████████▍                                 | 90/225 [23:44<33:34, 14.92s/it]                                                                                                                        [1215/4499]    bce_loss 0.8083 (0.8610)    ce_loss 0.2779 (0.2042)    gd_loss 0.7129 (0.7189)    tv_loss 0.4502 (0.4517)    lr 2.00e-05    step_time_s 14.8    data_time_ms 12.8    tokens_k 7.11    positive_ratio 0.20 (0.23)
+Run training on epoch: 5:  40%|██████████████████████▍                                 | 90/225 [23:59<33:34, 14.92s/it]Run training on epoch: 5:  40%|██████████████████████▋                                 | 91/225 [23:59<33:14, 14.88s/it]Run training on epoch: 5:  41%|██████████████████████▉                                 | 92/225 [24:14<33:12, 14.98s/it]Run training on epoch: 5:  41%|███████████████████████▏                                | 93/225 [24:29<32:50, 14.93s/it]Run training on epoch: 5:  42%|███████████████████████▍                                | 94/225 [24:44<32:28, 14.88s/it]                                                                                                                        [1219/4499]    bce_loss 0.8776 (0.8610)    ce_loss 0.1294 (0.2042)    gd_loss 0.7237 (0.7189)    tv_loss 0.4532 (0.4517)    lr 2.00e-05    step_time_s 14.7    data_time_ms 12.9    tokens_k 7.13    positive_ratio 0.23 (0.23)
+Run training on epoch: 5:  42%|███████████████████████▍                                | 94/225 [24:58<32:28, 14.88s/it]Run training on epoch: 5:  42%|███████████████████████▋                                | 95/225 [24:58<32:08, 14.84s/it]Run training on epoch: 5:  43%|███████████████████████▉                                | 96/225 [25:13<32:04, 14.92s/it]Run training on epoch: 5:  43%|████████████████████████▏                               | 97/225 [25:28<31:44, 14.88s/it]Run training on epoch: 5:  44%|████████████████████████▍                               | 98/225 [25:43<31:25, 14.85s/it]                                                                                                                        [1223/4499]    bce_loss 0.7510 (0.8610)    ce_loss 0.1312 (0.2042)    gd_loss 0.7846 (0.7189)    tv_loss 0.4637 (0.4517)    lr 2.00e-05    step_time_s 14.8    data_time_ms 13.0    tokens_k 7.10    positive_ratio 0.22 (0.23)
+Run training on epoch: 5:  44%|████████████████████████▍                               | 98/225 [25:58<31:25, 14.85s/it]Run training on epoch: 5:  44%|████████████████████████▋                               | 99/225 [25:58<31:08, 14.83s/it]Run training on epoch: 5:  44%|████████████████████████▍                              | 100/225 [26:13<31:06, 14.93s/it]Run training on epoch: 5:  45%|████████████████████████▋                              | 101/225 [26:28<30:45, 14.89s/it]Run training on epoch: 5:  45%|████████████████████████▉                              | 102/225 [26:42<30:25, 14.84s/it]                                                                                                                        [1227/4499]    bce_loss 0.9051 (0.8610)    ce_loss 0.2260 (0.2042)    gd_loss 0.7129 (0.7189)    tv_loss 0.4417 (0.4517)    lr 2.00e-05    step_time_s 14.8    data_time_ms 12.9    tokens_k 7.13    positive_ratio 0.24 (0.23)
+Run training on epoch: 5:  45%|████████████████████████▉                              | 102/225 [26:57<30:25, 14.84s/it]Run training on epoch: 5:  46%|█████████████████████████▏                             | 103/225 [26:57<30:07, 14.82s/it]Run training on epoch: 5:  46%|█████████████████████████▍                             | 104/225 [27:12<30:03, 14.91s/it]Run training on epoch: 5:  47%|█████████████████████████▋                             | 105/225 [27:27<29:44, 14.87s/it]Run training on epoch: 5:  47%|█████████████████████████▉                             | 106/225 [27:42<29:25, 14.83s/it]                                                                                                                        [1231/4499]    bce_loss 0.8543 (0.8610)    ce_loss 0.2051 (0.2042)    gd_loss 0.7184 (0.7189)    tv_loss 0.4254 (0.4517)    lr 2.00e-05    step_time_s 14.7    data_time_ms 12.1    tokens_k 7.13    positive_ratio 0.27 (0.23)
+Run training on epoch: 5:  47%|█████████████████████████▉                             | 106/225 [27:57<29:25, 14.83s/it]Run training on epoch: 5:  48%|██████████████████████████▏                            | 107/225 [27:57<29:07, 14.81s/it]Run training on epoch: 5:  48%|██████████████████████████▍                            | 108/225 [28:12<29:05, 14.92s/it]Run training on epoch: 5:  48%|██████████████████████████▋                            | 109/225 [28:27<28:46, 14.88s/it]Run training on epoch: 5:  49%|██████████████████████████▉                            | 110/225 [28:41<28:27, 14.85s/it]                                                                                                                        [1235/4499]    bce_loss 0.8082 (0.8610)    ce_loss 0.1895 (0.2042)    gd_loss 0.7362 (0.7189)    tv_loss 0.4681 (0.4517)    lr 2.00e-05    step_time_s 14.8    data_time_ms 11.8    tokens_k 7.12    positive_ratio 0.18 (0.23)
+Run training on epoch: 5:  49%|██████████████████████████▉                            | 110/225 [28:56<28:27, 14.85s/it]Run training on epoch: 5:  49%|███████████████████████████▏                           | 111/225 [28:56<28:10, 14.83s/it]Run training on epoch: 5:  50%|███████████████████████████▍                           | 112/225 [29:11<28:06, 14.93s/it]Run training on epoch: 5:  50%|███████████████████████████▌                           | 113/225 [29:26<27:47, 14.89s/it]Run training on epoch: 5:  51%|███████████████████████████▊                           | 114/225 [29:41<27:28, 14.85s/it]                                                                                                                        [1239/4499]    bce_loss 0.8883 (0.8610)    ce_loss 0.1470 (0.2042)    gd_loss 0.7179 (0.7189)    tv_loss 0.4758 (0.4517)    lr 2.00e-05    step_time_s 14.8    data_time_ms 11.9    tokens_k 7.10    positive_ratio 0.23 (0.23)
+Run training on epoch: 5:  51%|███████████████████████████▊                           | 114/225 [29:56<27:28, 14.85s/it]Run training on epoch: 5:  51%|████████████████████████████                           | 115/225 [29:56<27:11, 14.83s/it]Run training on epoch: 5:  52%|████████████████████████████▎                          | 116/225 [30:11<27:08, 14.94s/it]Run training on epoch: 5:  52%|████████████████████████████▌                          | 117/225 [30:26<26:56, 14.97s/it]Run training on epoch: 5:  52%|████████████████████████████▊                          | 118/225 [30:41<26:34, 14.90s/it]                                                                                                                        [1243/4499]    bce_loss 0.9294 (0.8610)    ce_loss 0.2207 (0.2042)    gd_loss 0.7067 (0.7189)    tv_loss 0.4426 (0.4517)    lr 1.99e-05    step_time_s 14.7    data_time_ms 12.8    tokens_k 7.13    positive_ratio 0.24 (0.23)
+Run training on epoch: 5:  52%|████████████████████████████▊                          | 118/225 [30:55<26:34, 14.90s/it]Run training on epoch: 5:  53%|█████████████████████████████                          | 119/225 [30:55<26:14, 14.86s/it]Run training on epoch: 5:  53%|█████████████████████████████▎                         | 120/225 [31:10<26:08, 14.94s/it]Run training on epoch: 5:  54%|█████████████████████████████▌                         | 121/225 [31:26<26:01, 15.02s/it]Run training on epoch: 5:  54%|█████████████████████████████▊                         | 122/225 [31:40<25:37, 14.93s/it]                                                                                                                        [1247/4499]    bce_loss 0.9278 (0.8610)    ce_loss 0.2189 (0.2042)    gd_loss 0.7032 (0.7189)    tv_loss 0.4436 (0.4517)    lr 1.99e-05    step_time_s 14.8    data_time_ms 11.2    tokens_k 7.11    positive_ratio 0.28 (0.23)
+Run training on epoch: 5:  54%|█████████████████████████████▊                         | 122/225 [31:55<25:37, 14.93s/it]Run training on epoch: 5:  55%|██████████████████████████████                         | 123/225 [31:55<25:18, 14.88s/it]Run training on epoch: 5:  55%|██████████████████████████████▎                        | 124/225 [32:10<25:12, 14.98s/it]Run training on epoch: 5:  56%|██████████████████████████████▌                        | 125/225 [32:25<24:52, 14.92s/it]Run training on epoch: 5:  56%|██████████████████████████████▊                        | 126/225 [32:40<24:32, 14.87s/it]                                                                                                                        [1251/4499]    bce_loss 0.9546 (0.8610)    ce_loss 0.1756 (0.2042)    gd_loss 0.6799 (0.7189)    tv_loss 0.4220 (0.4517)    lr 1.99e-05    step_time_s 14.7    data_time_ms 11.5    tokens_k 7.14    positive_ratio 0.37 (0.23)
+Run training on epoch: 5:  56%|██████████████████████████████▊                        | 126/225 [32:55<24:32, 14.87s/it]Run training on epoch: 5:  56%|███████████████████████████████                        | 127/225 [32:55<24:13, 14.83s/it]Run training on epoch: 5:  57%|███████████████████████████████▎                       | 128/225 [33:10<24:06, 14.92s/it]Run training on epoch: 5:  57%|███████████████████████████████▌                       | 129/225 [33:25<23:48, 14.88s/it]Run training on epoch: 5:  58%|███████████████████████████████▊                       | 130/225 [33:39<23:29, 14.84s/it]                                                                                                                        [1255/4499]    bce_loss 0.9540 (0.8800)    ce_loss 0.1564 (0.2262)    gd_loss 0.7114 (0.7256)    tv_loss 0.4364 (0.4538)    lr 1.99e-05    step_time_s 14.8    data_time_ms 12.2    tokens_k 7.10    positive_ratio 0.32 (0.24)
+Run training on epoch: 5:  58%|███████████████████████████████▊                       | 130/225 [33:54<23:29, 14.84s/it]Run training on epoch: 5:  58%|████████████████████████████████                       | 131/225 [33:54<23:13, 14.83s/it]Run training on epoch: 5:  59%|████████████████████████████████▎                      | 132/225 [34:09<23:08, 14.93s/it]Run training on epoch: 5:  59%|████████████████████████████████▌                      | 133/225 [34:24<22:49, 14.88s/it]Run training on epoch: 5:  60%|████████████████████████████████▊                      | 134/225 [34:39<22:30, 14.84s/it]                                                                                                                        [1259/4499]    bce_loss 0.7712 (0.8815)    ce_loss 0.1744 (0.2106)    gd_loss 0.7522 (0.7232)    tv_loss 0.4901 (0.4583)    lr 1.99e-05    step_time_s 14.7    data_time_ms 12.3    tokens_k 7.12    positive_ratio 0.16 (0.24)
+Run training on epoch: 5:  60%|████████████████████████████████▊                      | 134/225 [34:54<22:30, 14.84s/it]Run training on epoch: 5:  60%|█████████████████████████████████                      | 135/225 [34:54<22:13, 14.81s/it]Run training on epoch: 5:  60%|█████████████████████████████████▏                     | 136/225 [35:09<22:07, 14.92s/it]Run training on epoch: 5:  61%|█████████████████████████████████▍                     | 137/225 [35:23<21:49, 14.89s/it]Run training on epoch: 5:  61%|█████████████████████████████████▋                     | 138/225 [35:38<21:30, 14.84s/it]                                                                                                                        [1263/4499]    bce_loss 0.8698 (0.8693)    ce_loss 0.2291 (0.2047)    gd_loss 0.7291 (0.7264)    tv_loss 0.4757 (0.4594)    lr 1.99e-05    step_time_s 14.8    data_time_ms 11.0    tokens_k 7.15    positive_ratio 0.20 (0.23)
+Run training on epoch: 5:  61%|█████████████████████████████████▋                     | 138/225 [35:53<21:30, 14.84s/it]Run training on epoch: 5:  62%|█████████████████████████████████▉                     | 139/225 [35:53<21:14, 14.82s/it]Run training on epoch: 5:  62%|██████████████████████████████████▏                    | 140/225 [36:08<21:08, 14.92s/it]Run training on epoch: 5:  63%|██████████████████████████████████▍                    | 141/225 [36:23<20:50, 14.88s/it]Run training on epoch: 5:  63%|██████████████████████████████████▋                    | 142/225 [36:38<20:31, 14.84s/it]                                                                                                                        [1267/4499]    bce_loss 0.7846 (0.8666)    ce_loss 0.2315 (0.2038)    gd_loss 0.7435 (0.7267)    tv_loss 0.4675 (0.4590)    lr 1.99e-05    step_time_s 14.8    data_time_ms 12.4    tokens_k 7.15    positive_ratio 0.17 (0.23)
+Run training on epoch: 5:  63%|██████████████████████████████████▋                    | 142/225 [36:52<20:31, 14.84s/it]Run training on epoch: 5:  64%|██████████████████████████████████▉                    | 143/225 [36:52<20:15, 14.82s/it]Run training on epoch: 5:  64%|███████████████████████████████████▏                   | 144/225 [37:08<20:07, 14.90s/it]Run training on epoch: 5:  64%|███████████████████████████████████▍                   | 145/225 [37:22<19:49, 14.87s/it]Run training on epoch: 5:  65%|███████████████████████████████████▋                   | 146/225 [37:37<19:32, 14.84s/it]                                                                                                                        [1271/4499]    bce_loss 0.8567 (0.8648)    ce_loss 0.1544 (0.2031)    gd_loss 0.7357 (0.7271)    tv_loss 0.4907 (0.4593)    lr 1.99e-05    step_time_s 14.7    data_time_ms 10.9    tokens_k 7.12    positive_ratio 0.22 (0.23)
+Run training on epoch: 5:  65%|███████████████████████████████████▋                   | 146/225 [37:52<19:32, 14.84s/it]Run training on epoch: 5:  65%|███████████████████████████████████▉                   | 147/225 [37:52<19:15, 14.81s/it]Run training on epoch: 5:  66%|████████████████████████████████████▏                  | 148/225 [38:07<19:07, 14.90s/it]Run training on epoch: 5:  66%|████████████████████████████████████▍                  | 149/225 [38:22<18:49, 14.86s/it]Run training on epoch: 5:  67%|████████████████████████████████████▋                  | 150/225 [38:37<18:40, 14.94s/it]                                                                                                                        [1275/4499]    bce_loss 0.9594 (0.8647)    ce_loss 0.2362 (0.2031)    gd_loss 0.6893 (0.7270)    tv_loss 0.4271 (0.4591)    lr 1.99e-05    step_time_s 14.7    data_time_ms 10.8    tokens_k 7.09    positive_ratio 0.26 (0.23)
+Run training on epoch: 5:  67%|████████████████████████████████████▋                  | 150/225 [38:52<18:40, 14.94s/it]Run training on epoch: 5:  67%|████████████████████████████████████▉                  | 151/225 [38:52<18:21, 14.88s/it]Run training on epoch: 5:  68%|█████████████████████████████████████▏                 | 152/225 [39:07<18:12, 14.96s/it]Run training on epoch: 5:  68%|█████████████████████████████████████▍                 | 153/225 [39:22<17:53, 14.91s/it]Run training on epoch: 5:  68%|█████████████████████████████████████▋                 | 154/225 [39:36<17:35, 14.87s/it]                                                                                                                        [1279/4499]    bce_loss 0.9918 (0.8647)    ce_loss 0.1812 (0.2029)    gd_loss 0.7532 (0.7271)    tv_loss 0.4638 (0.4592)    lr 1.99e-05    step_time_s 14.7    data_time_ms 12.3    tokens_k 7.13    positive_ratio 0.31 (0.23)
+Run training on epoch: 5:  68%|█████████████████████████████████████▋                 | 154/225 [39:51<17:35, 14.87s/it]Run training on epoch: 5:  69%|█████████████████████████████████████▉                 | 155/225 [39:51<17:18, 14.84s/it]Run training on epoch: 5:  69%|██████████████████████████████████████▏                | 156/225 [40:06<17:10, 14.93s/it]Run training on epoch: 5:  70%|██████████████████████████████████████▍                | 157/225 [40:21<16:52, 14.89s/it]Run training on epoch: 5:  70%|██████████████████████████████████████▌                | 158/225 [40:36<16:35, 14.85s/it]                                                                                                                        [1283/4499]    bce_loss 0.8979 (0.8647)    ce_loss 0.1667 (0.2030)    gd_loss 0.6884 (0.7270)    tv_loss 0.4350 (0.4591)    lr 1.99e-05    step_time_s 14.7    data_time_ms 13.4    tokens_k 7.11    positive_ratio 0.25 (0.23)
+Run training on epoch: 5:  70%|██████████████████████████████████████▌                | 158/225 [40:51<16:35, 14.85s/it]Run training on epoch: 5:  71%|██████████████████████████████████████▊                | 159/225 [40:51<16:18, 14.82s/it]Run training on epoch: 5:  71%|███████████████████████████████████████                | 160/225 [41:06<16:09, 14.91s/it]Run training on epoch: 5:  72%|███████████████████████████████████████▎               | 161/225 [41:20<15:51, 14.87s/it]Run training on epoch: 5:  72%|███████████████████████████████████████▌               | 162/225 [41:35<15:35, 14.84s/it]                                                                                                                        [1287/4499]    bce_loss 0.9110 (0.8649)    ce_loss 0.1881 (0.2030)    gd_loss 0.7531 (0.7270)    tv_loss 0.4393 (0.4591)    lr 1.99e-05    step_time_s 14.8    data_time_ms 11.9    tokens_k 7.12    positive_ratio 0.33 (0.23)
+Run training on epoch: 5:  72%|███████████████████████████████████████▌               | 162/225 [41:50<15:35, 14.84s/it]Run training on epoch: 5:  72%|███████████████████████████████████████▊               | 163/225 [41:50<15:18, 14.82s/it]Run training on epoch: 5:  73%|████████████████████████████████████████               | 164/225 [42:05<15:09, 14.92s/it]Run training on epoch: 5:  73%|████████████████████████████████████████▎              | 165/225 [42:20<14:52, 14.87s/it]Run training on epoch: 5:  74%|████████████████████████████████████████▌              | 166/225 [42:35<14:35, 14.84s/it]                                                                                                                        [1291/4499]    bce_loss 0.7070 (0.8649)    ce_loss 0.1400 (0.2030)    gd_loss 0.7993 (0.7270)    tv_loss 0.4837 (0.4591)    lr 1.99e-05    step_time_s 14.7    data_time_ms 11.7    tokens_k 7.14    positive_ratio 0.23 (0.23)
+Run training on epoch: 5:  74%|████████████████████████████████████████▌              | 166/225 [42:49<14:35, 14.84s/it]Run training on epoch: 5:  74%|████████████████████████████████████████▊              | 167/225 [42:49<14:18, 14.81s/it]Run training on epoch: 5:  75%|█████████████████████████████████████████              | 168/225 [43:05<14:09, 14.90s/it]Run training on epoch: 5:  75%|█████████████████████████████████████████▎             | 169/225 [43:19<13:52, 14.87s/it]Run training on epoch: 5:  76%|█████████████████████████████████████████▌             | 170/225 [43:34<13:35, 14.83s/it]                                                                                                                        [1295/4499]    bce_loss 0.7726 (0.8648)    ce_loss 0.1607 (0.2030)    gd_loss 0.7568 (0.7270)    tv_loss 0.4624 (0.4591)    lr 1.99e-05    step_time_s 14.8    data_time_ms 13.5    tokens_k 7.14    positive_ratio 0.20 (0.23)
+Run training on epoch: 5:  76%|█████████████████████████████████████████▌             | 170/225 [43:49<13:35, 14.83s/it]Run training on epoch: 5:  76%|█████████████████████████████████████████▊             | 171/225 [43:49<13:19, 14.81s/it]Run training on epoch: 5:  76%|██████████████████████████████████████████             | 172/225 [44:04<13:10, 14.91s/it]Run training on epoch: 5:  77%|██████████████████████████████████████████▎            | 173/225 [44:19<12:53, 14.87s/it]Run training on epoch: 5:  77%|██████████████████████████████████████████▌            | 174/225 [44:33<12:36, 14.83s/it]                                                                                                                        [1299/4499]    bce_loss 0.7895 (0.8648)    ce_loss 0.1753 (0.2030)    gd_loss 0.7437 (0.7270)    tv_loss 0.4774 (0.4591)    lr 1.99e-05    step_time_s 14.7    data_time_ms 11.6    tokens_k 7.16    positive_ratio 0.16 (0.23)
+Run training on epoch: 5:  77%|██████████████████████████████████████████▌            | 174/225 [44:48<12:36, 14.83s/it]Run training on epoch: 5:  78%|██████████████████████████████████████████▊            | 175/225 [44:48<12:20, 14.81s/it]Run training on epoch: 5:  78%|███████████████████████████████████████████            | 176/225 [45:03<12:11, 14.92s/it]Run training on epoch: 5:  79%|███████████████████████████████████████████▎           | 177/225 [45:18<11:54, 14.88s/it]Run training on epoch: 5:  79%|███████████████████████████████████████████▌           | 178/225 [45:33<11:37, 14.84s/it]                                                                                                                        [1303/4499]    bce_loss 0.8670 (0.8648)    ce_loss 0.1793 (0.2030)    gd_loss 0.7358 (0.7270)    tv_loss 0.4547 (0.4591)    lr 1.99e-05    step_time_s 15.5    data_time_ms 10.9    tokens_k 7.11    positive_ratio 0.20 (0.23)
+Run training on epoch: 5:  79%|███████████████████████████████████████████▌           | 178/225 [45:48<11:37, 14.84s/it]Run training on epoch: 5:  80%|███████████████████████████████████████████▊           | 179/225 [45:48<11:31, 15.04s/it]Run training on epoch: 5:  80%|████████████████████████████████████████████           | 180/225 [46:04<11:22, 15.18s/it]Run training on epoch: 5:  80%|████████████████████████████████████████████▏          | 181/225 [46:19<11:02, 15.06s/it]Run training on epoch: 5:  81%|████████████████████████████████████████████▍          | 182/225 [46:33<10:43, 14.96s/it]                                                                                                                        [1307/4499]    bce_loss 0.8774 (0.8648)    ce_loss 0.1796 (0.2030)    gd_loss 0.6829 (0.7270)    tv_loss 0.4287 (0.4591)    lr 1.99e-05    step_time_s 14.8    data_time_ms 12.6    tokens_k 7.14    positive_ratio 0.27 (0.23)
+Run training on epoch: 5:  81%|████████████████████████████████████████████▍          | 182/225 [46:48<10:43, 14.96s/it]Run training on epoch: 5:  81%|████████████████████████████████████████████▋          | 183/225 [46:48<10:25, 14.90s/it]Run training on epoch: 5:  82%|████████████████████████████████████████████▉          | 184/225 [47:03<10:13, 14.97s/it]Run training on epoch: 5:  82%|█████████████████████████████████████████████▏         | 185/225 [47:18<09:56, 14.92s/it]Run training on epoch: 5:  83%|█████████████████████████████████████████████▍         | 186/225 [47:33<09:40, 14.87s/it]                                                                                                                        [1311/4499]    bce_loss 0.8989 (0.8648)    ce_loss 0.3150 (0.2030)    gd_loss 0.6940 (0.7270)    tv_loss 0.4313 (0.4591)    lr 1.99e-05    step_time_s 14.8    data_time_ms 12.2    tokens_k 7.09    positive_ratio 0.26 (0.23)
+Run training on epoch: 5:  83%|█████████████████████████████████████████████▍         | 186/225 [47:48<09:40, 14.87s/it]Run training on epoch: 5:  83%|█████████████████████████████████████████████▋         | 187/225 [47:48<09:24, 14.85s/it]Run training on epoch: 5:  84%|█████████████████████████████████████████████▉         | 188/225 [48:03<09:13, 14.96s/it]Run training on epoch: 5:  84%|██████████████████████████████████████████████▏        | 189/225 [48:18<08:56, 14.90s/it]Run training on epoch: 5:  84%|██████████████████████████████████████████████▍        | 190/225 [48:32<08:39, 14.85s/it]                                                                                                                        [1315/4499]    bce_loss 0.8524 (0.8648)    ce_loss 0.1454 (0.2030)    gd_loss 0.7527 (0.7270)    tv_loss 0.4707 (0.4591)    lr 1.99e-05    step_time_s 14.7    data_time_ms 12.6    tokens_k 7.10    positive_ratio 0.24 (0.23)
+Run training on epoch: 5:  84%|██████████████████████████████████████████████▍        | 190/225 [48:47<08:39, 14.85s/it]Run training on epoch: 5:  85%|██████████████████████████████████████████████▋        | 191/225 [48:47<08:23, 14.82s/it]Run training on epoch: 5:  85%|██████████████████████████████████████████████▉        | 192/225 [49:02<08:12, 14.91s/it]Run training on epoch: 5:  86%|███████████████████████████████████████████████▏       | 193/225 [49:17<07:56, 14.88s/it]Run training on epoch: 5:  86%|███████████████████████████████████████████████▍       | 194/225 [49:32<07:40, 14.85s/it]                                                                                                                        [1319/4499]    bce_loss 0.8510 (0.8648)    ce_loss 0.1990 (0.2030)    gd_loss 0.7314 (0.7270)    tv_loss 0.4549 (0.4591)    lr 1.99e-05    step_time_s 14.8    data_time_ms 10.3    tokens_k 7.10    positive_ratio 0.22 (0.23)
+Run training on epoch: 5:  86%|███████████████████████████████████████████████▍       | 194/225 [49:47<07:40, 14.85s/it]Run training on epoch: 5:  87%|███████████████████████████████████████████████▋       | 195/225 [49:47<07:24, 14.82s/it]Run training on epoch: 5:  87%|███████████████████████████████████████████████▉       | 196/225 [50:02<07:12, 14.92s/it]Run training on epoch: 5:  88%|████████████████████████████████████████████████▏      | 197/225 [50:17<06:56, 14.89s/it]Run training on epoch: 5:  88%|████████████████████████████████████████████████▍      | 198/225 [50:31<06:40, 14.84s/it]                                                                                                                        [1323/4499]    bce_loss 0.8521 (0.8648)    ce_loss 0.1984 (0.2030)    gd_loss 0.7088 (0.7270)    tv_loss 0.4623 (0.4591)    lr 1.99e-05    step_time_s 14.7    data_time_ms 11.2    tokens_k 7.12    positive_ratio 0.20 (0.23)
+Run training on epoch: 5:  88%|████████████████████████████████████████████████▍      | 198/225 [50:46<06:40, 14.84s/it]Run training on epoch: 5:  88%|████████████████████████████████████████████████▋      | 199/225 [50:46<06:24, 14.81s/it]Run training on epoch: 5:  89%|████████████████████████████████████████████████▉      | 200/225 [51:01<06:12, 14.91s/it]Run training on epoch: 5:  89%|█████████████████████████████████████████████████▏     | 201/225 [51:16<05:57, 14.88s/it]Run training on epoch: 5:  90%|█████████████████████████████████████████████████▍     | 202/225 [51:31<05:41, 14.84s/it]                                                                                                                        [1327/4499]    bce_loss 0.6654 (0.8648)    ce_loss 0.1428 (0.2030)    gd_loss 0.7868 (0.7270)    tv_loss 0.4713 (0.4591)    lr 1.98e-05    step_time_s 14.7    data_time_ms 12.2    tokens_k 7.12    positive_ratio 0.12 (0.23)
+Run training on epoch: 5:  90%|█████████████████████████████████████████████████▍     | 202/225 [51:46<05:41, 14.84s/it]Run training on epoch: 5:  90%|█████████████████████████████████████████████████▌     | 203/225 [51:46<05:25, 14.81s/it]Run training on epoch: 5:  91%|█████████████████████████████████████████████████▊     | 204/225 [52:01<05:13, 14.91s/it]Run training on epoch: 5:  91%|██████████████████████████████████████████████████     | 205/225 [52:15<04:57, 14.88s/it]Run training on epoch: 5:  92%|██████████████████████████████████████████████████▎    | 206/225 [52:30<04:41, 14.84s/it]                                                                                                                        [1331/4499]    bce_loss 0.9508 (0.8648)    ce_loss 0.2871 (0.2030)    gd_loss 0.7034 (0.7270)    tv_loss 0.4652 (0.4591)    lr 1.98e-05    step_time_s 14.8    data_time_ms 11.7    tokens_k 7.12    positive_ratio 0.26 (0.23)
+Run training on epoch: 5:  92%|██████████████████████████████████████████████████▎    | 206/225 [52:45<04:41, 14.84s/it]Run training on epoch: 5:  92%|██████████████████████████████████████████████████▌    | 207/225 [52:45<04:26, 14.81s/it]Run training on epoch: 5:  92%|██████████████████████████████████████████████████▊    | 208/225 [53:00<04:15, 15.00s/it]Run training on epoch: 5:  93%|███████████████████████████████████████████████████    | 209/225 [53:15<03:58, 14.93s/it]Run training on epoch: 5:  93%|███████████████████████████████████████████████████▎   | 210/225 [53:30<03:43, 14.87s/it]                                                                                                                        [1335/4499]    bce_loss 0.8443 (0.8648)    ce_loss 0.1487 (0.2030)    gd_loss 0.7202 (0.7270)    tv_loss 0.4446 (0.4591)    lr 1.98e-05    step_time_s 14.7    data_time_ms 11.7    tokens_k 7.10    positive_ratio 0.21 (0.23)
+Run training on epoch: 5:  93%|███████████████████████████████████████████████████▎   | 210/225 [53:45<03:43, 14.87s/it]Run training on epoch: 5:  94%|███████████████████████████████████████████████████▌   | 211/225 [53:45<03:27, 14.83s/it]Run training on epoch: 5:  94%|███████████████████████████████████████████████████▊   | 212/225 [54:00<03:14, 14.94s/it]Run training on epoch: 5:  95%|████████████████████████████████████████████████████   | 213/225 [54:15<02:58, 14.89s/it]Run training on epoch: 5:  95%|████████████████████████████████████████████████████▎  | 214/225 [54:29<02:43, 14.84s/it]                                                                                                                        [1339/4499]    bce_loss 0.7589 (0.8648)    ce_loss 0.1455 (0.2030)    gd_loss 0.7407 (0.7270)    tv_loss 0.4887 (0.4591)    lr 1.98e-05    step_time_s 15.0    data_time_ms 11.6    tokens_k 7.11    positive_ratio 0.15 (0.23)
+Run training on epoch: 5:  95%|████████████████████████████████████████████████████▎  | 214/225 [54:44<02:43, 14.84s/it]Run training on epoch: 5:  96%|████████████████████████████████████████████████████▌  | 215/225 [54:44<02:29, 14.91s/it]Run training on epoch: 5:  96%|████████████████████████████████████████████████████▊  | 216/225 [55:00<02:14, 14.98s/it]Run training on epoch: 5:  96%|█████████████████████████████████████████████████████  | 217/225 [55:14<01:59, 14.92s/it]Run training on epoch: 5:  97%|█████████████████████████████████████████████████████▎ | 218/225 [55:29<01:44, 14.88s/it]                                                                                                                        [1343/4499]    bce_loss 0.9072 (0.8648)    ce_loss 0.1883 (0.2030)    gd_loss 0.6711 (0.7270)    tv_loss 0.4359 (0.4591)    lr 1.98e-05    step_time_s 14.7    data_time_ms 12.1    tokens_k 7.14    positive_ratio 0.26 (0.23)
+Run training on epoch: 5:  97%|█████████████████████████████████████████████████████▎ | 218/225 [55:44<01:44, 14.88s/it]Run training on epoch: 5:  97%|█████████████████████████████████████████████████████▌ | 219/225 [55:44<01:29, 14.84s/it]Run training on epoch: 5:  98%|█████████████████████████████████████████████████████▊ | 220/225 [55:59<01:14, 14.93s/it]Run training on epoch: 5:  98%|██████████████████████████████████████████████████████ | 221/225 [56:14<00:59, 14.88s/it]Run training on epoch: 5:  99%|██████████████████████████████████████████████████████▎| 222/225 [56:29<00:44, 14.84s/it]                                                                                                                        [1347/4499]    bce_loss 0.8744 (0.8648)    ce_loss 0.1715 (0.2030)    gd_loss 0.7295 (0.7270)    tv_loss 0.4401 (0.4591)    lr 1.98e-05    step_time_s 14.7    data_time_ms 12.8    tokens_k 7.08    positive_ratio 0.31 (0.23)
+Run training on epoch: 5:  99%|██████████████████████████████████████████████████████▎| 222/225 [56:43<00:44, 14.84s/it]Run training on epoch: 5:  99%|██████████████████████████████████████████████████████▌| 223/225 [56:43<00:29, 14.81s/it]Run training on epoch: 5: 100%|██████████████████████████████████████████████████████▊| 224/225 [56:58<00:14, 14.91s/it]                                                                                                                        Averages:     	bce_loss avg  : 0.8648
+    	ce_loss avg  : 0.2030
+    	gd_loss avg  : 0.7270
+    	tv_loss avg  : 0.4591
+    	lr avg  : 1.99e-05
+    	step_time_s avg  : 14.8
+    	data_time_ms avg  : 11.7
+    	tokens_k avg  : 7.12
+    	positive_ratio avg  : 0.23
+
+Run training on epoch: 5: 100%|██████████████████████████████████████████████████████▊| 224/225 [57:13<00:14, 14.91s/it]
+[08/06 13:28:43] Start validation loop on epoch: 5 and global step: 338
+<class 'deepspeed.runtime.engine.DeepSpeedEngine'>
+<class 'deepspeed.runtime.engine.DeepSpeedEngine'>
+
+Run validation:   0%|                                                                                      | 0/96 [00:00<?, ?it/s][A
+Run validation:   1%|▊                                                                          | 1/96 [05:24<8:33:08, 324.09s/it][A
+Run validation:   2%|█▌                                                                         | 2/96 [05:38<3:42:39, 142.13s/it][A
+Run validation:   3%|██▍                                                                         | 3/96 [05:52<2:09:35, 83.61s/it][A
+Run validation:   4%|███▏                                                                        | 4/96 [06:06<1:25:56, 56.05s/it][A
+Run validation:   5%|███▉                                                                        | 5/96 [06:20<1:01:50, 40.78s/it][A
+Run validation:   6%|████▉                                                                         | 6/96 [06:34<47:21, 31.57s/it][A
+Run validation:   7%|█████▋                                                                        | 7/96 [06:47<38:09, 25.72s/it][A
+Run validation:   8%|██████▌                                                                       | 8/96 [07:01<32:05, 21.88s/it][A
+Run validation:   9%|███████▎                                                                      | 9/96 [07:15<28:00, 19.32s/it][A
+Run validation:  10%|████████                                                                     | 10/96 [07:28<25:12, 17.59s/it][A
+Run validation:  11%|████████▊                                                                    | 11/96 [07:42<23:13, 16.39s/it][A
+Run validation:  12%|█████████▋                                                                   | 12/96 [07:56<21:48, 15.58s/it][A
+Run validation:  14%|██████████▍                                                                  | 13/96 [08:09<20:45, 15.01s/it][A
+Run validation:  15%|███████████▏                                                                 | 14/96 [08:23<19:57, 14.61s/it][A
+Run validation:  16%|████████████                                                                 | 15/96 [08:37<19:21, 14.34s/it][A
+Run validation:  17%|████████████▊                                                                | 16/96 [08:50<18:51, 14.14s/it][A
+Run validation:  18%|█████████████▋                                                               | 17/96 [09:04<18:26, 14.01s/it][A
+Run validation:  19%|██████████████▍                                                              | 18/96 [09:18<18:14, 14.04s/it][A
+Run validation:  20%|███████████████▏                                                             | 19/96 [09:32<17:52, 13.92s/it][A
+Run validation:  21%|████████████████                                                             | 20/96 [09:46<17:32, 13.85s/it][A
+Run validation:  22%|████████████████▊                                                            | 21/96 [09:59<17:14, 13.80s/it][A
+Run validation:  23%|█████████████████▋                                                           | 22/96 [10:13<16:58, 13.76s/it][A
+Run validation:  24%|██████████████████▍                                                          | 23/96 [10:27<16:43, 13.74s/it][A
+Run validation:  25%|███████████████████▎                                                         | 24/96 [10:40<16:28, 13.72s/it][A
+Run validation:  26%|████████████████████                                                         | 25/96 [10:54<16:13, 13.72s/it][A
+Run validation:  27%|████████████████████▊                                                        | 26/96 [11:08<15:59, 13.71s/it][A
+Run validation:  28%|█████████████████████▋                                                       | 27/96 [11:21<15:45, 13.70s/it][A
+Run validation:  29%|██████████████████████▍                                                      | 28/96 [11:35<15:31, 13.69s/it][A
+Run validation:  30%|███████████████████████▎                                                     | 29/96 [11:49<15:17, 13.69s/it][A
+Run validation:  31%|████████████████████████                                                     | 30/96 [12:02<15:03, 13.68s/it][A
+Run validation:  32%|████████████████████████▊                                                    | 31/96 [12:16<14:50, 13.69s/it][A
+Run validation:  33%|█████████████████████████▋                                                   | 32/96 [12:30<14:37, 13.72s/it][A
+Run validation:  34%|██████████████████████████▍                                                  | 33/96 [12:44<14:24, 13.72s/it][A
+Run validation:  35%|███████████████████████████▎                                                 | 34/96 [12:57<14:09, 13.70s/it][A
+Run validation:  36%|████████████████████████████                                                 | 35/96 [13:11<13:56, 13.71s/it][A
+Run validation:  38%|████████████████████████████▉                                                | 36/96 [13:25<13:42, 13.70s/it][A
+Run validation:  39%|█████████████████████████████▋                                               | 37/96 [13:38<13:28, 13.70s/it][A
+Run validation:  40%|██████████████████████████████▍                                              | 38/96 [13:52<13:14, 13.70s/it][A
+Run validation:  41%|███████████████████████████████▎                                             | 39/96 [14:06<13:01, 13.70s/it][A
+Run validation:  42%|████████████████████████████████                                             | 40/96 [14:19<12:47, 13.70s/it][A
+Run validation:  43%|████████████████████████████████▉                                            | 41/96 [14:33<12:33, 13.70s/it][A
+Run validation:  44%|█████████████████████████████████▋                                           | 42/96 [14:47<12:20, 13.71s/it][A
+Run validation:  45%|██████████████████████████████████▍                                          | 43/96 [15:01<12:06, 13.71s/it][A
+Run validation:  46%|███████████████████████████████████▎                                         | 44/96 [15:14<11:52, 13.71s/it][A
+Run validation:  47%|████████████████████████████████████                                         | 45/96 [15:28<11:38, 13.70s/it][A
+Run validation:  48%|████████████████████████████████████▉                                        | 46/96 [15:42<11:24, 13.69s/it][A
+Run validation:  49%|█████████████████████████████████████▋                                       | 47/96 [15:55<11:10, 13.69s/it][A
+Run validation:  50%|██████████████████████████████████████▌                                      | 48/96 [16:09<10:57, 13.69s/it][A
+Run validation:  51%|███████████████████████████████████████▎                                     | 49/96 [16:23<10:42, 13.68s/it][A
+Run validation:  52%|████████████████████████████████████████                                     | 50/96 [16:36<10:29, 13.68s/it][A
+Run validation:  53%|████████████████████████████████████████▉                                    | 51/96 [16:50<10:15, 13.67s/it][A
+Run validation:  54%|█████████████████████████████████████████▋                                   | 52/96 [17:04<10:02, 13.69s/it][A
+Run validation:  55%|██████████████████████████████████████████▌                                  | 53/96 [17:17<09:48, 13.68s/it][A
+Run validation:  56%|███████████████████████████████████████████▎                                 | 54/96 [17:31<09:34, 13.68s/it][A
+Run validation:  57%|████████████████████████████████████████████                                 | 55/96 [17:45<09:21, 13.69s/it][A
+Run validation:  58%|████████████████████████████████████████████▉                                | 56/96 [17:58<09:07, 13.69s/it][A
+Run validation:  59%|█████████████████████████████████████████████▋                               | 57/96 [18:12<08:53, 13.69s/it][A
+Run validation:  60%|██████████████████████████████████████████████▌                              | 58/96 [18:26<08:40, 13.69s/it][A
+Run validation:  61%|███████████████████████████████████████████████▎                             | 59/96 [18:40<08:26, 13.69s/it][A
+Run validation:  62%|████████████████████████████████████████████████▏                            | 60/96 [18:53<08:12, 13.69s/it][A
+Run validation:  64%|████████████████████████████████████████████████▉                            | 61/96 [19:07<07:59, 13.69s/it][A
+Run validation:  65%|█████████████████████████████████████████████████▋                           | 62/96 [19:21<07:45, 13.69s/it][A
+Run validation:  66%|██████████████████████████████████████████████████▌                          | 63/96 [19:34<07:32, 13.70s/it][A
+Run validation:  67%|███████████████████████████████████████████████████▎                         | 64/96 [19:48<07:18, 13.69s/it][A
+Run validation:  68%|████████████████████████████████████████████████████▏                        | 65/96 [20:02<07:04, 13.69s/it][A
+Run validation:  69%|████████████████████████████████████████████████████▉                        | 66/96 [20:15<06:50, 13.69s/it][A
+Run validation:  70%|█████████████████████████████████████████████████████▋                       | 67/96 [20:29<06:36, 13.69s/it][A
+Run validation:  71%|██████████████████████████████████████████████████████▌                      | 68/96 [20:43<06:23, 13.69s/it][A
+Run validation:  72%|███████████████████████████████████████████████████████▎                     | 69/96 [20:56<06:09, 13.70s/it][A
+Run validation:  73%|████████████████████████████████████████████████████████▏                    | 70/96 [21:10<05:56, 13.70s/it][A
+Run validation:  74%|████████████████████████████████████████████████████████▉                    | 71/96 [21:24<05:42, 13.71s/it][A
+Run validation:  75%|█████████████████████████████████████████████████████████▊                   | 72/96 [21:38<05:28, 13.70s/it][A
+Run validation:  76%|██████████████████████████████████████████████████████████▌                  | 73/96 [21:51<05:15, 13.70s/it][A
+Run validation:  77%|███████████████████████████████████████████████████████████▎                 | 74/96 [22:05<05:01, 13.70s/it][A
+Run validation:  78%|████████████████████████████████████████████████████████████▏                | 75/96 [22:19<04:47, 13.69s/it][A
+Run validation:  79%|████████████████████████████████████████████████████████████▉                | 76/96 [22:32<04:33, 13.69s/it][A
+Run validation:  80%|█████████████████████████████████████████████████████████████▊               | 77/96 [22:46<04:20, 13.70s/it][A
+Run validation:  81%|██████████████████████████████████████████████████████████████▌              | 78/96 [23:00<04:06, 13.70s/it][A
+Run validation:  82%|███████████████████████████████████████████████████████████████▎             | 79/96 [23:13<03:52, 13.70s/it][A
+Run validation:  83%|████████████████████████████████████████████████████████████████▏            | 80/96 [23:28<03:41, 13.84s/it][A
+Run validation:  84%|████████████████████████████████████████████████████████████████▉            | 81/96 [23:41<03:26, 13.80s/it][A
+Run validation:  85%|█████████████████████████████████████████████████████████████████▊           | 82/96 [23:55<03:12, 13.75s/it][A
+Run validation:  86%|██████████████████████████████████████████████████████████████████▌          | 83/96 [24:09<02:58, 13.73s/it][A
+Run validation:  88%|███████████████████████████████████████████████████████████████████▍         | 84/96 [24:22<02:44, 13.73s/it][A
+Run validation:  89%|████████████████████████████████████████████████████████████████████▏        | 85/96 [24:36<02:30, 13.72s/it][A
+Run validation:  90%|████████████████████████████████████████████████████████████████████▉        | 86/96 [24:50<02:17, 13.71s/it][A
+Run validation:  91%|█████████████████████████████████████████████████████████████████████▊       | 87/96 [25:03<02:03, 13.71s/it][A
+Run validation:  92%|██████████████████████████████████████████████████████████████████████▌      | 88/96 [25:17<01:49, 13.71s/it][A
+Run validation:  93%|███████████████████████████████████████████████████████████████████████▍     | 89/96 [25:31<01:36, 13.74s/it][A
+Run validation:  94%|████████████████████████████████████████████████████████████████████████▏    | 90/96 [25:45<01:22, 13.73s/it][A
+Run validation:  95%|████████████████████████████████████████████████████████████████████████▉    | 91/96 [25:58<01:08, 13.72s/it][A
+Run validation:  96%|█████████████████████████████████████████████████████████████████████████▊   | 92/96 [26:12<00:54, 13.72s/it][A
+Run validation:  97%|██████████████████████████████████████████████████████████████████████████▌  | 93/96 [26:26<00:41, 13.72s/it][A
+Run validation:  98%|███████████████████████████████████████████████████████████████████████████▍ | 94/96 [26:40<00:27, 13.72s/it][A
+Run validation:  99%|████████████████████████████████████████████████████████████████████████████▏| 95/96 [26:53<00:13, 13.73s/it][A
+Run validation: 100%|█████████████████████████████████████████████████████████████████████████████| 96/96 [27:07<00:00, 13.71s/it][ARun validation: 100%|█████████████████████████████████████████████████████████████████████████████| 96/96 [27:07<00:00, 16.95s/it]
+Pred: [[96, 150, 1.0]], Label: [[82, 150]]
+Pred: [[96, 150, 1.0]], Label: [[56, 76], [96, 150]]
+Pred: [[84, 108, 1.0]], Label: [[78, 92]]
+Pred: [[48, 138, 1.0]], Label: [[44, 136]]
+Pred: [[0, 40, 1.0]], Label: [[0, 16]]
+Pred: [[132, 150, 1.0]], Label: [[6, 20]]
+Pred: [[60, 96, 1.0]], Label: [[52, 88], [96, 98]]
+Pred: [[24, 48, 1.0]], Label: [[26, 46]]
+Pred: [[84, 150, 1.0]], Label: [[40, 90]]
+Pred: [[12, 30, 1.0]], Label: [[0, 14]]
+Pred: [[96, 114, 1.0]], Label: [[110, 124]]
+Pred: [[126, 150, 1.0]], Label: [[122, 132], [134, 144], [146, 150]]
+Pred: [[72, 102, 1.0]], Label: [[66, 96]]
+Pred: [[0, 150, 1.0]], Label: [[0, 140]]
+Pred: [[0, 150, 1.0]], Label: [[90, 112], [114, 122], [132, 138]]
+Pred: [[6, 24, 1.0]], Label: [[10, 26]]
+Pred: [[126, 150, 1.0]], Label: [[134, 148]]
+
+
+ --- Metrics for Each Threshold --- 
+threshold   R1-at-0.5    *R1-at-0.7*    mAP          mAP-at-0.5   mAP-at-0.7   member       threshold    
+---------------------------------------------------------------------------------------------------------
+0.5000      56.3150      35.6100      29.4100      49.1750      29.4900      1.0000       0.5000       
+
+Some prediction from the best threshold: 
+0000000000000000111111111
+0000000000000000111111111
+0000000000000011110000000
+0000000011111111111111100
+1111111100000000000000000
+0000000000000000000000111
+0000000000111111000000000
+0000111100000000000000000
+0000000000000011111111111
+0011100000000000000000000
+0000000000000000111000000
+0000000000000000000001111
+0000000000001111100000000
+1111111111111111111111111
+1111111111111111111111111
+0111000000000000000000000
+[2025-08-06 13:55:52,989] [INFO] [logging.py:107:log_dist] [Rank 0] [Torch] Checkpoint global_step338_R1-at-0.7-35.6100 is begin to save!
+[2025-08-06 13:55:53,027] [INFO] [logging.py:107:log_dist] [Rank 0] Saving model checkpoint: /checkpoints/blip3-mr/v2_part1/global_step338_R1-at-0.7-35.6100/mp_rank_00_model_states.pt
