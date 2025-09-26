@@ -1,38 +1,21 @@
-import copy
-import json
 import os
-from typing import List, Literal, TypedDict, cast
+from typing import List, TypedDict
 
 import deepspeed
 import torch
 import torch.distributed as dist
 from peft import PeftModel
-from tqdm import tqdm
-from transformers.generation.utils import (
-    GenerateBeamDecoderOnlyOutput,
-    GenerateDecoderOnlyOutput,
-)
 from transformers.modeling_utils import PreTrainedModel
-from transformers.tokenization_utils import PreTrainedTokenizer
 
 from blip3_mr.config import Config
 from blip3_mr.dataset import (
     DataInfo,
-    InferenceCollatorOutput,
     MomentRetrievalDataset,
-    make_img_normalizer,
-    make_img_resizer,
-    val_batch_to_device,
 )
 from blip3_mr.eval_mr import eval_submission
-from blip3_mr.eval_utils import (
-    beam_search_to_scores,
-    get_sorted_moments_from_thresholds,
-    greedy_to_scores,
-    process_predictions_list_sorted_moments,
-)
 from blip3_mr.open_flamingo.src.xgenmm import XGenMMPerceiver
-from blip3_mr.utils import display_metrics_table, isdir, isfile, json_dumps, list_dict_to_jsonl, log
+from blip3_mr.test import test_one_epoch
+from blip3_mr.utils import isdir, json_dumps, list_dict_to_jsonl
 
 dtype_map = {
     "fp16": torch.float16,
@@ -70,6 +53,7 @@ class ValidateReturnType(TypedDict):
     metrics: dict[str, float]
     predictions: list[dict]
     ground_truths: list[dict]
+    invalid_predictions: list[dict]
 
 
 def save_val_result_to_dirs(
@@ -120,11 +104,11 @@ def save_val_result_to_dirs(
         print(f"Val outputs are saved to {output_dir}")
 
 
-def validate_one_epoch_v2(
+def validate_one_epoch(
     config: Config,
     model: deepspeed.DeepSpeedEngine | PreTrainedModel | PeftModel | XGenMMPerceiver,
     dataset: DataInfo,
-    max_steps: int = 0,
+    max_iter: int = 0,
 ) -> ValidateReturnType:
     """
     Runs a full validation loop for one epoch on the provided dataset and then display the metrics.
@@ -141,147 +125,32 @@ def validate_one_epoch_v2(
             - predictions: list of prediction dict
             - ground_truths: list of ground_truths dict
     """
-    vrb = config.extra_verbose
-    rank = 0
-    world_size = 1
-    if dist.is_initialized():
-        rank = dist.get_rank()
-        world_size = dist.get_world_size()
-    device = torch.device(f"cuda:{rank}")
-
-    tokenizer: PreTrainedTokenizer = dataset.tokenizer
-    num_batches = len(dataset.dataloader)
-    num_frames = dataset.num_frames
-
-    img_resizer = make_img_resizer(device)
-    img_normalizer = make_img_normalizer("max-autotune", device)
-
-    model.eval()
-    total_eval_steps = max_steps if max_steps > 0 else num_batches
-
-    predictions = []
-    invalid_predictions = []
+    predictions, invalid_predictions = test_one_epoch(
+        model=model,  # type: ignore
+        dataloader=dataset.dataloader,
+        precision=config.training_precision,
+        tokenizer=dataset.tokenizer,
+        do_save=False,
+        max_iter=max_iter,
+    )
 
     moment_dataset: MomentRetrievalDataset = dataset.dataloader.dataset
     ground_truths = moment_dataset.get_val_qvh()
-    # print(len(ground_truths))
-    iterator = tqdm(
-        enumerate(dataset.dataloader),
-        disable=config.rank != 0,
-        total=total_eval_steps,
-        initial=0,
-        ncols=120,
-        desc=f"Run validation",
-    )
-    for step_num, batch in iterator:
-        batch: InferenceCollatorOutput
-        if step_num >= total_eval_steps:
-            break
-        verbose = step_num <= 1 and vrb and config.rank == 0
-
-        batch_size = batch["input_ids"].size(0)
-
-        # move batch to device
-        images, input_ids, attention_mask = val_batch_to_device(batch, device)
-
-        # resize each image so that it becomes 384, 384, the dimension is now [Batch], Frame, Channel, Height, Width
-        images = [img_resizer(frames) for frames in images]
-        # stack to remove the list
-        images = torch.stack(images, dim=0)
-        # normalize the image in a single process
-        images = img_normalizer(images)
-        # create 2 new dimension, shape is Batch, Frame, 1, 1, Channel, Height, Width
-        images = images.unsqueeze(2).unsqueeze(2)
-        # unbind to convert first two shape to list, final shape is [Batch], [Frame], 1, 1, Channel, Height, Width (xgen-mm expects these 2 extra dims)
-        images = [list(torch.unbind(image, dim=0)) for image in images]
-        if config.rank == 0 and step_num == 0:
-            tqdm.write("Dataloading ok")
-        with torch.no_grad():
-            with torch.autocast(
-                device_type="cuda",
-                dtype=dtype_map.get(config.training_precision, torch.bfloat16),
-                cache_enabled=True,
-                enabled=config.training_precision.startswith("amp") and not config.deepspeed,
-            ):
-                generation_output = model.generate(
-                    vision_x=images,
-                    lang_x=input_ids,
-                    image_size=batch["image_size"],
-                    attention_mask=attention_mask,
-                    do_sample=False,
-                    max_new_tokens=int(dataset.num_frames * 2),  # cheaper generation
-                    num_beams=config.num_val_beams,
-                    output_scores=True,
-                    return_dict_in_generate=True,
-                )  # type: ignore
-
-        batch_size = input_ids.size(0)
-        generated_text = None
-        generation_output = cast(GenerateDecoderOnlyOutput, generation_output)  # for typing
-
-        # grab the sequence and define threshold = 0.5
-        generated_text = tokenizer.batch_decode(generation_output.sequences, skip_special_tokens=True)
-        # remove the <|end|> token and then truncate so len(text) == num_frames in each batch
-        generated_text = [g.split("<|end|>")[0][:num_frames] for g in generated_text]
-        if verbose:
-            tqdm.write(f"Generated text[:2] = {generated_text[:2]}")
-
-        if config.num_val_beams > 1 and isinstance(generation_output, GenerateBeamDecoderOnlyOutput):
-            scores = beam_search_to_scores(
-                generation_output, dataset.token_zero, dataset.token_one, dataset.num_frames
-            )
-        else:
-            scores = greedy_to_scores(
-                generation_output.scores, dataset.token_zero, dataset.token_one, dataset.num_frames
-            )
-
-        if verbose:
-            tqdm.write(f"Scores[:2] = {scores[:2]}")
-
-        del generation_output
-
-        for b in range(batch_size):
-            pred_dict = {
-                "qid": int(batch["qids"][b]),
-                "duration": round(batch["durations"][b]),
-                "score": scores[b].tolist(),
-                "preds": generated_text[b],
-            }
-            if all(pred == "0" for pred in generated_text[b]) or any(
-                pred not in ("1", "0") for pred in generated_text[b]
-            ):
-                invalid_predictions.append(pred_dict)
-                pred_dict_copy = copy.deepcopy(pred_dict)
-                pred_dict_copy["preds"] = "".join(["1" for _ in range(num_frames)])
-                predictions.append(pred_dict_copy)
-            else:
-                predictions.append(pred_dict)
 
     if config.num_val_samples != 0:
         ground_truths = [ground_truths[k["qid"]] for k in predictions]
     else:
         ground_truths = list(ground_truths.values())
 
-    verbose = vrb and config.rank == 0
-
-    if dist.is_initialized():
-        dist.barrier()
-
-    process_predictions_list_sorted_moments(predictions)
-    process_predictions_list_sorted_moments(invalid_predictions)
-
     valid_ratio = (len(predictions) - len(invalid_predictions)) / len(predictions)
-    if rank == 0:
-        print(f"Valid prediction ratio: {valid_ratio * 100:.1f}%")
-        print(f"Number of invalid predictions: {len(invalid_predictions)}")
 
-    if verbose:
+    if config.rank == 0:
         display_some_predictions(predictions, invalid_predictions, ground_truths)
 
-    num_samples = len(dataset.dataloader.dataset)
-    sample_ratio = len(ground_truths) / num_samples if world_size > 1 else 1.0
+    num_samples = len(moment_dataset)
+    sample_ratio = len(ground_truths) / num_samples if config.world_size > 1 else 1.0
 
-    metric_tensor = torch.tensor([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]) * valid_ratio * sample_ratio
+    metric_tensor = torch.tensor([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, valid_ratio * sample_ratio])
     try:
         _metric = eval_submission(predictions, ground_truths, False, False)
         _brief = _metric["brief"]
@@ -298,14 +167,14 @@ def validate_one_epoch_v2(
                     1,
                 ]
             )
-            * valid_ratio
-            * sample_ratio
+            * valid_ratio  # eval_submission discards mismatching keys
+            * sample_ratio  # how many sample this gpu holds
         )
     except Exception as e:
         print(f"Error evaluating submission: \n{e}\nAll metrics are set to 0.0 except the valid ratio")
 
-    if world_size > 1:
-        metric_tensor = metric_tensor.to(device)
+    if config.world_size > 1:
+        metric_tensor = metric_tensor.to(torch.device(f"cuda:{config.rank}"))
         dist.all_reduce(metric_tensor, dist.ReduceOp.SUM, async_op=False)
 
     metric = {
@@ -319,7 +188,7 @@ def validate_one_epoch_v2(
         "member": metric_tensor[7].item(),  # valid member, already in wandb,
     }
 
-    if rank == 0:
+    if config.rank == 0:
         print("\nValidation Metrics:")
         print(f"\tNum samples: {num_samples}")
         for k, v in metric.items():
@@ -334,11 +203,13 @@ def validate_one_epoch_v2(
 
 
 def display_some_predictions(predictions: list, invalid_predictions: list, ground_truths: list):
+    MAX_DISPLAY = 16
+
     predictions_dict = {p["qid"]: p for p in predictions}
     inv_predictions_dict = {p["qid"]: p for p in invalid_predictions}
     gts_dict = {g["qid"]: g for g in ground_truths}
 
-    max_display = min(16, len(predictions))
+    max_display = min(MAX_DISPLAY, len(predictions))
 
     # valid
     display_keys = list(predictions_dict.keys())[:max_display]

@@ -255,7 +255,7 @@ class AverageMeter(object):
         Synchronizes the meter's sum and count across all processes in a distributed setting.
         """
         device = torch.device("cuda")
-        total = torch.tensor([self.sum, self.count], dtype=torch.float32, device=device)
+        total = torch.tensor([self.sum, self.count], dtype=torch.float64, device=device)
         dist.all_reduce(total, dist.ReduceOp.SUM, async_op=False)
         self.sum, self.count = total.tolist()
         self.avg = self.sum / self.count if self.count > 0 else 0
@@ -660,9 +660,7 @@ def find_and_load_checkpoint_deepspeed(
                     resume_from_step = client_sd["step"]
                     resume_from_epoch = client_sd["epoch"]
                     infer_step_from_ckpt = True
-                elif (
-                    "epoch" in client_sd
-                ):  # if only epoch information exists, assume it's the last batch of the epoch
+                elif "epoch" in client_sd:  # if only epoch information exists, assume it's the last batch of the epoch
                     resume_from_step = num_micro_batch_in_epoch - 1
                     resume_from_epoch = client_sd["epoch"]
                     infer_step_from_ckpt = True

@@ -10,7 +10,8 @@ from .helpers import DecoupledEmbedding, DecoupledLinear, VLMOutputWithPast
 from transformers.modeling_outputs import CausalLMOutputWithPast
 from transformers import CLIPVisionModel
 from transformers.models.siglip.modeling_siglip import SiglipVisionTransformer
-
+from transformers import Phi3ForCausalLM
+from typing import cast
 from blip3_mr.open_flamingo.train.any_res_data_utils import get_anyres_image_grid_shape, unpad_image
 
 
@@ -61,8 +62,8 @@ class VLM(nn.Module):
         # core components
         self.vision_encoder = vision_encoder
         self.vision_tokenizer = vision_tokenizer
+        lang_model = cast(Phi3ForCausalLM, lang_model)
         self.lang_model = lang_model
-
         if base_img_size is None:
             if isinstance(self.vision_encoder, CLIPVisionModel) or isinstance(self.vision_encoder, SiglipVisionTransformer):
                 base_img_size = self.vision_encoder.config.image_size

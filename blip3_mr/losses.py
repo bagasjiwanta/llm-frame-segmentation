@@ -58,7 +58,7 @@ class TverskyLoss(torch.nn.Module):
             return tvl
 
 
-class GeneralizedSoftDiceLoss(torch.nn.Module):
+class GeneralizedDiceLoss(torch.nn.Module):
     """
     Computes the Generalized Dice Loss, adaptable for soft labels.
 
@@ -132,27 +132,6 @@ class GeneralizedSoftDiceLoss(torch.nn.Module):
             return gdl
 
 
-# copied from transformers.loss.loss_utils.ForCausalLMLoss
-# adapted to use weight
-def weighted_cross_entropy(logits, labels, vocab_size, reduction="mean", weight=None):
-    logits = logits.float()
-    # print(logits.shape, labels.shape, vocab_size, logits.device, labels.device, weight.device)
-    if weight is not None:
-        assert isinstance(weight, torch.Tensor) and weight.ndim == 1 and weight.size(0) == vocab_size
-        weight = weight.to(logits.device)
-
-    shift_labels = F.pad(labels, (0, 1), value=-100)
-    shift_labels = shift_labels[..., 1:].contiguous()
-
-    logits = logits.view(-1, vocab_size)
-    shift_labels = shift_labels.view(-1)
-
-    shift_labels = shift_labels.to(logits.device)
-    loss = nn.functional.cross_entropy(logits, shift_labels, weight=weight, reduction=reduction)
-
-    return loss
-
-
 def extract_binary_mask_from_logits(
     logits: Tensor, input_ids: Tensor, num_frame: int, num_class: int, datainfo: DataInfo
 ) -> Tensor:
@@ -178,17 +157,10 @@ def extract_binary_mask_from_logits(
 
 
 def setup_finetune_losses(
-    config: Config, datainfo: DataInfo, device: torch.device, num_frame: int
-) -> tuple[Tensor | None, GeneralizedSoftDiceLoss, TverskyLoss, nn.BCEWithLogitsLoss]:
-    ce_weight = None
-    if config.ce_pos_weight != 1.0:
-        vocab_size = len(datainfo.dataloader.collate_fn.tokenizer)
-        ce_weight = torch.ones(vocab_size, dtype=torch.float32)
-        ce_weight[datainfo.token_one] = config.ce_pos_weight
-        ce_weight = ce_weight.to(device)
+    config: Config, device: torch.device, num_frame: int
+) -> tuple[GeneralizedDiceLoss, TverskyLoss, nn.BCEWithLogitsLoss]:
     bce_weight = torch.ones((num_frame,)) * config.bce_pos_weight
-
-    gdl = GeneralizedSoftDiceLoss("mean", soft_labels=config.soft_loss, weight_type=config.gd_norm).to(device)
+    gdl = GeneralizedDiceLoss("mean", soft_labels=config.soft_loss, weight_type=config.gd_norm).to(device)
     tvl = TverskyLoss("mean", soft_labels=config.soft_loss, beta=config.tvl_beta, alpha=1.0 - config.tvl_beta)
     bce = torch.nn.BCEWithLogitsLoss(pos_weight=bce_weight).to(device)
-    return ce_weight, gdl, tvl, bce
+    return gdl, tvl, bce

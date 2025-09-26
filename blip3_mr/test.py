@@ -1,7 +1,7 @@
 import copy
 import json
 import os
-from typing import Literal
+from typing import Literal, cast
 
 import torch
 import torch.distributed as dist
@@ -15,12 +15,14 @@ from blip3_mr.dataset import (
     InferenceCollatorOutput,
     make_img_normalizer,
     make_img_resizer,
+    process_images,
     val_batch_to_device,
 )
 from blip3_mr.eval_utils import (
     beam_search_to_scores,
     greedy_to_scores,
-    process_predictions_list_sorted_moments,
+    inplace_pred_string_to_relevant_windows,
+    # process_predictions_list_sorted_moments,
 )
 from blip3_mr.open_flamingo.src.xgenmm import XGenMMPerceiver
 from blip3_mr.utils import list_dict_to_jsonl
@@ -41,26 +43,31 @@ def infer_tokens_from_tokenizer(tokenizer: PreTrainedTokenizer):
     token_one = tokenizer.convert_tokens_to_ids("1")
     token_one = token_one[-1] if isinstance(token_one, list) else token_one
 
-    token_assistant = tokenizer.convert_tokens_to_ids("<|assistant|>")
-    token_assistant = token_assistant[-1] if isinstance(token_assistant, list) else token_assistant
+    # token_assistant = tokenizer.convert_tokens_to_ids("<|assistant|>")
+    # token_assistant = token_assistant[-1] if isinstance(token_assistant, list) else token_assistant
 
-    return token_zero, token_one, token_assistant
+    # return token_zero, token_one, token_assistant
+    return token_zero, token_one
 
 
 def test_one_epoch(
     model: XGenMMPerceiver,
-    dataloader: DataLoader,
+    dataloader: DataLoader | None,
     precision: Literal["bf16", "fp32", "amp_bf16", "fp16", "amp_fp16"],
     generation_kwargs: dict,
     tokenizer: PreTrainedTokenizer,
     output_dir: str | list[str] = "runs/latest",
     filename: str = "hl_test_submission.jsonl",
-    verbose: bool = True,
+    do_save: bool = True,
+    max_iter: int = -1,
 ):
     """
-    Do test for the whole dataset. Saves the output to output_dir (could be multiple dirs) with filename.
-    This function can be used without the other parts of the repo.
+    Do inference on dataloader. This can be used without other parts of the repo.
+
+    filename and output_dir is not needed if not do_save
     """
+    assert dataloader is not None
+
     rank = os.environ.get("RANK", 0)
     if dist.is_initialized():
         rank = dist.get_rank()
@@ -77,35 +84,24 @@ def test_one_epoch(
     predictions = []
     invalid_predictions = []
 
-    token_zero, token_one, token_assistant = infer_tokens_from_tokenizer(tokenizer)
+    token_zero, token_one = infer_tokens_from_tokenizer(tokenizer)
 
-    iterator = tqdm(
-        enumerate(dataloader), disable=rank != 0, ncols=120, desc="Run Test", total=len(dataloader)
-    )
+    iterator = tqdm(enumerate(dataloader), disable=rank != 0, ncols=120, desc="Run Inference", total=len(dataloader))
     for step, batch in iterator:
+        if max_iter > 0 and (step + 1) > max_iter:
+            break
+
         batch: InferenceCollatorOutput
 
         batch_size = batch["input_ids"].size(0)
         num_frames = 25
 
         images, input_ids, attention_mask = val_batch_to_device(batch, device)
-        images = [img_resizer(frames) for frames in images]
-        images = torch.stack(images, dim=0)
-        images = img_normalizer(images)
-        images = images.unsqueeze(2).unsqueeze(2)
-        images = [list(torch.unbind(image, dim=0)) for image in images]
+        images = process_images(images, img_resizer, img_normalizer)
 
         if rank == 0 and step == 0:
-            tqdm.write("Dataloading OK")  # reassurance
-
-        lang_model_kwargs = dict(
-            do_sample=False,
-            max_new_tokens=generation_kwargs.get("max_new_tokens", int(num_frames * 2)),
-            num_beams=generation_kwargs.get("num_beams", 1),
-            output_scores=True,
-            return_dict_in_generate=True,
-        )
-
+            tqdm.write("Dataloading OK")
+        num_beams = generation_kwargs.get("num_beams", 1)
         with torch.no_grad():
             with torch.autocast(
                 device_type="cuda",
@@ -113,23 +109,26 @@ def test_one_epoch(
                 cache_enabled=True,
                 dtype=dtype_map.get(precision),
             ):
-                generation_output: GenerateDecoderOnlyOutput = model.generate(
+                generation_output = model.generate(
                     vision_x=images,
                     lang_x=input_ids,
                     image_size=batch["image_size"],
                     attention_mask=attention_mask,
-                    **lang_model_kwargs,
+                    do_sample=False,
+                    output_scores=True,
+                    return_dict_in_generate=True,
+                    max_new_tokens=generation_kwargs.get("max_new_tokens", int(num_frames * 2)),
+                    num_beams=num_beams,
                 )
+                generation_output = cast(GenerateDecoderOnlyOutput, generation_output)
 
         generated_text = tokenizer.batch_decode(generation_output.sequences, skip_special_tokens=True)
         generated_text = [text.split("<|end|>")[0][:num_frames] for text in generated_text]
 
-        if verbose and step <= 1:
+        if step <= 1:
             tqdm.write(f"Generated text[:2] = {generated_text[:2]}")
 
-        if lang_model_kwargs["num_beams"] > 1 and isinstance(
-            generation_output, GenerateBeamDecoderOnlyOutput
-        ):
+        if num_beams > 1 and isinstance(generation_output, GenerateBeamDecoderOnlyOutput):
             scores = beam_search_to_scores(generation_output, token_zero, token_one, num_frames)
         else:
             scores = greedy_to_scores(
@@ -139,7 +138,7 @@ def test_one_epoch(
                 num_frames,  # type: ignore
             )
 
-        if verbose and step <= 1:
+        if step <= 1:
             tqdm.write(f"Scores[:2] = {scores[:2]}")
 
         del generation_output
@@ -164,8 +163,8 @@ def test_one_epoch(
     if dist.is_initialized():
         dist.barrier()
 
-    process_predictions_list_sorted_moments(predictions)
-    process_predictions_list_sorted_moments(invalid_predictions)
+    inplace_pred_string_to_relevant_windows(predictions, num_moments=10)
+    inplace_pred_string_to_relevant_windows(invalid_predictions, num_moments=10)
 
     data_dict = dataloader.dataset.list_data_dict
     qidvid = {d["id"]: d["vid"] for d in data_dict}
@@ -176,21 +175,23 @@ def test_one_epoch(
     valid_ratio = (len(predictions) - len(invalid_predictions)) / len(predictions)
     if rank == 0:
         print(f"Valid prediction ratio: {valid_ratio * 100:.1f}%")
+        print(f"Number of invalid predictions: {len(invalid_predictions)}")
+        print(f"Number of valid predictions: {len(predictions)}")
 
-    submission = copy.deepcopy(predictions)
-    for p in range(len(submission)):
-        submission[p].pop("preds")
-        submission[p].pop("score")
+    if do_save:
+        submission = copy.deepcopy(predictions)
+        for p in range(len(submission)):
+            submission[p].pop("preds")
+            submission[p].pop("score")
+        save_test_result_to_dir(output_dir, submission, filename)
+        save_test_result_to_dir(output_dir, predictions, "hl_test_predictions.json")
+        save_test_result_to_dir(output_dir, invalid_predictions, "hl_test_invalid_predictions.json")
+        print(f"Test outputs are saved to {output_dir}")
+    else:
+        return predictions, invalid_predictions
 
-    save_test_result_to_dir(output_dir, submission, filename)
-    save_test_result_to_dir(output_dir, predictions, "hl_test_predictions.json")
-    save_test_result_to_dir(output_dir, invalid_predictions, "hl_test_invalid_predictions.json")
-    print(f"Test outputs are saved to {output_dir}")
 
-
-def save_test_result_to_dir(
-    output_dir: str | list[str], result: list[dict], filename="hl_test_submission.jsonl"
-):
+def save_test_result_to_dir(output_dir: str | list[str], result: list[dict], filename="hl_test_submission.jsonl"):
     if isinstance(output_dir, str):
         output_dir = [output_dir]
     out_dirs: list[str] = []

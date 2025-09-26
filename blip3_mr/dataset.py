@@ -201,8 +201,8 @@ class MomentRetrievalDataset(Dataset):
             dd[i].pop("video_timestamps")
             if "_saliency_scores" in dd[i]:
                 dd[i]["saliency_scores"] = dd[i]["_saliency_scores"]
-                dd[i].pop('_saliency_scores')
-        return {d['qid']: d for d in dd}
+                dd[i].pop("_saliency_scores")
+        return {d["qid"]: d for d in dd}
 
     def __getitem__(self, i: int) -> MomentRetrievalDatasetOutput:
         data = copy.deepcopy(self.list_data_dict[i])
@@ -424,9 +424,7 @@ class StratifiedBatchSampler(Sampler):
         # sum items and convert into array
         non_zeros = np.array([sum(d) for d in non_zeros])
 
-        non_zero_bins = (
-            np.digitize(non_zeros, bins=np.linspace(non_zeros.min(), non_zeros.max(), n_bins + 1)) - 1
-        )
+        non_zero_bins = np.digitize(non_zeros, bins=np.linspace(non_zeros.min(), non_zeros.max(), n_bins + 1)) - 1
         non_zero_bins[non_zero_bins == n_bins] = n_bins - 1
 
         self.stratify_groups = non_zero_bins
@@ -457,9 +455,7 @@ class StratifiedBatchSampler(Sampler):
             if active_iters == 0:
                 break
 
-        all_batches = [
-            group_pool[i : i + self.batch_size] for i in range(0, len(group_pool), self.batch_size)
-        ]
+        all_batches = [group_pool[i : i + self.batch_size] for i in range(0, len(group_pool), self.batch_size)]
         if self.shuffle:
             random.shuffle(all_batches)
 
@@ -511,9 +507,7 @@ class DistributedStratifiedBatchSampler(DistributedSampler):
         # sum items and convert into array
         non_zeros = np.array([sum(d) for d in non_zeros])
 
-        non_zero_bins = (
-            np.digitize(non_zeros, bins=np.linspace(non_zeros.min(), non_zeros.max(), n_bins + 1)) - 1
-        )
+        non_zero_bins = np.digitize(non_zeros, bins=np.linspace(non_zeros.min(), non_zeros.max(), n_bins + 1)) - 1
         non_zero_bins[non_zero_bins == n_bins] = n_bins - 1
 
         self.stratify_groups = non_zero_bins
@@ -553,8 +547,7 @@ class DistributedStratifiedBatchSampler(DistributedSampler):
                 break
 
         all_batches = [
-            global_indices_pool[i : i + self.batch_size]
-            for i in range(0, len(global_indices_pool), self.batch_size)
+            global_indices_pool[i : i + self.batch_size] for i in range(0, len(global_indices_pool), self.batch_size)
         ]
 
         if self.shuffle:
@@ -606,7 +599,9 @@ def make_test_datainfo(tokenizer: PreTrainedTokenizer, config: Config, verbose=T
     with open(config_path, "r") as f_in:
         dataset_config: DatasetConfig = yaml.safe_load(f_in)[dataset_name]
 
-    test_dataset = MomentRetrievalDataset(config.base_data_dir, dataset_config, "test", num_samples=config.num_test_samples)
+    test_dataset = MomentRetrievalDataset(
+        config.base_data_dir, dataset_config, "test", num_samples=config.num_test_samples
+    )
     _test_1, _test_2 = test_dataset[0], test_dataset[1]
 
     test_collator = InferenceDataCollator(tokenizer)
@@ -665,9 +660,7 @@ def make_train_val_datainfos(
         dataset_config = yaml.safe_load(f_in)[config.dataset_name]
 
     # --- Build and test datasets ---
-    train_dataset = MomentRetrievalDataset(
-        config.base_data_dir, dataset_config, "train", config.num_train_samples
-    )
+    train_dataset = MomentRetrievalDataset(config.base_data_dir, dataset_config, "train", config.num_train_samples)
     val_dataset = MomentRetrievalDataset(config.base_data_dir, dataset_config, "val", config.num_val_samples)
 
     _test_train0 = train_dataset[0]
@@ -790,9 +783,7 @@ def make_train_val_datainfos(
     )
 
     if config.rank == 0:
-        print(
-            f"Num train iter per epoch: {len(train_dataloader)}. Num val iter per epoch: {len(val_dataloader)}"
-        )
+        print(f"Num train iter per epoch: {len(train_dataloader)}. Num val iter per epoch: {len(val_dataloader)}")
 
     token_zero, token_one, token_assistant = infer_tokens_from_tokenizer(tokenizer)
 
@@ -866,3 +857,17 @@ def val_batch_to_device(
     input_ids = batch["input_ids"].to(device, non_blocking=True)
     attention_mask = batch["attention_mask"].to(device, non_blocking=True)
     return (images, input_ids, attention_mask)
+
+
+def process_images(images: list[torch.Tensor], img_resizer: torch.nn.Module, img_normalizer: torch.nn.Module):
+    # resize each image so that it becomes 384, 384, the dimension is now [Batch], Frame, Channel, Height, Width
+    image_list = [img_resizer(frames) for frames in images]
+    # stack to remove the list
+    image_stack = torch.stack(image_list, dim=0)
+    # normalize the image in a single process
+    image_stack = img_normalizer(image_stack)
+    # create 2 new dimension, shape is Batch, Frame, 1, 1, Channel, Height, Width
+    image_stack = image_stack.unsqueeze(2).unsqueeze(2)
+    # unbind to convert first two shape to list, final shape is [Batch], [Frame], 1, 1, Channel, Height, Width (xgen-mm expects these 2 extra dims)
+    image_double_list = [list(torch.unbind(image, dim=0)) for image in image_stack]
+    return image_double_list

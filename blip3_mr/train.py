@@ -3,7 +3,6 @@ from typing import Generator
 
 import torch
 from deepspeed import DeepSpeedEngine
-from torch.utils.data import DistributedSampler
 from tqdm import tqdm
 
 from blip3_mr.config import Config
@@ -12,12 +11,12 @@ from blip3_mr.dataset import (
     TrainCollatorOutput,
     make_img_normalizer,
     make_img_resizer,
+    process_images,
     train_batch_to_device,
 )
 from blip3_mr.losses import (
     extract_binary_mask_from_logits,
     setup_finetune_losses,
-    weighted_cross_entropy,
 )
 from blip3_mr.utils import (
     TrainingMeters,
@@ -51,14 +50,11 @@ def deepspeed_finetune_one_epoch_generator(
     num_frame = datainfo.num_frames
     dataloader = datainfo.dataloader
     num_class = 2
-    vocab_size = len(datainfo.tokenizer)
 
     img_resizer = make_img_resizer(device)
     img_normalizer = make_img_normalizer("max-autotune", device)
 
-    cross_entropy_weight, generalized_dice_l, tversky_l, binary_cross_entropy_l = setup_finetune_losses(
-        config, datainfo, device, num_frame
-    )
+    generalized_dice_l, tversky_l, binary_cross_entropy_l = setup_finetune_losses(config, device, num_frame)
 
     datainfo.set_epoch(epoch)
 
@@ -77,13 +73,7 @@ def deepspeed_finetune_one_epoch_generator(
         meters.num_pos.update(float(batch["answers"][:, :, -1].sum().item() / (batch_size * num_frame)))
 
         images, input_ids, attention_mask, labels, answers = train_batch_to_device(batch, device)
-        images = [img_resizer(frames) for frames in images]  # [B],F,C,H,W
-        images = torch.stack(images, dim=0)  # B,F,C,H,W
-        images = img_normalizer(images)
-        images = images.unsqueeze(2).unsqueeze(2)
-        images = [
-            list(torch.unbind(image, dim=0)) for image in images
-        ]  # [B],[F],1,P,C,H,W  xgenmm expects this dimension
+        images = process_images(images, img_resizer, img_normalizer)
 
         meters.num_tokens.update(attention_mask.sum().item() / 1000)
 
@@ -97,9 +87,7 @@ def deepspeed_finetune_one_epoch_generator(
         )
         logits = output.logits
 
-        moment_logits = extract_binary_mask_from_logits(
-            logits, input_ids, num_frame, num_class, datainfo=datainfo
-        )
+        moment_logits = extract_binary_mask_from_logits(logits, input_ids, num_frame, num_class, datainfo=datainfo)
 
         loss = 0.0
 
@@ -124,30 +112,16 @@ def deepspeed_finetune_one_epoch_generator(
             loss += tv_loss * config.loss_tvl_weight
 
         if config.loss_ce_weight > 0.0:
-            if config.ce_pos_weight == 1.0:
-                if local_step == 0 and config.rank == 0:
-                    tqdm.write("using builtin loss for lang model")
-                # use builtin loss in the lang_model
-                ce_loss = output.loss
-                if meters.ce_loss is not None:
-                    meters.ce_loss.update(ce_loss.item())
-                loss += ce_loss * config.loss_ce_weight
-            else:
-                # use self-defined loss if the pos_weight > 1.0
-                logits_trunc = logits[:, -labels.size(1) :, :]
-                ce_loss = weighted_cross_entropy(
-                    logits_trunc, labels, vocab_size, "mean", cross_entropy_weight
-                )
-                if meters.ce_loss is not None:
-                    meters.ce_loss.update(ce_loss.item())
-                loss += ce_loss * config.loss_ce_weight
+            ce_loss = output.loss
+            if meters.ce_loss is not None:
+                meters.ce_loss.update(ce_loss.item())
+            loss += ce_loss * config.loss_ce_weight
 
         model.backward(loss)
         model.step()
 
         meters.step_time.update(time.time() - end_time)
-        # torch.cuda.synchronize()  let the meters get their own time and then allreduce
         end_time = time.time()
-        meters.lr.update(model.optimizer.get_lr())
+        meters.lr.update(model.optimizer.get_lr())  # type: ignore
 
         yield model.global_steps, true_step, local_step

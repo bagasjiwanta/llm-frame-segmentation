@@ -23,83 +23,7 @@ class pred_datadict(TypedDict):
     pred_saliency_scores: list[int] | None
 
 
-def process_predictions_list_sorted_moments(
-    list_of_predictions: list[pred_datadict], num_moments: int
-) -> None:
-    """
-    Processes a list of prediction dictionaries, adding sorted moments
-    and saliency scores to each dictionary in place.
-    """
-    for prediction_dict in list_of_predictions:
-        get_sorted_moments_from_thresholds(prediction_dict, num_moments)
-
-
-def get_sorted_moments_from_thresholds(data_dict: pred_datadict, num_moments: int) -> None:
-    """
-    Generates moments from multiple thresholds, combines them, removes duplicates,
-    sorts them by score (descending), and adds them to 'pred_relevant_windows'.
-
-    This function modifies the input dictionary in place.
-
-    Parameters:
-        data_dict: A single prediction dictionary containing 'score' and 'duration'.
-    """
-    scores = data_dict["score"]
-    duration = data_dict["duration"]
-    num_scores = len(scores)
-    time_step = duration / num_scores
-
-    # thresholds = np.arange(0.0, 1.0, 0.25)
-    thresholds = np.array([0.5])
-    all_moments_set = set()
-
-    for threshold in thresholds:
-        preds = "".join(["1" if s >= threshold else "0" for s in scores])
-
-        in_span = False
-        span_start_idx = None
-        start_time = 0
-
-        for j, val in enumerate(preds):
-            if val == "1" and not in_span:
-                in_span = True
-                start_time = round(j * time_step)
-                span_start_idx = j
-            elif val == "0" and in_span:
-                end_time = round(j * time_step)
-                span_scores = scores[span_start_idx:j]
-                if span_scores:
-                    avg_score = float(sum(span_scores)) / len(span_scores)
-                    # Add moment as a tuple to the set to ensure uniqueness
-                    all_moments_set.add((float(start_time), float(end_time), avg_score))
-                in_span = False
-                span_start_idx = None
-
-        if in_span:
-            end_time = int(duration)
-            span_scores = scores[span_start_idx:num_scores]
-            if span_scores:
-                avg_score = float(sum(span_scores)) / len(span_scores)
-                all_moments_set.add((float(start_time), float(end_time), avg_score))
-
-    unique_moments = [list(moment) for moment in all_moments_set]
-
-    sorted_moments = sorted(unique_moments, key=lambda x: x[2], reverse=True)
-
-    if len(sorted_moments) > num_moments:
-        sorted_moments = sorted_moments[:num_moments]
-    elif len(sorted_moments) < num_moments:
-        remain = num_moments - len(sorted_moments)
-        remaining = [[0.0, 150.0, 0.0] for i in range(remain)]
-        sorted_moments.extend(remaining)
-
-    data_dict["pred_relevant_windows"] = sorted_moments
-
-    pred_saliency_scores = generate_2s_scores_interpolated(duration, scores)
-    data_dict["pred_saliency_scores"] = pred_saliency_scores
-
-
-def add_windows_to_masked_predictions(data_dict: list[pred_datadict]) -> None:
+def inplace_pred_string_to_relevant_windows(data_dict: list[pred_datadict], num_moments: int = 10) -> None:
     """
     Turns a prediction string into a list of spans with scores.
 
@@ -146,6 +70,13 @@ def add_windows_to_masked_predictions(data_dict: list[pred_datadict]) -> None:
             span_scores = scores[span_start_idx:N]
             avg_score = float(sum(span_scores)) / len(span_scores)
             spans.append([start, end, avg_score])
+
+        spans = sorted(spans, key=lambda span: span[-1], reverse=True)
+        remaining = num_moments - len(spans)
+        if remaining > 0:
+            padding = [[0, 150, 0.0] for _r in range(remaining)]
+            spans.extend(padding)
+
         data_dict[idx]["pred_relevant_windows"] = spans
 
         pred_saliency_scores = generate_2s_scores_interpolated(duration, scores)
@@ -233,7 +164,7 @@ def test_preds_to_spans_in_place():
     ]
     for d in datadicts:
         d["duration"] = 150
-    add_windows_to_masked_predictions(datadicts)
+    inplace_pred_string_to_relevant_windows(datadicts)
     p0 = datadicts[0]["pred_relevant_windows"] == [[0, 150, 1.0]]
     p0 = p0 and datadicts[1]["pred_relevant_windows"] == [[0, 30, 1.0], [42, 150, 1.0]]
     p0 = p0 and datadicts[2]["pred_relevant_windows"] == [[0, 30, 1.0], [60, 66, 1.0], [72, 96, 1.0]]
@@ -275,91 +206,11 @@ def greedy_to_scores(output_scores: Tensor, token_zero: int, token_one: int, num
     return scores[:, :, 1]
 
 
-# if __name__ == "__main__":
-#     test_preds_to_spans_in_place()
-#     test_clip_score_generation()
-
-
-def generate_ranked_spans(data_dict: dict, num_proposal: int = 10) -> list:
-    """
-    Generates a ranked list of 10 spans by creating a large pool of candidate
-    spans and scoring them, approximating a proposal-and-rank method.
-    """
-    scores = data_dict.get("score", [])
-    duration = data_dict.get("duration", 1)
-    if not scores:
-        return [[0, 0, 0.0]] * num_proposal
-
-    num_scores = len(scores)
-    time_step = float(duration) / num_scores
-    candidate_spans = set()
-
-    # Spans from high-confidence thresholds
-    for threshold in [0.9, 0.5, 0.1]:
-        preds = "".join(["1" if s >= threshold else "0" for s in scores])
-        in_span = False
-        span_start_idx = -1
-        for j, val in enumerate(preds):
-            if val == "1" and not in_span:
-                in_span = True
-                span_start_idx = j
-            elif val == "0" and in_span:
-                in_span = False
-                candidate_spans.add((span_start_idx, j))
-        if in_span:
-            candidate_spans.add((span_start_idx, num_scores))
-
-    # Spans from random sliding windows of different scales
-    # 2 & 4 = small, 8 & 12 = medium, 20 = long
-    scales = [2, 4, 8, 12, 20]
-    for scale in scales:
-        if scale > num_scores:
-            continue
-        for i in range(num_scores - scale + 1):
-            candidate_spans.add((i, i + scale))
-
-    candidate_spans.add((0, num_scores))  # The entire video
-
-    # Score Each Candidate Span
-    scored_moments = []
-    for start_idx, end_idx in candidate_spans:
-        if start_idx >= end_idx:
-            continue
-        span_scores = scores[start_idx:end_idx]
-        avg_score = float(sum(span_scores)) / len(span_scores)
-        start_time = round(start_idx * time_step)
-        end_time = round(end_idx * time_step)
-        scored_moments.append([start_time, end_time, avg_score])
-
-    # Rank, Select, and Pad
-    sorted_moments = sorted(scored_moments, key=lambda x: x[2], reverse=True)
-    if len(sorted_moments) > num_proposal:
-        return sorted_moments[:num_proposal]
-    else:
-        num_to_pad = num_proposal - len(sorted_moments)
-        dummy_moment = [0, 0, 0.0]
-        return sorted_moments + ([dummy_moment] * num_to_pad)
-
-
-def process_predictions_list_proposal(list_of_predictions: list[dict]) -> None:
-    """Processes a list of prediction dictionaries in place."""
-    for pred_dict in list_of_predictions:
-        pred_dict["pred_relevant_windows"] = generate_ranked_spans(pred_dict)
-        pred_dict["pred_saliency_scores"] = generate_2s_scores_interpolated(
-            pred_dict.get("duration", 0), pred_dict.get("score", [])
-        )
-
-
 def main():
-    parser = argparse.ArgumentParser(
-        description="Process prediction JSON file to generate moments and save as JSONL."
-    )
-    parser.add_argument(
-        "--input_path", type=str, required=True, help="Path to the input predictions JSON file."
-    )
+    parser = argparse.ArgumentParser(description="Process prediction JSON file to generate moments and save as JSONL.")
+    parser.add_argument("--input_path", type=str, required=True, help="Path to the input predictions JSON file.")
     parser.add_argument("--output_path", type=str, required=True, help="Path to save the output JSONL file.")
     parser.add_argument("--clean", action="store_true", default=False)
-    parser.add_argument("--method", type=str, choices=["proposal", "ranked"])
     parser.add_argument("--num_proposal", type=int, default=10)
     parser.add_argument("--video_path", type=str, help="to help insert video data incase missing")
     args = parser.parse_args()
@@ -371,10 +222,7 @@ def main():
         predictions_data = json.load(f)
     print(f"Number of predictions: {len(predictions_data)}")
 
-    if args.method == "ranked":
-        process_predictions_list_sorted_moments(predictions_data, num_moments=args.num_proposal)
-    else:
-        process_predictions_list_proposal(predictions_data)
+    inplace_pred_string_to_relevant_windows(predictions_data, num_moments=args.num_proposal)
 
     if args.video_path is not None:
         with open(args.video_path, "r") as f:
@@ -398,8 +246,11 @@ def main():
         os.makedirs(output_dir, exist_ok=True)
 
     with open(args.output_path, "w") as f:
-        for item in predictions_data:
-            f.write(json.dumps(item) + "\n")
+        for index, item in enumerate(predictions_data):
+            if index == len(predictions_data) - 1:
+                f.write(json.dumps(item))
+            else:
+                f.write(json.dumps(item) + "\n")
 
     print(f"Saved results to: {args.output_path}")
 

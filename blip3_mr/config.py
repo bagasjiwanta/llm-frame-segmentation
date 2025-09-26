@@ -33,10 +33,8 @@ class Config:
     num_epochs: int = 20
     float_sanity_epoch: float = 0.0
     num_sanity_steps: int = 0
-    # use_generation_scores_for_eval: bool = False
     num_val_beams: int = 1
     weight_decay: float = 0.0
-    # val_thresholds: list[float] = field(default_factory=list)
     do_train: bool = False
     do_val: bool = False
     do_test: bool = False
@@ -58,7 +56,6 @@ class Config:
     loss_tvl_weight: float = 0.0
     #
     bce_pos_weight: float = 1.0
-    ce_pos_weight: float = 1.0
     soft_loss: bool = True
     gd_norm: str = "square"
     tvl_beta: float = 0.7
@@ -107,8 +104,6 @@ class Config:
     deepspeed_config: str | None = None
     deepspeed_from_universal: bool = False
 
-    extra_verbose: bool = False
-
 
 # fmt: off
 def get_argument_parser() -> argparse.ArgumentParser:
@@ -154,7 +149,6 @@ def get_argument_parser() -> argparse.ArgumentParser:
     group.add_argument("--loss_mapping_path", type=str, default="")
     group.add_argument("--bce_pos_weight", type=float, default=1.0, help="Positive weight for the binary cross-entropy loss.")
     group.add_argument("--soft_loss", default=False, action="store_true", help="Use soft prediction for loss")
-    group.add_argument("--ce_pos_weight", default=1.0, type=float)
     group.add_argument("--gd_norm", type=str, choices=["square", "linear"], default="square")
     group.add_argument("--tvl_beta", type=float, default=0.5, help="Beta parameter for Tversky Loss")
 
@@ -194,7 +188,6 @@ def get_argument_parser() -> argparse.ArgumentParser:
 
     group = parser.add_argument_group("Other")
     group.add_argument("--seed", type=int, default=53, help="Random seed for reproducibility.")
-    group.add_argument("--extra_verbose", action='store_true', default=False)
 
     group = parser.add_argument_group("DeepSpeed")
     group.add_argument("--deepspeed", default=False, action="store_true", help="Flag whether deepspeed is used or not")
@@ -299,9 +292,7 @@ def config_check(config: Config):
         if total_loss_weight == 0.0:
             loss_weights = [1 / len(loss_weights) for _ in loss_weights]
         else:
-            loss_weights = [
-                loss / total_loss_weight if total_loss_weight > 0.0 else 0.0 for loss in loss_weights
-            ]
+            loss_weights = [loss / total_loss_weight if total_loss_weight > 0.0 else 0.0 for loss in loss_weights]
         config.loss_ce_weight = loss_weights[0]
         config.loss_bce_weight = loss_weights[1]
         config.loss_gd_weight = loss_weights[2]
