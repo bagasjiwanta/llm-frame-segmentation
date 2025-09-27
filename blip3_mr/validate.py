@@ -132,6 +132,7 @@ def validate_one_epoch(
         tokenizer=dataset.tokenizer,
         do_save=False,
         max_iter=max_iter,
+        generation_kwargs={"num_beams": config.num_val_beams},
     )
 
     moment_dataset: MomentRetrievalDataset = dataset.dataloader.dataset

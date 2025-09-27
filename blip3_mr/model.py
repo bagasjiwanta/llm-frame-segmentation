@@ -50,7 +50,7 @@ def load_model(config: Config) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
                 print("Trainable parameters:")
                 print(model.num_trainable_params_per_module)
 
-    if isfile(config.vision_tokenizer_pretrained) is not None:
+    if isfile(config.vision_tokenizer_pretrained):
         log(f"Loading vision_tokenizer from {config.vision_tokenizer_pretrained}")
         load_pretrained_state_dict(
             model.vision_tokenizer,
@@ -75,6 +75,7 @@ def wrap_model_in_lora(config: Config, model: XGenMMPerceiver, tokenizer: PreTra
             model_name_or_path=config.lang_model_pretrained,
         )
         peft_model.to(torch.bfloat16)
+        model.lang_model = peft_model
         log(f"Loaded lang_model adapter from {config.lang_model_pretrained} with config:")
         if config.rank == 0:
             print(peft_model.peft_config)
@@ -90,6 +91,7 @@ def wrap_model_in_lora(config: Config, model: XGenMMPerceiver, tokenizer: PreTra
             model_name_or_path=config.vision_tokenizer_pretrained,
         )
         peft_model2.bfloat16()
+        model.vision_tokenizer = peft_model2
         log(f"Loaded vision_tokenizer adapter from {config.vision_tokenizer_pretrained} with config:")
         if config.rank == 0:
             for k, v in peft_model2.peft_config["default"].items():
@@ -126,11 +128,11 @@ def create_model(config: Config) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
     model, tokenizer = load_model(config)
     wrap_model_in_lora(config, model, tokenizer)
 
-    if config.gradient_checkpointing:
-        log("Initializing gradient checkpointing")
-        model.init_gradient_checkpointing()
+    # if config.gradient_checkpointing:
+    #     log("Initializing gradient checkpointing")
+    #     model.init_gradient_checkpointing()
 
-    model.vision_encoder.compile(mode=COMPILE_MODE)
-    model.vision_tokenizer.compile(mode=COMPILE_MODE)
-    model.lang_model.compile(mode=COMPILE_MODE)
+    # model.vision_encoder.compile(mode=COMPILE_MODE)
+    # model.vision_tokenizer.compile(mode=COMPILE_MODE)
+    # model.lang_model.compile(mode=COMPILE_MODE)
     return model, tokenizer

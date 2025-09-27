@@ -1,11 +1,14 @@
 """Main finetuning script for training with deepspeed. Can be also used for validation only (with or without deepspeed)"""
 
+import json
+from typing import Any, cast
+
 import deepspeed
 import torch
 import torch.distributed as dist
-import wandb
 from tqdm import tqdm
 
+import wandb
 from blip3_mr.config import (
     get_config,
 )
@@ -18,6 +21,7 @@ from blip3_mr.utils import (
     TrainingMeters,
     calculate_loss_weight,
     init_wandb,
+    json_dumps,
     log,
     random_seed,
     save_checkpoint_deepspeed,
@@ -28,22 +32,10 @@ from blip3_mr.validate import (
     save_val_result_to_dirs,
     validate_one_epoch,
 )
-from typing import Any, cast
 
 # Reset when dataloader step + 1 % max_meter_step == 0 to prevent float overflow
 MAX_METER_STEP = 256
-
-"""
-# Save the base model weights to use the local model
-import os
-import torch
-from transformers import AutoModelForVision2Seq
-model = AutoModelForVision2Seq.from_pretrained(
-    "Salesforce/xgen-mm-phi3-mini-instruct-interleave-r-v1.5", trust_remote_code=True
-).vlm
-os.makedirs("weights", exist_ok=True)
-torch.save(model.state_dict(), "weights/xgenmm.pt")
-"""
+COMPILE_MODE = "default"
 
 
 def main():
@@ -64,9 +56,9 @@ def main():
     # --- Setup dataloaders
     log("Loading and testing datasets and dataloaders")
     train_datainfo, val_datainfo = make_train_val_datainfos(
-        tokenizer=tokenizer, config=config, distributed=config.world_size > 1, verbose=True
+        tokenizer=tokenizer, config=config, distributed=config.world_size > 1, verbose=False
     )
-    test_datainfo = make_test_datainfo(tokenizer, config) if config.do_test else None
+    test_datainfo = make_test_datainfo(tokenizer, config, verbose=False) if config.do_test else None
 
     num_micro_batch_in_epoch = len(train_datainfo.dataloader)
     num_global_steps = (num_micro_batch_in_epoch * config.num_epochs) // config.gradient_accumulation_steps
@@ -98,13 +90,36 @@ def main():
             )
         return
     # ---
+    weights = {}
+    for k, v in model.named_parameters():
+        weights[k] = [v.mean().item(), list(v.shape)]
+
+    with open("input_weight_pre.json", "w") as f:
+        f.write(json_dumps(weights, indent=2))
 
     # --- Initialize deepspeed ---
     orig_mod = unwrap_model(model)
+    print(orig_mod.lang_model.base_model)
     ckpt_dir, resume_from_step, resume_from_epoch, deepspeed_model = wrap_model_in_deepspeed(
         config, model, num_micro_batch_in_epoch, num_global_steps
     )
     model = deepspeed_model
+
+    if config.gradient_checkpointing:
+        log("Initializing gradient checkpointing")
+        model.init_gradient_checkpointing()
+
+    log("Compiling model")
+    orig_mod.vision_encoder.compile(mode=COMPILE_MODE)
+    orig_mod.vision_tokenizer.compile(mode=COMPILE_MODE)
+    orig_mod.lang_model.compile(mode=COMPILE_MODE)
+
+    weights = {}
+    for k, v in model.named_parameters():
+        weights[k] = [v.mean().item(), list(v.shape)]
+
+    with open("input_weight_post.json", "w") as f:
+        f.write(json_dumps(weights, indent=2))
 
     if config.rank == 0:
         print("Trainable parameters:")

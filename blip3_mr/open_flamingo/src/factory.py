@@ -17,7 +17,20 @@ MODEL_ANYRES_GRIDS = [
     [1152, 384],
     [384, 1152],
 ]
-PRETRAINED_PATH = "weights/xgen-mm-phi3-mini-instruct-interleave-r-v1.5.pt"
+
+"""
+# Save the base model weights to use the local model
+import os
+import torch
+from transformers import AutoModelForVision2Seq
+model = AutoModelForVision2Seq.from_pretrained(
+    "Salesforce/xgen-mm-phi3-mini-instruct-interleave-r-v1.5", trust_remote_code=True
+).vlm
+os.makedirs("weights", exist_ok=True)
+torch.save(model.state_dict(), "weights/xgenmm.pt")
+"""
+
+PRETRAINED_PATH = "weights/xgenmm.pt"
 
 def load_pretrained(pretrained_path: str, model: nn.Module) -> dict:
     """
