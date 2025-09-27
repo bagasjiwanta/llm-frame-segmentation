@@ -22,8 +22,7 @@ COMPILE_MODE = "default"
 
 
 def load_model(config: Config) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
-    # the hf model can't be used for forward(), monkey patching also not working
-    if config.use_local_model or config.do_train:
+    if config.use_local_model:
         model, tokenizer = create_model_and_tokenizer(
             gradient_checkpointing=config.gradient_checkpointing, pretrained=config.base_model_name_or_path
         )
