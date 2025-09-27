@@ -253,7 +253,7 @@ def get_deepspeed_config_from_config(config: Config, total_training_global_steps
         ds_conf["optimizer"]["params"]["lr"] = config.learning_rate
 
     if config.deepspeed_from_universal:
-        if not "checkpoint" in ds_conf:
+        if "checkpoint" not in ds_conf:
             ds_conf["checkpoint"] = {"load_universal": True}
         elif isinstance(ds_conf["checkpoint"], dict):
             ds_conf["checkpoint"]["load_universal"] = True

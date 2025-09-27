@@ -215,7 +215,7 @@ def display_some_predictions(predictions: list, invalid_predictions: list, groun
     display_keys = list(predictions_dict.keys())[:max_display]
     displayed_preds = [predictions_dict[k] for k in display_keys]
     displayed_gts = [gts_dict[k] for k in display_keys]
-    print(f"\nPredictions and ground truths:")
+    print("\nPredictions and ground truths:")
     for i, (pred, label) in enumerate(zip(displayed_preds, displayed_gts)):
         print(
             f"Qid: {pred['qid']}, Pred string: {pred['preds']}, Pred: {pred['pred_relevant_windows']}, Label: {label['relevant_windows']}"
@@ -225,7 +225,7 @@ def display_some_predictions(predictions: list, invalid_predictions: list, groun
     display_keys = list(inv_predictions_dict.keys())[:max_display]
     displayed_inv_preds = [inv_predictions_dict[k] for k in display_keys]
     displayed_gts = [gts_dict[k] for k in display_keys]
-    print(f"\nInvalid predictions and ground truths:")
+    print("\nInvalid predictions and ground truths:")
     for i, (pred, label) in enumerate(zip(displayed_inv_preds, displayed_gts)):
         print(
             f"Qid: {pred['qid']}, Pred string: {pred['preds']}, Pred: {pred['pred_relevant_windows']}, Label: {label['relevant_windows']}"

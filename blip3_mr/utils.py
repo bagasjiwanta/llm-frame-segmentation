@@ -415,10 +415,10 @@ class TrainingMeters:
             item = log_dict[k]
             log_dict_wandb[f"train/{k}"] = item
 
-        log_dict_wandb[f"train/bce_loss_weighted"] = self.config.loss_bce_weight * log_dict["bce_loss"]
-        log_dict_wandb[f"train/ce_loss_weighted"] = self.config.loss_ce_weight * log_dict["ce_loss"]
-        log_dict_wandb[f"train/gd_loss_weighted"] = self.config.loss_gd_weight * log_dict["gd_loss"]
-        log_dict_wandb[f"train/tv_loss_weighted"] = self.config.loss_tvl_weight * log_dict["tv_loss"]
+        log_dict_wandb["train/bce_loss_weighted"] = self.config.loss_bce_weight * log_dict["bce_loss"]
+        log_dict_wandb["train/ce_loss_weighted"] = self.config.loss_ce_weight * log_dict["ce_loss"]
+        log_dict_wandb["train/gd_loss_weighted"] = self.config.loss_gd_weight * log_dict["gd_loss"]
+        log_dict_wandb["train/tv_loss_weighted"] = self.config.loss_tvl_weight * log_dict["tv_loss"]
 
         return log_dict_wandb
 

@@ -1,40 +1,21 @@
-from collections import UserDict
 from typing import cast
 
 import deepspeed
 import torch
-import torch.distributed as dist
-import wandb
-from tqdm import tqdm
 from transformers import AutoModelForVision2Seq, AutoTokenizer
 from transformers.tokenization_utils import PreTrainedTokenizer
 
-from blip3_mr.config import Config, get_config, get_deepspeed_config_from_config
-from blip3_mr.dataset import make_test_datainfo, make_train_val_datainfos
+from blip3_mr.config import Config, get_deepspeed_config_from_config
 from blip3_mr.lora import (
     load_adapter,
 )
 from blip3_mr.open_flamingo.src.factory import create_model_and_tokenizer
 from blip3_mr.open_flamingo.src.xgenmm import XGenMMPerceiver
-from blip3_mr.test import test_one_epoch
-from blip3_mr.train import deepspeed_finetune_one_epoch_generator
 from blip3_mr.utils import (
-    ProgressMeter,
-    TrainingMeters,
-    calculate_loss_weight,
     find_and_load_checkpoint_deepspeed,
-    init_wandb,
     isfile,
     load_pretrained_state_dict,
     log,
-    random_seed,
-    save_checkpoint_deepspeed,
-    unwrap_model,
-)
-from blip3_mr.validate import (
-    calc_val_steps,
-    save_val_result_to_dirs,
-    validate_one_epoch_v2,
 )
 
 COMPILE_MODE = "default"
@@ -81,10 +62,6 @@ def load_model(config: Config) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
         load_pretrained_state_dict(model.lang_model, config.lang_model_pretrained, bad_key="lang_model.")  # type: ignore
         log(f"Loading lang_model from {config.lang_model_pretrained}")
 
-    if config.gradient_checkpointing:
-        log("Initializing gradient checkpointing")
-        model.init_gradient_checkpointing()
-
     return model, tokenizer
 
 
@@ -123,17 +100,12 @@ def wrap_model_in_lora(config: Config, model: XGenMMPerceiver, tokenizer: PreTra
         print("Trainable parameters:")
         print(model.num_trainable_params_per_module)
 
-    # --- Compile ---
-    model.vision_encoder.compile(mode=COMPILE_MODE)
-    model.vision_tokenizer.compile(mode=COMPILE_MODE)
-    model.lang_model.compile(mode=COMPILE_MODE)
-    # ---
-
 
 def wrap_model_in_deepspeed(
     config: Config,
     model: XGenMMPerceiver,
     num_micro_batch_in_epoch: int,
+    num_global_steps: int,
 ):
     deepspeed_config = get_deepspeed_config_from_config(config, num_global_steps)
     deepspeed_model, _, _, _ = deepspeed.initialize(model=model, config=deepspeed_config)
@@ -153,4 +125,12 @@ def wrap_model_in_deepspeed(
 def create_model(config: Config) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
     model, tokenizer = load_model(config)
     wrap_model_in_lora(config, model, tokenizer)
+
+    if config.gradient_checkpointing:
+        log("Initializing gradient checkpointing")
+        model.init_gradient_checkpointing()
+
+    model.vision_encoder.compile(mode=COMPILE_MODE)
+    model.vision_tokenizer.compile(mode=COMPILE_MODE)
+    model.lang_model.compile(mode=COMPILE_MODE)
     return model, tokenizer

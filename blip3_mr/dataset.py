@@ -16,10 +16,6 @@ from torch.multiprocessing import Value
 from torch.utils.data import DataLoader, Dataset, DistributedSampler, Sampler
 from torchvision.io import ImageReadMode, decode_image
 from transformers.tokenization_utils import PreTrainedTokenizer
-from transformers.trainer_pt_utils import (
-    DistributedLengthGroupedSampler,
-    LengthGroupedSampler,
-)
 
 from blip3_mr.config import Config
 
@@ -181,7 +177,7 @@ class MomentRetrievalDataset(Dataset):
         # assert "saliency_scores" in annotations[0]
         self.images_path = os.path.join(self.dataset_path, "videos")
         assert os.path.isdir(self.images_path), (
-            f"images path at {self.images_path} is not a directory. Perhaps you forgot to extract the videos.tar.gz ?"
+            f"images path at {self.images_path} is not a directory. Perhaps you forgot to extract the videos ?"
         )
         self.list_data_dict: list[RawDataType] = annotations
 
@@ -191,7 +187,7 @@ class MomentRetrievalDataset(Dataset):
     def get_val_qvh(self) -> dict:
         """For offline validation with qvh API"""
         if self.split != "val":
-            return []
+            return {}
 
         dd = copy.deepcopy(self.list_data_dict)
         for i in range(len(dd)):
@@ -569,16 +565,6 @@ class DistributedStratifiedBatchSampler(DistributedSampler):
         self.epoch = epoch
 
 
-def get_dataset_length_for_sampler(dataset: MomentRetrievalDataset) -> list[int]:
-    lengths = []
-    data_dict = dataset.list_data_dict
-    for i in range(len(data_dict)):
-        data = data_dict[i]
-        num_non_zeros = sum([d > 0.0 for d in data["saliency_scores"]])
-        lengths.append(num_non_zeros)
-    return lengths
-
-
 def infer_tokens_from_tokenizer(tokenizer: PreTrainedTokenizer):
     token_zero = tokenizer.convert_tokens_to_ids("0")
     token_zero = token_zero[-1] if isinstance(token_zero, list) else token_zero
@@ -683,18 +669,7 @@ def make_train_val_datainfos(
             seed=config.seed,
         )
 
-        if config.sampler == "length_grouped":
-            train_lengths = get_dataset_length_for_sampler(train_dataset)
-            train_sampler = DistributedLengthGroupedSampler(
-                lengths=train_lengths,
-                batch_size=config.train_micro_batch_size_per_gpu,
-                drop_last=True,
-                num_replicas=get_world_size(),
-                rank=get_rank(),
-                seed=config.seed,
-            )
-
-        elif config.sampler == "pytorch" or config.sampler is None:
+        if config.sampler == "pytorch" or config.sampler is None:
             train_sampler = DistributedSampler(
                 train_dataset,
                 num_replicas=get_world_size(),
@@ -718,12 +693,7 @@ def make_train_val_datainfos(
             raise NotImplementedError(f"sampler {config.sampler} is not valid")
 
     else:  # not distributed
-        if config.sampler == "length_grouped":
-            train_sampler = LengthGroupedSampler(
-                lengths=get_dataset_length_for_sampler(train_dataset),
-                batch_size=config.train_micro_batch_size_per_gpu,
-            )
-        elif config.sampler == "stratified":
+        if config.sampler == "stratified":
             train_batch_sampler = StratifiedBatchSampler(
                 dataset=train_dataset, batch_size=config.train_micro_batch_size_per_gpu, n_bins=5
             )

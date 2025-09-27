@@ -3,25 +3,24 @@ Copied directly from https://github.com/jayleicn/moment_detr/blob/main/standalon
     https://github.com/jayleicn/moment_detr/blob/main/standalone_eval/eval.py
 """
 
-import numpy as np
-from collections import OrderedDict, defaultdict
-import json
-import time
 import copy
+import json
 import multiprocessing as mp
+import time
+from collections import OrderedDict, defaultdict
+
+import numpy as np
+from sklearn.metrics import precision_recall_curve
 
 """
 Copied from MMAction2
 https://github.com/open-mmlab/mmaction2/blob/master/mmaction/core/evaluation/eval_detection.py
 """
-import json
-import numpy as np
-from sklearn.metrics import precision_recall_curve
 
 
 def load_jsonl(filename):
     with open(filename, "r") as f:
-        return [json.loads(l.strip("\n")) for l in f.readlines()]
+        return [json.loads(_l.strip("\n")) for _l in f.readlines()]
 
 
 def compute_temporal_iou_batch_paired(pred_windows, gt_windows):
@@ -506,8 +505,8 @@ def eval_submission(submission, ground_truth, verbose=True, match_number=True):
     gt_qids = set([e["qid"] for e in ground_truth])
     if match_number:
         assert pred_qids == gt_qids, \
-            f"qids in ground_truth and submission must match. " \
-            f"use `match_number=False` if you wish to disable this check"
+            "qids in ground_truth and submission must match. " \
+            "use `match_number=False` if you wish to disable this check"
     else:  # only leave the items that exists in both submission and ground_truth
         shared_qids = pred_qids.intersection(gt_qids)
         submission = [e for e in submission if e["qid"] in shared_qids]

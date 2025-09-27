@@ -3,7 +3,6 @@ import json
 import os
 from typing import TypedDict
 
-import numpy as np
 import torch
 from torch import Tensor
 
@@ -12,7 +11,7 @@ from torch import Tensor
 
 def load_jsonl(filename):
     with open(filename, "r") as f:
-        return [json.loads(l.strip("\n")) for l in f.readlines()]
+        return [json.loads(_l.strip("\n")) for _l in f.readlines()]
 
 
 class pred_datadict(TypedDict):

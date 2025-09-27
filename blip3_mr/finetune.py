@@ -28,6 +28,7 @@ from blip3_mr.validate import (
     save_val_result_to_dirs,
     validate_one_epoch,
 )
+from typing import Any, cast
 
 # Reset when dataloader step + 1 % max_meter_step == 0 to prevent float overflow
 MAX_METER_STEP = 256
@@ -101,7 +102,7 @@ def main():
     # --- Initialize deepspeed ---
     orig_mod = unwrap_model(model)
     ckpt_dir, resume_from_step, resume_from_epoch, deepspeed_model = wrap_model_in_deepspeed(
-        config, model, num_micro_batch_in_epoch
+        config, model, num_micro_batch_in_epoch, num_global_steps
     )
     model = deepspeed_model
 
@@ -118,7 +119,7 @@ def main():
     # ---
 
     if config.rank == 0:
-        log(f"Steps: ")
+        log("Steps: ")
         print(f"Total global steps: {num_global_steps}")
         print(f"Resume from step: {resume_from_step}")
         print(f"Resume from epoch: {resume_from_epoch}")
@@ -239,6 +240,8 @@ def main():
                     gather_ok = all([i is not None for i in all_preds]) and all([i is not None for i in all_gts])
 
                     if config.rank == 0 and gather_ok:
+                        all_preds = cast(list[list[Any]], all_preds)
+                        all_gts = cast(list[list[Any]], all_gts)
                         latest_val_preds = [item for sublist in all_preds for item in sublist]
                         latest_val_truths = [item for sublist in all_gts for item in sublist]
 

@@ -194,3 +194,4 @@ transformers/
 *.bin
 *.deb
 models/
+setup/
