@@ -108,7 +108,7 @@ def validate_one_epoch(
     config: Config,
     model: deepspeed.DeepSpeedEngine | PreTrainedModel | PeftModel | XGenMMPerceiver,
     dataset: DataInfo,
-    max_iter: int = 0,
+    max_iter: int = -1,
 ) -> ValidateReturnType:
     """
     Runs a full validation loop for one epoch on the provided dataset and then display the metrics.
@@ -146,7 +146,7 @@ def validate_one_epoch(
 
     # samples is length except when set
     num_samples = len(moment_dataset) if config.num_val_samples != 0 else config.num_val_samples
-
+    num_samples = max_iter if max_iter > 0 else num_samples
     sample_ratio = len(ground_truths) / num_samples if config.world_size > 1 else 1.0
 
     metric_tensor = torch.tensor([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, valid_ratio * sample_ratio])

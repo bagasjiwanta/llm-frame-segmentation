@@ -114,12 +114,18 @@ def main():
     orig_mod.vision_tokenizer.compile(mode=COMPILE_MODE)
     orig_mod.lang_model.compile(mode=COMPILE_MODE)
 
+    peft_model = orig_mod.lang_model 
+    orig_mod.lang_model = orig_mod.lang_model.unload()
+    orig_mod.lang_model.save_pretrained("phi3_residual")
+    
     weights = {}
     for k, v in model.named_parameters():
         weights[k] = [v.mean().item(), list(v.shape)]
-
     with open("input_weight_post.json", "w") as f:
         f.write(json_dumps(weights, indent=2))
+
+    exit()
+
 
     if config.rank == 0:
         print("Trainable parameters:")

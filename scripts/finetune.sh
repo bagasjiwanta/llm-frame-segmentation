@@ -35,14 +35,15 @@ wandb_entity="bagas-jiwanta"
 args=(
     # --vision_tokenizer_train            # Finetune the vision tokenizer module
     --lang_model_lora                   # Use LoRA for the language model
-    --use_local_model 
+    # --use_local_model 
     # --lang_model_pretrained jwnt4/xgenmm-mr-v1-lang_model-pissa-r16a16-rslora
     # --vision_tokenizer_pretrained "./pretrained/xgenmm-mr-v1-vision_tokenizer/vision_tokenizer.safetensors"
     --lora_r 16
     --lora_dropout 0.025
     --init_lora_weights pissa_niter_4
     --use_rslora
-    --training_precision bf16           
+    --training_precision bf16          
+    --base_model_name_or_path jwnt4/blip3-instruct-interleave 
     # --base_model_name_or_path Salesforce/xgen-mm-phi3-mini-instruct-interleave-r-v1.5
     --gradient_checkpointing            # Saves VRAM
     --gradient_accumulation_steps 4
@@ -51,11 +52,11 @@ args=(
     --dataset_config config.yaml        # yaml config file name in base_data_dir
     --dataset_name main                 # name of dataset in base_data_dir/dataset_config file (yaml)
     --test_dataset_name test            # optional
-    --num_train_workers 6               # train dataloader workers
-    --num_val_workers 4               # val dataloader workers
-    --sampler pytorch                # use stratified sampler so every batch has hard, medium, and easy samples
+    --num_train_workers 12               # train dataloader workers
+    --num_val_workers 8               # val dataloader workers
+    --sampler stratified                # use stratified sampler so every batch has hard, medium, and easy samples
 
-    --train_micro_batch_size_per_gpu 4 # train batch per gpu
+    --train_micro_batch_size_per_gpu 16 # train batch per gpu
     --do_train                          # do training
     --num_epochs 20                     
     --learning_rate 2e-5                
@@ -72,7 +73,7 @@ args=(
     --deepspeed_config deepspeed_configs/zero2_offload.json # config json path
     --deepspeed                         # enable deepspeed
 
-    --val_batch_size 3
+    --val_batch_size 6
     --do_val                            # do validation
     --do_test                           # do test
     --float_sanity_epoch 0.03           # percentage of validation data to be done before training

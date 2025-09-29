@@ -15,6 +15,7 @@ import torch.nn as nn
 import wandb
 import yaml
 from peft import PeftMixedModel, PeftModel
+from transformers import AutoModel
 from safetensors import safe_open
 from tqdm import tqdm
 
@@ -646,7 +647,7 @@ def find_and_load_checkpoint_deepspeed(
             config.resume_from_checkpoint = f.read().strip()
             log(f"Using latest checkpoint from {ckpt_dir}/{config.resume_from_checkpoint}")
 
-    if not isdir(config.resume_from_checkpoint):
+    if not isdir(f"{ckpt_dir}/{config.resume_from_checkpoint}"):
         return ckpt_dir, 0, 0, False
 
     log(
@@ -693,17 +694,22 @@ def find_and_load_checkpoint_deepspeed(
 
 
 def load_pretrained_state_dict(model: torch.nn.Module, path: str, bad_key: str = ""):
-    tensors = {}
-    if path.endswith("safetensors"):
-        with safe_open(path, framework="pt", device="cpu") as f:
-            for key in f.keys():
-                good_key = key.replace(bad_key, "")
-                tensors[good_key] = f.get_tensor(key)
+    if isdir(path):
+        tensors = AutoModel.from_pretrained(path)
+        tensors = tensors.state_dict()
+
     else:
-        _tensors = torch.load(path)
-        for k, v in _tensors.items():
-            good_k = k.replace(bad_key, "")
-            tensors[good_k] = v
+        tensors = {}
+        if path.endswith("safetensors"):
+            with safe_open(path, framework="pt", device="cpu") as f:
+                for key in f.keys():
+                    good_key = key.replace(bad_key, "")
+                    tensors[good_key] = f.get_tensor(key)
+        else:
+            _tensors = torch.load(path)
+            for k, v in _tensors.items():
+                good_k = k.replace(bad_key, "")
+                tensors[good_k] = v
 
     results = model.load_state_dict(tensors)
     rank = os.environ.get("RANK", 0)

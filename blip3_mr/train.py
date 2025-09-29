@@ -77,7 +77,7 @@ def deepspeed_finetune_one_epoch_generator(
 
         meters.num_tokens.update(attention_mask.sum().item() / 1000)
 
-        lang_labels = labels if (config.loss_ce_weight > 0.0 and config.ce_pos_weight == 1.0) else None
+        lang_labels = labels if config.loss_ce_weight > 0.0 else None
         output = model(
             vision_x=images,
             image_size=batch["image_size"],
