@@ -81,3 +81,73 @@ Merged model: [jwnt4/xgenmm-mr-v1-merged](https://huggingface.co/jwnt4/xgenmm-mr
 Vision tokenizer weights: [jwnt4/xgenmm-mr-v1-vision_tokenizer](https://huggingface.co/jwnt4/xgenmm-mr-v1-vision_tokenizer)
 
 Language model adapter: [jwnt4/xgenmm-mr-v1-lang_model-pissa-r16a16-rslora](https://huggingface.co/jwnt4/xgenmm-mr-v1-lang_model-pissa-r16a16-rslora)
+
+
+## Setup
+
+This repository was originally built using [Modal](https://modal.com).
+
+### System Requirements
+
+- Ubuntu 24.04 recommended
+- CUDA-compatible GPU (bfloat 16 support is needed)
+- Python 3.13
+- CUDA 12.9.1 with cuDNN
+
+## Install System Packages
+
+```bash
+sudo apt-get update
+sudo apt-get upgrade -y
+sudo apt-get install -y \
+    build-essential \
+    python3-dev \
+    python3-setuptools \
+    make \
+    cmake \
+    pkg-config \
+```
+
+### Install Python Packages
+
+Upgrade essentials
+
+```bash
+pip install --upgrade pip wheel setuptools ninja numpy
+```
+
+Install torch
+
+```bash
+pip install torch==2.8.0 torchvision==0.23.0 torchaudio==2.8.0 --index-url https://download.pytorch.org/whl/cu129
+```
+
+Install requirements using requirements.txt (requirements snapshot in requirements_snapshot.tx):
+
+```bash
+pip install -r requirements.txt
+```
+
+Requirements:
+
+```
+einops
+einops_exts
+sentencepiece
+protobuf
+transformers
+accelerate
+scikit-learn
+tqdm
+wandb
+huggingface-hub[cli]
+pillow
+peft
+deepspeed
+```
+
+Flash attention
+
+```bash
+pip install https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.8cxx11abiFALSE-cp313-cp313-linux_x86_64.whl
+```
