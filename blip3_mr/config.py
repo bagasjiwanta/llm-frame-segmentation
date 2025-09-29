@@ -23,6 +23,7 @@ class Config:
     lang_model_train: bool = False
     lang_model_lora: bool = False
     lang_model_pretrained: str | None = None
+    lang_model_adapter: str | None = None 
 
     # Training args
     run_name: str = "main"
@@ -122,6 +123,7 @@ def get_argument_parser() -> argparse.ArgumentParser:
     group.add_argument("--lang_model_train", action="store_true", default=False, help="Flag to train the language model.")
     group.add_argument("--lang_model_lora", action="store_true", default=False, help="Flag to wrap the language model in LoRA.")
     group.add_argument("--lang_model_pretrained", type=str, default=None)
+    group.add_argument("--lang_model_adapter", type=str, default=None)
 
     group = parser.add_argument_group("Training")
     group.add_argument("--run_name", type=str, default="main", help="Name for the training run, used for logging and saving.")

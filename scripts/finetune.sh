@@ -36,8 +36,9 @@ args=(
     # --vision_tokenizer_train            # Finetune the vision tokenizer module
     --lang_model_lora                   # Use LoRA for the language model
     # --use_local_model 
-    # --lang_model_pretrained jwnt4/xgenmm-mr-v1-lang_model-pissa-r16a16-rslora
     # --vision_tokenizer_pretrained "./pretrained/xgenmm-mr-v1-vision_tokenizer/vision_tokenizer.safetensors"
+    --lang_model_pretrained weights/phi3_residual # residual path for pissa (jwnt4/blip3-phi3-pissa-4iter) (make yourself)
+    --lang_model_adapter weights/phi3_pissa # pissa adapter
     --lora_r 16
     --lora_dropout 0.025
     --init_lora_weights pissa_niter_4

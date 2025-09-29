@@ -31,6 +31,10 @@ def isfile(path: Any):
     return path is not None and isinstance(path, str) and os.path.isfile(path)
 
 
+def is_file_or_dir(path: Any):
+    return isfile(path) and isdir(path)
+
+
 def list_dict_to_jsonl(l: list[dict]):
     return "\n".join(json.dumps(l[i]) for i in range(len(l)))
 

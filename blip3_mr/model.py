@@ -16,6 +16,8 @@ from blip3_mr.utils import (
     isfile,
     load_pretrained_state_dict,
     log,
+    isdir,
+    is_file_or_dir
 )
 
 COMPILE_MODE = "default"
@@ -49,7 +51,7 @@ def load_model(config: Config) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
                 print("Trainable parameters:")
                 print(model.num_trainable_params_per_module)
 
-    if isfile(config.vision_tokenizer_pretrained):
+    if is_file_or_dir(config.vision_tokenizer_pretrained):
         log(f"Loading vision_tokenizer from {config.vision_tokenizer_pretrained}")
         load_pretrained_state_dict(
             model.vision_tokenizer,
@@ -57,25 +59,35 @@ def load_model(config: Config) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
             bad_key="vision_tokenizer.",
         )
 
-    if isfile(config.lang_model_pretrained):
-        load_pretrained_state_dict(model.lang_model, config.lang_model_pretrained, bad_key="lang_model.")  # type: ignore
+    if isfile(config.lang_model_pretrained) or isdir(config.lang_model_pretrained):
         log(f"Loading lang_model from {config.lang_model_pretrained}")
+        load_pretrained_state_dict(model.lang_model, config.lang_model_pretrained, bad_key="lang_model.")  # type: ignore
 
     return model, tokenizer
 
 
 def wrap_model_in_lora(config: Config, model: XGenMMPerceiver, tokenizer: PreTrainedTokenizer):
     if config.lang_model_lora:
-        peft_model = load_adapter(
-            model.lang_model,
-            config,
-            task_type="CAUSAL_LM",
-            target_modules="phi3",
-            model_name_or_path=config.lang_model_pretrained,
-        )
-        peft_model.to(torch.bfloat16)
+        if is_file_or_dir(config.lang_model_pretrained) and isdir(config.lang_model_adapter):
+            peft_model = load_adapter(
+                model.lang_model,
+                config,
+                model_name_or_path=config.lang_model_adapter
+            )
+            peft_model.to(torch.bfloat16)
+            log(f"Loaded lang_model adapter from {config.lang_model_adapter} with config:")
+        else:
+
+            peft_model = load_adapter(
+                model.lang_model,
+                config,
+                task_type="CAUSAL_LM",
+                target_modules="phi3",
+            )
+            peft_model.to(torch.bfloat16)
+            log(f"Created lang_model adapter with config:")
+        
         model.lang_model = peft_model
-        log(f"Loaded lang_model adapter from {config.lang_model_pretrained} with config:")
         if config.rank == 0:
             print(peft_model.peft_config)
         peft_model.print_trainable_parameters()
