@@ -37,8 +37,8 @@ args=(
     --lang_model_lora                   # Use LoRA for the language model
     # --use_local_model 
     # --vision_tokenizer_pretrained "./pretrained/xgenmm-mr-v1-vision_tokenizer/vision_tokenizer.safetensors"
-    --lang_model_pretrained weights/phi3_residual # residual path for pissa (jwnt4/blip3-phi3-pissa-4iter) (make yourself)
-    --lang_model_adapter weights/phi3_pissa # pissa adapter
+    # --lang_model_pretrained weights/phi3_residual # residual path for pissa (jwnt4/blip3-phi3-pissa-4iter) (make yourself)
+    # --lang_model_adapter weights/phi3_pissa # pissa adapter
     --lora_r 16
     --lora_dropout 0.025
     --init_lora_weights pissa_niter_4
@@ -77,7 +77,7 @@ args=(
     --val_batch_size 6
     --do_val                            # do validation
     --do_test                           # do test
-    --float_sanity_epoch 0.03           # percentage of validation data to be done before training
+    --float_sanity_epoch 0.0           # percentage of validation data to be done before training
     --num_val_samples 1550                # total sample number
     --num_val_beams 2                   # beam search
     --num_val_per_epoch 1               # how many validation done in a single epoch
