@@ -46,29 +46,6 @@ class SharedEpoch:
         return self.shared_epoch.value
 
 
-@dataclass
-class DataInfo:
-    """
-    DataInfo is a dataclass that holds information about a dataset.
-    """
-
-    name: str
-    dataloader: DataLoader
-    tokenizer: PreTrainedTokenizer
-    sampler: torch.utils.data.Sampler | None = None
-    shared_epoch: SharedEpoch | None = None
-    num_frames: int = 0
-    token_zero: int = 29900
-    token_one: int = 29896
-    token_assistant: int = 32001
-
-    def set_epoch(self, epoch):
-        if self.shared_epoch is not None:
-            self.shared_epoch.set_value(epoch)
-        if self.sampler is not None and isinstance(self.sampler, DistributedSampler):
-            self.sampler.set_epoch(epoch)
-
-
 SystemPrompt = (
     "<|system|>\n"
     "You are a smart video retrieval assistant. "
@@ -255,6 +232,30 @@ class MomentRetrievalDataset(Dataset):
             "relevant_windows": relevant_windows,
             "duration": int(data["duration"]),
         }
+
+
+@dataclass
+class DataInfo:
+    """
+    DataInfo is a dataclass that holds information about a dataset.
+    """
+
+    name: str
+    dataloader: DataLoader
+    dataset: MomentRetrievalDataset
+    tokenizer: PreTrainedTokenizer
+    sampler: torch.utils.data.Sampler | None = None
+    shared_epoch: SharedEpoch | None = None
+    num_frames: int = 0
+    token_zero: int = 29900
+    token_one: int = 29896
+    token_assistant: int = 32001
+
+    def set_epoch(self, epoch):
+        if self.shared_epoch is not None:
+            self.shared_epoch.set_value(epoch)
+        if self.sampler is not None and isinstance(self.sampler, DistributedSampler):
+            self.sampler.set_epoch(epoch)
 
 
 class TrainCollatorOutput(TypedDict):
@@ -613,6 +614,7 @@ def make_test_datainfo(tokenizer: PreTrainedTokenizer, config: Config, verbose=T
         token_one=tokens[1],
         token_assistant=tokens[2],
         tokenizer=tokenizer,
+        dataset=test_dataset,
     )
 
     if config.rank == 0 and verbose:
@@ -767,6 +769,7 @@ def make_train_val_datainfos(
         token_one=token_one,
         token_assistant=token_assistant,
         tokenizer=tokenizer,
+        dataset=train_dataset,
     )
     val_datainfo = DataInfo(
         name=config.dataset_name + "_val",
@@ -778,6 +781,7 @@ def make_train_val_datainfos(
         token_one=token_one,
         token_assistant=token_assistant,
         tokenizer=tokenizer,
+        dataset=val_dataset,
     )
 
     return train_datainfo, val_datainfo

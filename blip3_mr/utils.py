@@ -69,7 +69,7 @@ def calculate_loss_weight_inner(config: Config, epoch: int = 0):
         return
 
     loss_sum = sum(loss_weights)
-    loss_weights = [l / loss_sum for l in loss_weights]
+    loss_weights = [loss / loss_sum for loss in loss_weights]
 
     config.loss_ce_weight = loss_weights[0]
     config.loss_bce_weight = loss_weights[1]
@@ -147,14 +147,12 @@ def init_wandb(config: Config):
         config (Config): An object containing the configuration arguments for the training run.
     """
     if config.rank == 0 and config.report_to_wandb:
-        wandb_config = {
-            "project": config.wandb_project or "blip3-mr",
-            "name": f"{config.run_name}",
-            "config": vars(config),
-            "entity": config.wandb_entity,
-        }
-
-        wandb.init(**wandb_config)
+        wandb.init(
+            project=config.wandb_project or "blip3-mr",
+            name=config.run_name,
+            config=vars(config),
+            entity=config.wandb_entity,
+        )
 
         if wandb.run is not None:
             for key, value in vars(config).items():
@@ -617,71 +615,81 @@ def save_checkpoint_deepspeed(
             print(f"cannot display metrics table: {e}")
 
 
+def print_dict(d: dict, skip_keys: list[str] | str = []):
+    if isinstance(skip_keys, str):
+        skip_keys = [skip_keys]
+
+    for k, v in d.items():
+        if k in skip_keys:
+            continue
+        print(f" - {k}: {v}")
+
+
+def rank0_print_dict(d: dict, skip_keys: list[str] | str):
+    if os.environ.get("RANK", 0) == 0:
+        print_dict(d, skip_keys)
+
+
 def find_and_load_checkpoint_deepspeed(
     config: Config, model: deepspeed.DeepSpeedEngine, num_micro_batch_in_epoch
 ) -> tuple[str, int, int, bool]:
-    ok = False
-    # --- Find checkpoint dir ---
+    # checkpoint dir is not valid
     ckpt_dir = os.path.join(config.checkpoint_dir, config.run_name.replace("/", "-"))
     if not os.path.isdir(ckpt_dir):
         log(f"Checkpoint dir at {ckpt_dir} is not a valid directory")
         return ckpt_dir, 0, 0, False
 
+    # find from "latest"
     resume_from_epoch, resume_from_step = 0, 0
     if config.resume_from_latest:
         with open(f"{ckpt_dir}/latest", "r") as f:
             config.resume_from_checkpoint = f.read().strip()
             log(f"Using latest checkpoint from {ckpt_dir}/{config.resume_from_checkpoint}")
 
-    # --- Load checkpoint ---
-    if config.resume_from_checkpoint is not None:
-        if os.path.isdir(os.path.join(ckpt_dir, config.resume_from_checkpoint)):
-            log(
-                f"Loading checkpoint from {ckpt_dir}/{config.resume_from_checkpoint} with load_module_only={config.load_module_only}"
-            )
-            _, client_sd = model.load_checkpoint(
-                ckpt_dir,
-                tag=config.resume_from_checkpoint,
-                load_module_strict=False,
-                load_module_only=config.load_module_only,
-            )
+    if not isdir(config.resume_from_checkpoint):
+        return ckpt_dir, 0, 0, False
 
-            infer_step_from_ckpt = False
-            log("Checkpoint Keys:")
-            if client_sd is not None and isinstance(client_sd, dict):
-                if config.rank == 0:
-                    for k, v in client_sd.items():
-                        if "param" in k or "buffer" in k:
-                            continue
-                        print(f"  {k}: {v}")
+    log(
+        f"Loading checkpoint from {ckpt_dir}/{config.resume_from_checkpoint} with load_module_only={config.load_module_only}"
+    )
+    _, client_sd = model.load_checkpoint(
+        ckpt_dir,
+        tag=config.resume_from_checkpoint,
+        load_module_strict=False,
+        load_module_only=config.load_module_only,
+    )
 
-                # infer last step and last epoch from the client_sd (if any)
-                if "step" in client_sd and "epoch" in client_sd:
-                    resume_from_step = client_sd["step"]
-                    resume_from_epoch = client_sd["epoch"]
-                    infer_step_from_ckpt = True
-                elif "epoch" in client_sd:  # if only epoch information exists, assume it's the last batch of the epoch
-                    resume_from_step = num_micro_batch_in_epoch - 1
-                    resume_from_epoch = client_sd["epoch"]
-                    infer_step_from_ckpt = True
+    infer_step_from_ckpt = False
+    log("Checkpoint Keys:")
+    if isinstance(client_sd, dict):
+        rank0_print_dict(client_sd, ["param", "buffer"])
 
-            if not infer_step_from_ckpt:
-                resume_from_step = (
-                    model.global_steps * config.gradient_accumulation_steps - 1
-                )  # if nothing is given, assume it is the last step of the global step
-                resume_from_epoch = resume_from_step // num_micro_batch_in_epoch
+        # infer last step and last epoch from the client_sd (if any)
+        if "step" in client_sd and "epoch" in client_sd:
+            resume_from_step = client_sd["step"]
+            resume_from_epoch = client_sd["epoch"]
+            infer_step_from_ckpt = True
+        elif "epoch" in client_sd:  # if only epoch information exists, assume it's the last batch of the epoch
+            resume_from_step = num_micro_batch_in_epoch - 1
+            resume_from_epoch = client_sd["epoch"]
+            infer_step_from_ckpt = True
 
-            # increase the epoch if step is at the end of epoch
-            if (resume_from_step + 1) % num_micro_batch_in_epoch == 0:
-                resume_from_epoch += 1  # end of epoch, continue to next epoch
+    if not infer_step_from_ckpt:
+        resume_from_step = (
+            model.global_steps * config.gradient_accumulation_steps - 1
+        )  # if nothing is given, assume it is the last step of deepspeed's global step
+        resume_from_epoch = resume_from_step // num_micro_batch_in_epoch
 
-            # step === step modulo (step in epoch)
-            resume_from_step -= num_micro_batch_in_epoch * resume_from_epoch
-            resume_from_step += 1  # increase step
+    # increase the epoch if step is at the end of epoch
+    if (resume_from_step + 1) % num_micro_batch_in_epoch == 0:
+        resume_from_epoch += 1  # end of epoch, continue to next epoch
+        resume_from_epoch = 0
+    else:
+        # step === step modulo (step in epoch)
+        resume_from_step = resume_from_step % num_micro_batch_in_epoch
+        resume_from_step += 1  # increase step
 
-            ok = True
-
-    return ckpt_dir, resume_from_step, resume_from_epoch, ok
+    return ckpt_dir, resume_from_step, resume_from_epoch, True
 
 
 def load_pretrained_state_dict(model: torch.nn.Module, path: str, bad_key: str = ""):

@@ -15,7 +15,7 @@ from blip3_mr.dataset import (
 from blip3_mr.eval_mr import eval_submission
 from blip3_mr.open_flamingo.src.xgenmm import XGenMMPerceiver
 from blip3_mr.test import test_one_epoch
-from blip3_mr.utils import isdir, json_dumps, list_dict_to_jsonl
+from blip3_mr.utils import isdir, json_dumps, list_dict_to_jsonl, print_dict
 
 dtype_map = {
     "fp16": torch.float16,
@@ -137,18 +137,16 @@ def validate_one_epoch(
 
     moment_dataset: MomentRetrievalDataset = dataset.dataloader.dataset
     ground_truths = moment_dataset.get_val_qvh()
-
-    if config.num_val_samples != 0:
-        ground_truths = [ground_truths[k["qid"]] for k in predictions]
-    else:
-        ground_truths = list(ground_truths.values())
+    ground_truths = [ground_truths[k["qid"]] for k in predictions]
 
     valid_ratio = (len(predictions) - len(invalid_predictions)) / len(predictions)
 
     if config.rank == 0:
         display_some_predictions(predictions, invalid_predictions, ground_truths)
 
-    num_samples = len(moment_dataset)
+    # samples is length except when set
+    num_samples = len(moment_dataset) if config.num_val_samples != 0 else config.num_val_samples
+
     sample_ratio = len(ground_truths) / num_samples if config.world_size > 1 else 1.0
 
     metric_tensor = torch.tensor([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, valid_ratio * sample_ratio])
@@ -192,8 +190,7 @@ def validate_one_epoch(
     if config.rank == 0:
         print("\nValidation Metrics:")
         print(f"\tNum samples: {num_samples}")
-        for k, v in metric.items():
-            print(f"\t{k}: {v:.04f}")
+        print_dict(metric)
 
     return {
         "metrics": metric,

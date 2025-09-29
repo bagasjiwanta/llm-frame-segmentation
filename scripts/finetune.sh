@@ -1,15 +1,28 @@
 #!/bin/bash
 
-# Use today's date as if not provided
-if [[ -z "$1" ]]; then
-    experiment_name=$(date +"%m-%d")_$(date +"%H-%M") 
-else
-    experiment_name=${1}
-fi
+# Use today's date if not provided
+experiment_name=$(date +"%m-%d")_$(date +"%H-%M")
+num_gpus=2
 
-if [[ ! -e runs/$experiment_name ]]; then
-    mkdir -p runs/$experiment_name
-fi
+extra_args=()
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --run_name)
+      experiment_name="$2"
+      shift 2
+      ;;
+    --num_gpus)
+      num_gpus="$2"
+      shift 2
+      ;;
+    *)
+      extra_args+=("$1")
+      shift
+      ;;
+  esac
+done
+
+mkdir -p runs/$experiment_name
 
 export PYTHONPATH="."  # training without having to pip install
 export NCCL_P2P_DISABLE=1  # comment out if nvlink is present
@@ -83,8 +96,9 @@ args=(
 
 # python -m debugpy --listen 5678 --wait-for-client -m deepspeed.launcher.runner \
 deepspeed \
-    --num_nodes 1 --num_gpus 2 \
+    --num_nodes 1 --num_gpus "$num_gpus" \
     blip3_mr/finetune.py \
     "${args[@]}" \
+    "${extra_args[@]}" \
     2>&1 | tee "runs/${experiment_name}/terminal_output.log"
 
