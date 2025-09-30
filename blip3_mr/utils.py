@@ -657,15 +657,17 @@ def find_and_load_checkpoint_deepspeed(
     log(
         f"Loading checkpoint from {ckpt_dir}/{config.resume_from_checkpoint} with load_module_only={config.load_module_only}"
     )
-    _, client_sd = model.load_checkpoint(
+    ds_load_dir, client_sd = model.load_checkpoint(
         ckpt_dir,
         tag=config.resume_from_checkpoint,
         load_module_strict=False,
         load_module_only=config.load_module_only,
     )
+    # print(ds_load_dir)
 
     infer_step_from_ckpt = False
     log("Checkpoint Keys:")
+    # print(client_sd)
     if isinstance(client_sd, dict):
         rank0_print_dict(client_sd, ["param", "buffer"])
 

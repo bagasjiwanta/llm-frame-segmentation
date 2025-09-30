@@ -99,7 +99,6 @@ def main():
 
     # --- Initialize deepspeed ---
     orig_mod = unwrap_model(model)
-    print(orig_mod.lang_model.base_model)
     ckpt_dir, resume_from_step, resume_from_epoch, deepspeed_model = wrap_model_in_deepspeed(
         config, model, num_micro_batch_in_epoch, num_global_steps
     )
@@ -107,7 +106,7 @@ def main():
 
     if config.gradient_checkpointing:
         log("Initializing gradient checkpointing")
-        model.init_gradient_checkpointing()
+        orig_mod.init_gradient_checkpointing()
 
     log("Compiling model")
     orig_mod.vision_encoder.compile(mode=COMPILE_MODE)

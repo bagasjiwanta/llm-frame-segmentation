@@ -46,18 +46,19 @@ args=(
     --training_precision bf16          
     --base_model_name_or_path jwnt4/blip3-instruct-interleave 
     # --base_model_name_or_path Salesforce/xgen-mm-phi3-mini-instruct-interleave-r-v1.5
+    # --base_model_name_or_path weights/xgenmm.pt
     --gradient_checkpointing            # Saves VRAM
-    --gradient_accumulation_steps 4
+    --gradient_accumulation_steps 8
 
     --base_data_dir datasets            # base data dir
     --dataset_config config.yaml        # yaml config file name in base_data_dir
     --dataset_name main                 # name of dataset in base_data_dir/dataset_config file (yaml)
     --test_dataset_name test            # optional
-    --num_train_workers 12               # train dataloader workers
-    --num_val_workers 8               # val dataloader workers
+    --num_train_workers 8               # train dataloader workers
+    --num_val_workers 6               # val dataloader workers
     --sampler stratified                # use stratified sampler so every batch has hard, medium, and easy samples
 
-    --train_micro_batch_size_per_gpu 16 # train batch per gpu
+    --train_micro_batch_size_per_gpu 8 # train batch per gpu
     --do_train                          # do training
     --num_epochs 20                     
     --learning_rate 2e-5                
@@ -74,7 +75,7 @@ args=(
     --deepspeed_config deepspeed_configs/zero2_offload.json # config json path
     --deepspeed                         # enable deepspeed
 
-    --val_batch_size 6
+    --val_batch_size 3
     --do_val                            # do validation
     --do_test                           # do test
     --float_sanity_epoch 0.0           # percentage of validation data to be done before training

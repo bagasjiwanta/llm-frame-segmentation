@@ -32,7 +32,7 @@ def load_model(config: Config) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
         hf_model = AutoModelForVision2Seq.from_pretrained(
             config.base_model_name_or_path,
             trust_remote_code=True,
-            torch_dtype=torch.bfloat16,
+            dtype=torch.bfloat16,
         )
         tokenizer: PreTrainedTokenizer = AutoTokenizer.from_pretrained(
             "Salesforce/xgen-mm-phi3-mini-instruct-interleave-r-v1.5",
@@ -139,11 +139,4 @@ def create_model(config: Config) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
     model, tokenizer = load_model(config)
     wrap_model_in_lora(config, model, tokenizer)
 
-    # if config.gradient_checkpointing:
-    #     log("Initializing gradient checkpointing")
-    #     model.init_gradient_checkpointing()
-
-    # model.vision_encoder.compile(mode=COMPILE_MODE)
-    # model.vision_tokenizer.compile(mode=COMPILE_MODE)
-    # model.lang_model.compile(mode=COMPILE_MODE)
     return model, tokenizer
