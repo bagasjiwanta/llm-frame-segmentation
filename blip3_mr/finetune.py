@@ -1,14 +1,13 @@
 """Main finetuning script for training with deepspeed. Can be also used for validation only (with or without deepspeed)"""
 
-import json
 from typing import Any, cast
 
 import deepspeed
 import torch
 import torch.distributed as dist
+import wandb
 from tqdm import tqdm
 
-import wandb
 from blip3_mr.config import (
     get_config,
 )
@@ -21,15 +20,14 @@ from blip3_mr.utils import (
     TrainingMeters,
     calculate_loss_weight,
     init_wandb,
-    json_dumps,
     log,
     random_seed,
     save_checkpoint_deepspeed,
+    save_state_dict_summary_to_file,
     unwrap_model,
 )
 from blip3_mr.validate import (
     calc_val_steps,
-    save_val_result_to_dirs,
     validate_one_epoch,
 )
 
@@ -62,22 +60,20 @@ def main():
 
     num_micro_batch_in_epoch = len(train_datainfo.dataloader)
     num_global_steps = (num_micro_batch_in_epoch * config.num_epochs) // config.gradient_accumulation_steps
-    # ---
 
-    # --- Val and/or test without deepspeed---
+    # --- Val and/or test single GPU, vanilla pytorch---
     if not (config.deepspeed or config.do_train):
         model = model.to(device)
-
-        log("Freezing the model")
         model.requires_grad_(False)
-        if config.rank == 0:
-            print("Trainable parameters:")
-            print(model.num_trainable_params_per_module)
 
         if config.do_val:
-            val_results = validate_one_epoch(config=config, model=model, dataset=val_datainfo)
-            if config.rank == 0:
-                save_val_result_to_dirs([f"runs/{config.run_name}"], val_results)
+            validate_one_epoch(
+                config=config,
+                model=model,
+                dataset=val_datainfo,
+                do_save=True,
+                output_dir=f"runs/{config.run_name}",
+            )
 
         if config.do_test:
             test_one_epoch(
@@ -89,15 +85,9 @@ def main():
                 output_dir=f"runs/{config.run_name}",
             )
         return
-    # ---
-    weights = {}
-    for k, v in model.named_parameters():
-        weights[k] = [v.mean().item(), list(v.shape)]
-
-    with open("input_weight_pre.json", "w") as f:
-        f.write(json_dumps(weights, indent=2))
 
     # --- Initialize deepspeed ---
+    save_state_dict_summary_to_file(model, "weights_pre.json")
     orig_mod = unwrap_model(model)
     ckpt_dir, resume_from_step, resume_from_epoch, deepspeed_model = wrap_model_in_deepspeed(
         config, model, num_micro_batch_in_epoch, num_global_steps
@@ -113,36 +103,30 @@ def main():
     orig_mod.vision_tokenizer.compile(mode=COMPILE_MODE)
     orig_mod.lang_model.compile(mode=COMPILE_MODE)
 
-    # peft_model = orig_mod.lang_model 
-    # orig_mod.lang_model = orig_mod.lang_model.unload()
-    # orig_mod.lang_model.save_pretrained("phi3_residual")
-    
-    weights = {}
-    for k, v in model.named_parameters():
-        weights[k] = [v.mean().item(), list(v.shape)]
-    with open("input_weight_post.json", "w") as f:
-        f.write(json_dumps(weights, indent=2))
-
-    # exit()
-
+    save_state_dict_summary_to_file(model, "weights_post.json")
 
     if config.rank == 0:
         print("Trainable parameters:")
         print(orig_mod.num_trainable_params_per_module)
 
-    # --- Val loop with deepspeeed (or deepspeed checkpoints)
+    # --- Val loop with deepspeed
     if not config.do_train:
-        val_results = validate_one_epoch(config=config, model=model, dataset=val_datainfo)
-        if config.rank == 0:
-            save_val_result_to_dirs([f"runs/{config.run_name}"], val_results)
+        validate_one_epoch(
+            config=config,
+            model=model,
+            dataset=val_datainfo,
+            do_save=True,
+            output_dir=f"runs/{config.run_name}",
+        )
+        deepspeed.dist.destroy_process_group()
         return
-    # ---
 
+    # --- Normal Training starts here
     if config.rank == 0:
         log("Steps: ")
-        print(f"Total global steps: {num_global_steps}")
-        print(f"Resume from step: {resume_from_step}")
-        print(f"Resume from epoch: {resume_from_epoch}")
+        print(f"Total global steps : {num_global_steps}")
+        print(f"Resume from step   : {resume_from_step}")
+        print(f"Resume from epoch  : {resume_from_epoch}")
 
     # --- Sanity checking ---
     if config.float_sanity_epoch > 0:
@@ -157,17 +141,11 @@ def main():
             max_iter=config.num_sanity_steps,
         )
         torch.cuda.empty_cache()
-    # ---
 
     # --- Calculate at what steps to do eval
     val_steps = calc_val_steps(config.num_epochs, num_micro_batch_in_epoch, config.num_val_per_epoch)
-    if config.rank == 0:
-        log("Validation steps:")
-        val_steps_print = [str(v) for v in val_steps]
-        print(", ".join(val_steps_print))
-
+    log(f"Validation steps:\n{", ".join([str(v) for v in val_steps])}")
     val_step = -1
-    # ---
 
     # --- Training loop ---
     for epoch in range(resume_from_epoch, config.num_epochs):
@@ -201,7 +179,7 @@ def main():
             total=num_micro_batch_in_epoch,
             initial=resume_from_step,
             desc=f"Run training on epoch: {epoch}",
-            ncols=120,
+            ncols=100,
         )
 
         all_stats = {}

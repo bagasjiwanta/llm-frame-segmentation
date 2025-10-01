@@ -109,6 +109,8 @@ def validate_one_epoch(
     model: deepspeed.DeepSpeedEngine | PreTrainedModel | PeftModel | XGenMMPerceiver,
     dataset: DataInfo,
     max_iter: int = -1,
+    do_save: bool = False,
+    output_dir: str | None = None,
 ) -> ValidateReturnType:
     """
     Runs a full validation loop for one epoch on the provided dataset and then display the metrics.
@@ -118,7 +120,7 @@ def validate_one_epoch(
         model (deepspeed.DeepSpeedEngine | PreTrainedModel | PeftModel ): The model to be evaluated.
         dataset (DataInfo): A container for the validation dataloader and dataset-specific info.
         max_steps (int): number to terminate the validation loop earlier (for sanity checking)
-
+        do_save (bool): if True, save the results to a dir
     Returns:
         output (ValidateReturnType): A dict containing
             - metric: dict of metrics
@@ -192,12 +194,17 @@ def validate_one_epoch(
         print(f"\tNum samples: {num_samples}")
         print_dict(metric)
 
-    return {
+    val_results: ValidateReturnType = {
         "metrics": metric,
         "ground_truths": ground_truths,
         "predictions": predictions,
         "invalid_predictions": invalid_predictions,
     }
+
+    if do_save and isdir(output_dir) and config.rank == 0:
+        save_val_result_to_dirs([output_dir], val_results)
+
+    return val_results
 
 
 def display_some_predictions(predictions: list, invalid_predictions: list, ground_truths: list):

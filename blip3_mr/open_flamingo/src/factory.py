@@ -145,13 +145,13 @@ def create_model_and_tokenizer(
     model.set_special_token_ids({v: tokenizer.convert_tokens_to_ids(v) for v in model.special_tokens.values()})
     
     # freeze appropriate parameters
-    model.set_trainable()
+    # model.set_trainable()
 
     # log model info
     if verbose and int(os.environ.get("RANK", 0)) == 0:
         print(f"BLIP-3 model initialized with {model.num_trainable_params:,} trainable parameters")
-        print(f"==========Trainable Parameters\n{model.num_trainable_params_per_module}")
-        print(f"==========Total Parameters\n{model.num_params_per_module}\n==========")
+        # print(f"==========Trainable Parameters\n{model.num_trainable_params_per_module}")
+        # print(f"==========Total Parameters\n{model.num_params_per_module}")
 
     load_pretrained(PRETRAINED_PATH if pretrained is None else pretrained, model)
     return model, tokenizer

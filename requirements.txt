@@ -2,12 +2,12 @@ einops
 einops_exts
 sentencepiece
 protobuf
-transformers==4.54.1
+transformers
 accelerate
 scikit-learn
 tqdm
 wandb
 huggingface-hub[cli]
 pillow
-peft==0.17.0
-deepspeed==0.17.4
+peft
+deepspeed

@@ -13,11 +13,11 @@ from blip3_mr.open_flamingo.src.factory import create_model_and_tokenizer
 from blip3_mr.open_flamingo.src.xgenmm import XGenMMPerceiver
 from blip3_mr.utils import (
     find_and_load_checkpoint_deepspeed,
+    is_file_or_dir,
+    isdir,
     isfile,
     load_pretrained_state_dict,
     log,
-    isdir,
-    is_file_or_dir
 )
 
 COMPILE_MODE = "default"
@@ -45,11 +45,20 @@ def load_model(config: Config) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
         if config.rank == 0:
             print(hf_model.config)
         model = cast(XGenMMPerceiver, model)
-        if config.do_train:
-            model.set_trainable()
-            if config.rank == 0:
-                print("Trainable parameters:")
-                print(model.num_trainable_params_per_module)
+
+    if config.do_train:
+        model.set_trainable()
+    else:
+        model.requires_grad_(False)
+
+    if not config.vision_tokenizer_train:
+        model.vision_tokenizer.requires_grad_(False)
+    if not config.lang_model_train:
+        model.lang_model.requires_grad_(False)
+
+    if config.rank == 0:
+        print(f"Total parameters:\n{model.num_trainable_params_per_module}")
+        print(f"Trainable parameters:\n{model.num_trainable_params_per_module}")
 
     if is_file_or_dir(config.vision_tokenizer_pretrained):
         log(f"Loading vision_tokenizer from {config.vision_tokenizer_pretrained}")
@@ -69,15 +78,10 @@ def load_model(config: Config) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
 def wrap_model_in_lora(config: Config, model: XGenMMPerceiver, tokenizer: PreTrainedTokenizer):
     if config.lang_model_lora:
         if is_file_or_dir(config.lang_model_pretrained) and isdir(config.lang_model_adapter):
-            peft_model = load_adapter(
-                model.lang_model,
-                config,
-                model_name_or_path=config.lang_model_adapter
-            )
+            peft_model = load_adapter(model.lang_model, config, model_name_or_path=config.lang_model_adapter)
             peft_model.to(torch.bfloat16)
             log(f"Loaded lang_model adapter from {config.lang_model_adapter} with config:")
         else:
-
             peft_model = load_adapter(
                 model.lang_model,
                 config,
@@ -86,7 +90,7 @@ def wrap_model_in_lora(config: Config, model: XGenMMPerceiver, tokenizer: PreTra
             )
             peft_model.to(torch.bfloat16)
             log(f"Created lang_model adapter with config:")
-        
+
         model.lang_model = peft_model
         if config.rank == 0:
             print(peft_model.peft_config)

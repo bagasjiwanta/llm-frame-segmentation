@@ -86,7 +86,7 @@ def test_one_epoch(
 
     token_zero, token_one = infer_tokens_from_tokenizer(tokenizer)
 
-    iterator = tqdm(enumerate(dataloader), disable=rank != 0, ncols=120, desc="Run Inference", total=len(dataloader))
+    iterator = tqdm(enumerate(dataloader), disable=rank != 0, ncols=100, desc="Run Inference", total=len(dataloader))
     for step, batch in iterator:
         if max_iter > 0 and (step + 1) > max_iter:
             break

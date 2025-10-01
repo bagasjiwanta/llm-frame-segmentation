@@ -53,6 +53,13 @@ def log(message: str, **kwargs):
         print(f"\n[{timestamp}] {message}", **kwargs)
 
 
+def save_state_dict_summary_to_file(model: torch.nn.Module, filename="weights.json"):
+    weights = {}
+    for k, v in model.named_parameters():
+        weights[k] = [v.mean().item(), list(v.shape)]
+    with open(filename, "w") as f:
+        f.write(json_dumps(weights, indent=2))
+
 def calculate_loss_weight_inner(config: Config, epoch: int = 0):
     if config is None or not os.path.isfile(config.loss_mapping_path):
         return
