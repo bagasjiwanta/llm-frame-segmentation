@@ -85,7 +85,7 @@ args=(
     --resume_from_latest                # resume from latest checkpoint
 
     --seed 2109
-    # --report_to_wandb 
+    --report_to_wandb 
     --wandb_project ${wandb_project} 
     --wandb_entity ${wandb_entity} 
 )

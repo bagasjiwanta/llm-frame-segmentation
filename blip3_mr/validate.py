@@ -148,7 +148,7 @@ def validate_one_epoch(
 
     # samples is length except when set
     num_samples = len(moment_dataset) if config.num_val_samples != 0 else config.num_val_samples
-    num_samples = max_iter if max_iter > 0 else num_samples
+    num_samples = (max_iter * config.val_batch_size * config.world_size) if max_iter > 0 else num_samples
     sample_ratio = len(ground_truths) / num_samples if config.world_size > 1 else 1.0
 
     metric_tensor = torch.tensor([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, valid_ratio * sample_ratio])
