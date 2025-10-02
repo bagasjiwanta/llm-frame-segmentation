@@ -638,12 +638,12 @@ def print_dict(d: dict, skip_keys: list[str] | str = []):
 
 
 def rank0_print_dict(d: dict, skip_keys: list[str] | str):
-    if os.environ.get("RANK", 0) == 0:
+    if int(os.environ.get("RANK", 0)) == 0:
         print_dict(d, skip_keys)
 
 
 def find_and_load_checkpoint_deepspeed(
-    config: Config, model: deepspeed.DeepSpeedEngine, num_micro_batch_in_epoch
+    config: Config, model: deepspeed.DeepSpeedEngine, num_micro_batch_in_epoch: int
 ) -> tuple[str, int, int, bool]:
     # checkpoint dir is not valid
     ckpt_dir = os.path.join(config.checkpoint_dir, config.run_name.replace("/", "-"))
@@ -674,19 +674,20 @@ def find_and_load_checkpoint_deepspeed(
 
     infer_step_from_ckpt = False
     log("Checkpoint Keys:")
-    # print(client_sd)
-    if isinstance(client_sd, dict):
-        rank0_print_dict(client_sd, ["param", "buffer"])
+    # print(client_sd, type(client_sd))
+    # if isinstance(client_sd, dict):
+    rank0_print_dict(client_sd, ["buffer_names", "param_shapes", "frozen_param_shapes", "shared_params", "frozen_param_fragments", "global_samples", "ds_config"])
 
-        # infer last step and last epoch from the client_sd (if any)
-        if "step" in client_sd and "epoch" in client_sd:
-            resume_from_step = client_sd["step"]
-            resume_from_epoch = client_sd["epoch"]
-            infer_step_from_ckpt = True
-        elif "epoch" in client_sd:  # if only epoch information exists, assume it's the last batch of the epoch
-            resume_from_step = num_micro_batch_in_epoch - 1
-            resume_from_epoch = client_sd["epoch"]
-            infer_step_from_ckpt = True
+    # infer last step and last epoch from the client_sd (if any)
+    # print(num_micro_batch_in_epoch)
+    if "step" in client_sd and "epoch" in client_sd:
+        resume_from_step = client_sd["step"]
+        resume_from_epoch = client_sd["epoch"]
+        infer_step_from_ckpt = True
+    elif "epoch" in client_sd and 'step' not in client_sd:  # if only epoch information exists, assume it's the last batch of the epoch
+        resume_from_step = num_micro_batch_in_epoch - 1
+        resume_from_epoch = client_sd["epoch"]
+        infer_step_from_ckpt = True
 
     if not infer_step_from_ckpt:
         resume_from_step = (
@@ -697,7 +698,7 @@ def find_and_load_checkpoint_deepspeed(
     # increase the epoch if step is at the end of epoch
     if (resume_from_step + 1) % num_micro_batch_in_epoch == 0:
         resume_from_epoch += 1  # end of epoch, continue to next epoch
-        resume_from_epoch = 0
+        resume_from_step = 0
     else:
         # step === step modulo (step in epoch)
         resume_from_step = resume_from_step % num_micro_batch_in_epoch

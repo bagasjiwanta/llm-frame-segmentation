@@ -479,6 +479,7 @@ class DistributedStratifiedBatchSampler(DistributedSampler):
         batch_size: int = 8,
         n_bins=4,
         seed=42,
+        drop_last=True,
     ):
         if num_replicas is None:
             if not dist.is_available() or not dist.is_initialized():
@@ -496,6 +497,7 @@ class DistributedStratifiedBatchSampler(DistributedSampler):
         self.shuffle = shuffle
         self.batch_size = batch_size
         self.seed = seed
+        self.drop_last = drop_last
 
         # list of "001100101111"
         non_zeros = [d["conversations"][-1]["content"] for d in self.dataset]
@@ -513,10 +515,6 @@ class DistributedStratifiedBatchSampler(DistributedSampler):
         self.grouped_indices = [[] for _ in range(self.num_groups)]
         for i, group in enumerate(self.stratify_groups):
             self.grouped_indices[group].append(i)
-
-        self.total_num_batches = math.ceil(len(self.dataset) / self.batch_size)
-        self.num_batches_per_replica = math.ceil(self.total_num_batches / self.num_replicas)
-        self.total_size = self.num_batches_per_replica * self.num_replicas
 
     def __iter__(self):
         g = torch.Generator()
@@ -543,24 +541,35 @@ class DistributedStratifiedBatchSampler(DistributedSampler):
             if active_iters == 0:
                 break
 
+        if self.drop_last:
+            usable_size = len(global_indices_pool) - (len(global_indices_pool) % self.batch_size)
+        else:
+            usable_size = len(global_indices_pool)
+
         all_batches = [
-            global_indices_pool[i : i + self.batch_size] for i in range(0, len(global_indices_pool), self.batch_size)
+            global_indices_pool[i : i + self.batch_size]
+            for i in range(0, usable_size, self.batch_size)
         ]
 
         if self.shuffle:
             batch_perm = torch.randperm(len(all_batches), generator=g).tolist()
             all_batches = [all_batches[i] for i in batch_perm]
 
-        padding_size = self.total_size - len(all_batches)
-        if padding_size > 0:
-            all_batches += all_batches[:padding_size]
+        if not self.drop_last:
+            total_size = math.ceil(len(all_batches) / self.num_replicas) * self.num_replicas
+            padding_size = total_size - len(all_batches)
+            if padding_size > 0:
+                all_batches += all_batches[:padding_size]
 
-        batches_for_this_replica = all_batches[self.rank : self.total_size : self.num_replicas]
+        batches_for_this_replica = all_batches[self.rank : len(all_batches) : self.num_replicas]
 
         return iter(batches_for_this_replica)
 
     def __len__(self):
-        return self.num_batches_per_replica
+        if self.drop_last:
+            return len(self.dataset) // (self.batch_size * self.num_replicas)
+        else:
+            return math.ceil(len(self.dataset) / (self.batch_size * self.num_replicas))
 
     def set_epoch(self, epoch: int):
         self.epoch = epoch

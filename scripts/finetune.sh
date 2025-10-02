@@ -33,7 +33,7 @@ wandb_entity="bagas-jiwanta"
 
 
 args=(
-    --vision_tokenizer_train            # Finetune the vision tokenizer module
+    # --vision_tokenizer_train            # Finetune the vision tokenizer module
     --lang_model_lora                   # Use LoRA for the language model
     --use_local_model 
     --lora_r 16
@@ -74,7 +74,7 @@ args=(
     --val_batch_size 3
     --do_val                            # do validation
     --do_test                           # do test
-    --float_sanity_epoch 0.0           # percentage of validation data to be done before training
+    --float_sanity_epoch 0.05           # percentage of validation data to be done before training
     --num_val_samples 1550                # total sample number
     --num_val_beams 2                   # beam search
     --num_val_per_epoch 1               # how many validation done in a single epoch

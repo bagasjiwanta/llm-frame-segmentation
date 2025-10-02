@@ -51,14 +51,9 @@ def load_model(config: Config) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
     else:
         model.requires_grad_(False)
 
-    if not config.vision_tokenizer_train:
-        model.vision_tokenizer.requires_grad_(False)
-    if not config.lang_model_train:
-        model.lang_model.requires_grad_(False)
-
     if config.rank == 0:
-        print(f"Total parameters:\n{model.num_trainable_params_per_module}")
-        print(f"Trainable parameters:\n{model.num_trainable_params_per_module}")
+        print(f"Total parameters:\n{model.num_params_per_module}")
+
 
     if is_file_or_dir(config.vision_tokenizer_pretrained):
         log(f"Loading vision_tokenizer from {config.vision_tokenizer_pretrained}")
@@ -94,7 +89,8 @@ def wrap_model_in_lora(config: Config, model: XGenMMPerceiver, tokenizer: PreTra
         model.lang_model = peft_model
         if config.rank == 0:
             print(peft_model.peft_config)
-        peft_model.print_trainable_parameters()
+            log("Lang model trainable parameters:")
+            peft_model.print_trainable_parameters()
 
     if config.vision_tokenizer_lora:
         peft_model2 = load_adapter(
@@ -113,9 +109,9 @@ def wrap_model_in_lora(config: Config, model: XGenMMPerceiver, tokenizer: PreTra
                 print(f"\t{k}: {v}")
         peft_model2.print_trainable_parameters()
 
-    if config.rank == 0:
-        print("Trainable parameters:")
-        print(model.num_trainable_params_per_module)
+    # if config.rank == 0:
+    #     print("Trainable parameters:")
+    #     print(model.num_trainable_params_per_module)
 
 
 def wrap_model_in_deepspeed(

@@ -60,6 +60,7 @@ def main():
 
     num_micro_batch_in_epoch = len(train_datainfo.dataloader)
     num_global_steps = (num_micro_batch_in_epoch * config.num_epochs) // config.gradient_accumulation_steps
+    log(f"Micro batch per epoch: {num_micro_batch_in_epoch}")
 
     # --- Val and/or test single GPU, vanilla pytorch---
     if not (config.deepspeed or config.do_train):
@@ -93,6 +94,11 @@ def main():
         config, model, num_micro_batch_in_epoch, num_global_steps
     )
     model = deepspeed_model
+
+    if not config.vision_tokenizer_train:
+        model.vision_tokenizer.requires_grad_(False)
+    if not config.lang_model_train:
+        model.lang_model.requires_grad_(False)
 
     if config.gradient_checkpointing:
         log("Initializing gradient checkpointing")
