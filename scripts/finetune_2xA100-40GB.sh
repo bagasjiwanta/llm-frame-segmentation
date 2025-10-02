@@ -41,8 +41,7 @@ args=(
     --init_lora_weights pissa_niter_4
     --use_rslora
     --training_precision bf16          
-    # --base_model_name_or_path Salesforce/xgen-mm-phi3-mini-instruct-interleave-r-v1.5
-    --base_model_name_or_path weights/xgenmm.pt # when using local model, this is pt file (saved state dict)
+    --base_model_name_or_path weights/xgenmm.pt 
     --gradient_checkpointing            # Saves VRAM
     --gradient_accumulation_steps 8
 

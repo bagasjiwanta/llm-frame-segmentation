@@ -87,9 +87,9 @@ Language model adapter: [jwnt4/xgenmm-mr-v1-lang_model-pissa-r16a16-rslora](http
 
 This repository was originally built using [Modal](https://modal.com).
 
-### System Requirements
+### System info used during training
 
-- Ubuntu 24.04 recommended
+- Ubuntu 24.04 
 - CUDA-compatible GPU (bfloat 16 support is needed)
 - Python 3.13
 - CUDA 12.9.1 with cuDNN
