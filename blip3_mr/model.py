@@ -25,8 +25,13 @@ COMPILE_MODE = "default"
 
 def load_model(config: Config) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
     if config.use_local_model:
+        lang_model_pretrained = "microsoft/Phi-3-mini-4k-instruct"
+        if isdir(config.lang_model_pretrained) or isinstance(config.lang_model_pretrained, str):
+            lang_model_pretrained = config.lang_model_pretrained
         model, tokenizer = create_model_and_tokenizer(
-            gradient_checkpointing=config.gradient_checkpointing, pretrained=config.base_model_name_or_path
+            gradient_checkpointing=config.gradient_checkpointing, 
+            pretrained=config.base_model_name_or_path,
+            lang_model_path=lang_model_pretrained
         )
     else:
         hf_model = AutoModelForVision2Seq.from_pretrained(
@@ -54,8 +59,7 @@ def load_model(config: Config) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
     if config.rank == 0:
         print(f"Total parameters:\n{model.num_params_per_module}")
 
-
-    if is_file_or_dir(config.vision_tokenizer_pretrained):
+    if isfile(config.vision_tokenizer_pretrained):
         log(f"Loading vision_tokenizer from {config.vision_tokenizer_pretrained}")
         load_pretrained_state_dict(
             model.vision_tokenizer,
@@ -63,7 +67,7 @@ def load_model(config: Config) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
             bad_key="vision_tokenizer.",
         )
 
-    if isfile(config.lang_model_pretrained) or isdir(config.lang_model_pretrained):
+    if isfile(config.lang_model_pretrained):
         log(f"Loading lang_model from {config.lang_model_pretrained}")
         load_pretrained_state_dict(model.lang_model, config.lang_model_pretrained, bad_key="lang_model.")  # type: ignore
 
@@ -72,7 +76,7 @@ def load_model(config: Config) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
 
 def wrap_model_in_lora(config: Config, model: XGenMMPerceiver, tokenizer: PreTrainedTokenizer):
     if config.lang_model_lora:
-        if is_file_or_dir(config.lang_model_pretrained) and isdir(config.lang_model_adapter):
+        if isdir(config.lang_model_pretrained) or isinstance(config.lang_model_pretrained, str):
             peft_model = load_adapter(model.lang_model, config, model_name_or_path=config.lang_model_adapter)
             peft_model.to(torch.bfloat16)
             log(f"Loaded lang_model adapter from {config.lang_model_adapter} with config:")
