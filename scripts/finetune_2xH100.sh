@@ -33,7 +33,7 @@ wandb_entity="bagas-jiwanta"
 
 
 args=(
-    # --vision_tokenizer_train            # Finetune the vision tokenizer module
+    --vision_tokenizer_train            # Finetune the vision tokenizer module
     --lang_model_lora                   # Use LoRA for the language model
     --use_local_model 
     --lora_r 16

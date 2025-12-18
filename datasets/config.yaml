@@ -3,9 +3,9 @@
 #   dir: dataset directory (str)
 #   prompt: which prompt variation to use (int)
 #   variation: actual number of variation that the dataset has
-#   num_frames: number of frames
 #   use_variation: number of variation to use
-#   corrected (bool): use the zero corrected version of the dataset
+#   num_frames: number of frames
+#   version: defaults to 1 unless dataset has multiple versions of the same config
 
 main:
   dir: qvhighlights-25frames
