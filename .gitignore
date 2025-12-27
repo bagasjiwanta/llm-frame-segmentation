@@ -193,6 +193,6 @@ datasets/qvhighlights/*
 transformers/
 *.bin
 *.deb
-models/
+./models/
 setup/
 weights/

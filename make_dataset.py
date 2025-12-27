@@ -65,6 +65,7 @@ AO8RW 0.0 6.9##a person is putting a book on a shelf.
 """
 import argparse
 import json
+import math
 import multiprocessing
 import os
 import random
@@ -72,7 +73,7 @@ import re
 from collections.abc import Callable
 from dataclasses import dataclass
 from functools import partial
-from typing import List, Literal, TypedDict
+from typing import Any, List, Literal, TypedDict
 
 import numpy as np
 from decord import VideoReader, cpu, gpu
@@ -108,7 +109,7 @@ PROMPT_TEMPLATE1 = """You are given {num_frames} frames sampled from a video, or
 """
 
 PROMPT_TEMPLATE2 = """
-You are given 25 frames sampled from a video, ordered and separated by newline characters, indexed from 0 to {last_frame_idx}:
+You are given {num_frames} frames sampled from a video, ordered and separated by newline characters, indexed from 0 to {last_frame_idx}:
 {frames}
 
 **Your task**: given an activity, analyze the video frames to identify which ones contain the specified activity.
@@ -169,9 +170,11 @@ class Args:
     num_val_samples: int
     num_test_samples: int
     frame_variation: int
+    crop_ratio: str | None
 
 
-def json_dumps(data, indent: int | None = 2, max_inline_length=120):
+def json_dumps(data: Any, indent: int | None = 2, max_inline_length=120):
+    """Json dumps that doesn't waste newline"""
     json_str = json.dumps(data, indent=indent)
     # regex to find lists with no nested braces/brackets
     pattern = re.compile(r"\[\s*([^\[\]\{\}]+?)\s*\]", re.DOTALL)
@@ -194,9 +197,35 @@ def process_one_video_v(
     vid_out_dir: str,
     num_frames: int,
     frame_variation: int,
-    use_gpu=True,
-    single_file_name=True,
+    use_gpu: bool = True,
+    single_file_name: bool = True,
+    crop_ratios: list[int] | None = None,
 ):
+    """
+    Docstring for process_one_video_v
+
+    :param video_name: actual video name in file system
+    :type video_name: str
+    :param vid_in_dir: input dir where the video is placed
+    :type vid_in_dir: str
+    :param vid_out_dir: output dir where the image will be placed
+    :type vid_out_dir: str
+    :param num_frames: number of frames sampled
+    :type num_frames: int
+    :param frame_variation: number of variation sampled
+    :type frame_variation: int
+    :param use_gpu: use GPU for fast seeking (faster but not that much)
+    :type use_gpu: bool
+    :param single_file_name: output a single video name instead of a list.
+    If true, the user of the dataset must construct paths of individual frames correctly when using.\
+        Use the formula `{output_dir}/{video_name}_frame{i + i:03d}_var{j + 1}.jpg` where `j` is iterator of frame_variation.
+    :type single_file_name: bool
+    :param crop_ratio: Crop the image to a desired ratio in `[long, short]` or `None` for no cropping. \
+        Always specify the longer dimension first. Regardless of orientation, this code will automatically \
+        apply it correctly for landscape (W, H) or portrait (H, W) images. Will skip if original ratio \
+        is more square than desired.
+    :type crop_ratio: list[int] | None
+    """
     filename = os.path.join(vid_in_dir, f"{video_name}.mp4")
     ctx = gpu(0) if use_gpu else cpu()
     with open(filename, "rb") as f_in:
@@ -205,8 +234,56 @@ def process_one_video_v(
     fps = vr.get_avg_fps()
     total_frames = len(vr)
 
+    sample_frame = Image.fromarray(vr.get_batch([1]).asnumpy()[0])
+    aspect_ratio = sample_frame.height / sample_frame.width
+    orig_dims = float(sample_frame.height), float(sample_frame.width)
+    do_crop = False
+    crop_dims = (0.0, 0.0, orig_dims[1], orig_dims[0])
+    crop_ratio = 1.0
+
+    landscape = aspect_ratio < 1
+    portrait = not landscape
+    if crop_ratios is not None:
+        if landscape:
+            target_w, target_h = crop_ratios[0], crop_ratios[1]
+        else:  # orig is portrait or square
+            target_h, target_w = crop_ratios[1], crop_ratios[0]
+
+        crop_ratio = target_h / target_w
+        is_square = abs(crop_ratio - aspect_ratio) < 1e-5
+        do_crop = not is_square and (
+            (landscape and crop_ratio > aspect_ratio) or (portrait and crop_ratio < aspect_ratio)
+        )
+
+    if do_crop:
+        crop_dims = ()
+
+        orig_h = orig_dims[0]
+        orig_w = orig_dims[1]
+
+        new_h = orig_w * crop_ratio  # crop ratio is just h/w
+        new_w = orig_h / crop_ratio
+
+        if new_h <= orig_h:
+            new_w = orig_w
+
+        else:
+            new_h = orig_h
+
+        left = (orig_w - new_w) / 2
+        top = (orig_h - new_h) / 2
+        right = left + new_w
+        bottom = top + new_h
+
+        crop_dims = (left, top, right, bottom)
+
     step = total_frames / num_frames
-    main_frame_indices = np.linspace(round(step / 2), total_frames - round(step / 2), num_frames, dtype=int)
+    main_frame_indices = np.linspace(
+        round(step / 2),
+        total_frames - round(step / 2),
+        num_frames,
+        dtype=int,
+    )
 
     variation_sec = 0.25
     max_offset = variation_sec / 2
@@ -222,15 +299,22 @@ def process_one_video_v(
 
         for j, frame in enumerate(batch):
             out_filename = os.path.join(vid_out_dir, f"{video_name}_frame{i + 1:03d}_var{j + 1}.jpg")
-            if not os.path.isfile(out_filename):
-                Image.fromarray(frame).save(out_filename)
+
             if not single_file_name:
                 image_out_filenames.append(os.path.basename(out_filename))
+
+            if os.path.isfile(out_filename):
+                continue
+
+            image = Image.fromarray(frame)
+            if do_crop:
+                image = image.crop(crop_dims)
+            image.save(out_filename)
 
         video_variants.append(frame_indices)
 
     # Use timestamp of the main frame as reference
-    video_times = vr.get_frame_timestamp(main_frame_indices).mean(-1).astype(int)
+    video_times = vr.get_frame_timestamp(main_frame_indices).mean(-1).astype(float).round(1)
 
     if single_file_name:
         image_out_filenames = os.path.join(vid_out_dir, f"{video_name}")
@@ -238,14 +322,19 @@ def process_one_video_v(
     return (
         video_name,
         {
-            "video_times": video_times,
+            "video_times": video_times,  # numpy 1d arr
             "image_out_filenames": image_out_filenames,
             "video_times_serial": video_times.tolist(),
         },
     )
 
 
-def process_one_qvh(data: dict, num_frames: int, prompt_style: int, video_summaries: dict):
+def process_one_qvh(
+    data: dict,
+    num_frames: int,
+    prompt_style: int,
+    video_summaries: dict,
+):
     video_summary = video_summaries[data["vid"]]
     video_times = video_summary["video_times"]
     if isinstance(video_times, list):
@@ -287,10 +376,10 @@ def process_one_qvh(data: dict, num_frames: int, prompt_style: int, video_summar
         "conversations": conversations,
         "video_timestamps": video_times.tolist(),
         "duration": data["duration"],
-        "relevant_clip_ids": data['relevant_clip_ids']
     }
 
     if not is_test:
+        output["relevant_clip_ids"] = data["relevant_clip_ids"]
         output["relevant_windows"] = data["relevant_windows"]
 
     return output
@@ -372,6 +461,13 @@ def process_dataset(args: Args):
 
     video_summaries_dir = os.path.join(args.dataset_dir, args.processed_dir, "video_summaries.json")
 
+    if isinstance(args.crop_ratio, str):
+        crop_ratio = args.crop_ratio.split(":")
+        crop_ratio = [int(crop_ratio[0]), int(crop_ratio[1])]
+        assert len(crop_ratio) == 2 and crop_ratio[0] != 0 and crop_ratio[1] != 0, f"bad crop ratio: {args.crop_ratio}"
+    else:
+        crop_ratio = None
+
     if not args.skip_video_processing:
         partial_process_one_video = partial(
             process_one_video_v,
@@ -380,6 +476,7 @@ def process_dataset(args: Args):
             num_frames=args.num_frames,
             frame_variation=args.frame_variation,
             use_gpu=args.gpu,
+            crop_ratios=crop_ratio,
         )
         video_summaries = {}
         video_summaries_serialized = {}  # video_times are np.ndarray
@@ -446,12 +543,8 @@ def parse_arguments():
         action="store_true",
         help="If true, then use existing video_summaries-{processed_dir}.json (file must exist)",
     )
-    parser.add_argument(
-        "--gpu", default=False, help="Use gpu for decord video processing", action="store_true"
-    )
-    parser.add_argument(
-        "--frame_variation", type=int, default=3, help="Add variations of images (+- 0.25 second)"
-    )
+    parser.add_argument("--gpu", default=False, help="Use gpu for decord video processing", action="store_true")
+    parser.add_argument("--frame_variation", type=int, default=3, help="Add variations of images (+- 0.25 second)")
     parser.add_argument(
         "--num_train_samples",
         type=int,
@@ -471,6 +564,14 @@ def parse_arguments():
         help="Number of testing samples to process. Negative number to process all available samples.",
     )
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument(
+        "--crop_ratio",
+        type=str,
+        default="16:9",
+        help="Crop the original image to the desired ratio w.r.t the original orientation. "
+        "If original ratio is more square (e.g. 5:4) than desired (e.g. 14:9), will do nothing"
+        " since SigLIP and other encoders usually encode in square and cropping a 5:4 to 14:9 loses information instead",
+    )
 
     args: Args = parser.parse_args()  # type: ignore
     return args
