@@ -1,304 +1,302 @@
-# Adopted from https://github.com/haotian-liu/LLaVA. Below is the original copyright:
-#
-#    Licensed under the Apache License, Version 2.0 (the "License");
-#    you may not use this file except in compliance with the License.
-#    You may obtain a copy of the License at
-#
-#        http://www.apache.org/licenses/LICENSE-2.0
-#
-#    Unless required by applicable law or agreed to in writing, software
-#    distributed under the License is distributed on an "AS IS" BASIS,
-#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#    See the License for the specific language governing permissions and
-#    limitations under the License.
-
-import ast
-import math
-import os
-import re
 from dataclasses import dataclass
-from typing import List, Optional, Tuple, TypeGuard, TypeVar, Union, cast
+from typing import List, Optional, Tuple, Union, cast
 
-# from blip3_mr.open_flamingo.train.any_res_data_utils import get_anyres_image_grid_shape, unpad_image
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 from einops import rearrange, repeat
 from einops_exts import rearrange_many
-from PIL import Image
-from torch import einsum
-from transformers import AutoModel, AutoModelForCausalLM, AutoTokenizer, CLIPVisionModel, Phi3ForCausalLM
-from transformers.configuration_utils import PretrainedConfig
+from torch import einsum, nn
+from transformers import (
+    CONFIG_MAPPING,
+    AutoModel,
+    AutoModelForCausalLM,
+    PretrainedConfig,
+    PreTrainedModel,
+    logging,
+)
 from transformers.modeling_outputs import CausalLMOutputWithPast
-from transformers.modeling_utils import PreTrainedModel
-from transformers.models.siglip.modeling_siglip import SiglipVisionTransformer
-from transformers.tokenization_utils import PreTrainedTokenizer
+
+logger = logging.get_logger(__name__)
 
 
-def unpad_image(tensor, original_size, keep_original_shape=False):
-    """
-    Unpads a PyTorch tensor of a padded and resized image.
+class XGenMMVisionEncoderConfig(PretrainedConfig):
+    model_type = "xgenmm_vision_encoder"
 
-    Args:
-    tensor (torch.Tensor): The image tensor, assumed to be in CxHxW format.
-    original_size (tuple): The original size of the image (height, width).
-
-    Returns:
-    torch.Tensor: The unpadded image tensor.
-    """
-    original_width, original_height = original_size
-    current_height, current_width = tensor.shape[1:]
-
-    original_aspect_ratio = original_width / original_height
-    current_aspect_ratio = current_width / current_height
-
-    if original_aspect_ratio > current_aspect_ratio:
-        scale_factor = current_width / original_width
-        new_height = int(original_height * scale_factor)
-        padding = (current_height - new_height) // 2
-        if keep_original_shape:
-            attention_mask = torch.ones((current_height, current_width), device=tensor.device)
-            attention_mask[:padding, :] = 0
-            attention_mask[current_height - padding :, :] = 0
-            return tensor, attention_mask
-        else:
-            unpadded_tensor = tensor[:, padding : current_height - padding, :]
-            return unpadded_tensor, None
-    else:
-        scale_factor = current_height / original_height
-        new_width = int(original_width * scale_factor)
-        padding = (current_width - new_width) // 2
-        if keep_original_shape:
-            attention_mask = torch.ones((current_height, current_width), device=tensor.device)
-            attention_mask[:, :padding] = 0
-            attention_mask[:, current_width - padding :] = 0
-            return tensor, attention_mask
-        else:
-            unpadded_tensor = tensor[:, :, padding : current_width - padding]
-            return unpadded_tensor, None
+    def __init__(
+        self,
+        model_name: str = "google/siglip-so400m-patch14-384",
+        anyres_grids: list[list[int]] = [
+            [384, 768],
+            [768, 384],
+            [768, 768],
+            [1152, 384],
+            [384, 1152],
+        ],
+        **kwargs,
+    ):
+        self.model_name = model_name
+        self.anyres_grids = anyres_grids
+        super().__init__(**kwargs)
 
 
-def select_best_resolution(
-    original_size: tuple[int, int],
-    possible_resolutions: list[tuple[int, int]],
-) -> tuple[int, int]:
-    """
-    Selects the best resolution from a list of possible resolutions based on the original size.
+class XGenMMVisionTokenizerConfig(PretrainedConfig):
+    model_type = "xgenmm_vision_tokenizer"
 
-    Args:
-        original_size (tuple): The original size of the image in the format (width, height).
-        possible_resolutions (list): A list of possible resolutions in the format [(width1, height1), (width2, height2), ...].
-
-    Returns:
-        tuple: The best fit resolution in the format (width, height).
-    """
-    original_width, original_height = original_size
-    best_fit = None
-    max_effective_resolution = 0
-    min_wasted_resolution = float("inf")
-
-    for width, height in possible_resolutions:
-        scale = min(width / original_width, height / original_height)
-        downscaled_width, downscaled_height = int(original_width * scale), int(original_height * scale)
-        effective_resolution = min(downscaled_width * downscaled_height, original_width * original_height)
-        wasted_resolution = (width * height) - effective_resolution
-
-        if effective_resolution > max_effective_resolution or (
-            effective_resolution == max_effective_resolution and wasted_resolution < min_wasted_resolution
-        ):
-            max_effective_resolution = effective_resolution
-            min_wasted_resolution = wasted_resolution
-            best_fit = (width, height)
-
-    return best_fit
+    def __init__(
+        self,
+        vis_feature_dim: int = 1152,
+        lang_embedding_dim: int = 3072,
+        num_vis_tokens: int = 128,
+        image_aspect_ratio: str = "square",
+        num_final_vis_tokens: int | None = 32,
+        **kwargs,
+    ):
+        self.vis_feature_dim = vis_feature_dim
+        self.lang_embedding_dim = lang_embedding_dim
+        self.num_vis_tokens = num_vis_tokens
+        self.image_aspect_ratio = image_aspect_ratio
+        self.num_final_vis_tokens = num_final_vis_tokens
+        super().__init__(**kwargs)
 
 
-def resize_and_pad_image(image, target_resolution):
-    """
-    Resize and pad an image to a target resolution while maintaining aspect ratio.
+class XGenMMConfig(PretrainedConfig):
+    model_type = "xgenmm"
 
-    Args:
-        image (PIL.Image.Image): The input image.
-        target_resolution (tuple): The target resolution (width, height) of the image.
-
-    Returns:
-        PIL.Image.Image: The resized and padded image.
-    """
-    original_width, original_height = image.size
-    target_width, target_height = target_resolution
-
-    scale_w = target_width / original_width
-    scale_h = target_height / original_height
-
-    if scale_w < scale_h:
-        new_width = target_width
-        new_height = min(math.ceil(original_height * scale_w), target_height)
-    else:
-        new_height = target_height
-        new_width = min(math.ceil(original_width * scale_h), target_width)
-
-    # Resize the image
-    resized_image = image.resize((new_width, new_height))
-
-    new_image = Image.new("RGB", (target_width, target_height), (0, 0, 0))
-    paste_x = (target_width - new_width) // 2
-    paste_y = (target_height - new_height) // 2
-    new_image.paste(resized_image, (paste_x, paste_y))
-
-    return new_image
-
-
-def divide_to_patches(image, patch_size):
-    """
-    Divides an image into patches of a specified size.
-
-    Args:
-        image (PIL.Image.Image): The input image.
-        patch_size (int): The size of each patch.
-
-    Returns:
-        list: A list of PIL.Image.Image objects representing the patches.
-    """
-    patches = []
-    width, height = image.size
-    for i in range(0, height, patch_size):
-        for j in range(0, width, patch_size):
-            box = (j, i, j + patch_size, i + patch_size)
-            patch = image.crop(box)
-            patches.append(patch)
-
-    return patches
-
-
-def get_anyres_image_grid_shape(image_size, grid_pinpoints, patch_size):
-    """
-    Calculate the shape of the image patch grid after the preprocessing for images of any resolution.
-
-    Args:
-        image_size (tuple): The size of the input image in the format (width, height).
-        grid_pinpoints (str): A string representation of a list of possible resolutions.
-        patch_size (int): The size of each image patch.
-
-    Returns:
-        tuple: The shape of the image patch grid in the format (width, height).
-    """
-    if type(grid_pinpoints) is list:
-        possible_resolutions = grid_pinpoints
-    else:
-        possible_resolutions = ast.literal_eval(grid_pinpoints)
-    width, height = select_best_resolution(image_size, possible_resolutions)
-    return width // patch_size, height // patch_size
-
-
-def process_anyres_image(image, processor, grid_pinpoints):
-    """
-    Process an image with variable resolutions.
-
-    Args:
-        image (PIL.Image.Image): The input image to be processed.
-        processor: The image processor object.
-        grid_pinpoints (str): A string representation of a list of possible resolutions.
-
-    Returns:
-        torch.Tensor: A tensor containing the processed image patches.
-    """
-    # FIXME: determine grid_pinpoints from image sizes.
-    if type(grid_pinpoints) is list:
-        possible_resolutions = grid_pinpoints
-    else:
-        possible_resolutions = ast.literal_eval(grid_pinpoints)
-    best_resolution = select_best_resolution(image.size, possible_resolutions)
-    image_padded = resize_and_pad_image(image, best_resolution)
-
-    processor_size = processor.transforms[0].size
-    patches = divide_to_patches(image_padded, processor_size[0])
-
-    image_original_resize = image.resize((processor_size[0], processor_size[0]))
-
-    image_patches = [image_original_resize] + patches
-    image_patches = [processor(image_patch) for image_patch in image_patches]
-    return torch.stack(image_patches, dim=0)
-
-
-def expand2square(pil_img, background_color):
-    width, height = pil_img.size
-    if width == height:
-        return pil_img
-    elif width > height:
-        result = Image.new(pil_img.mode, (width, width), background_color)
-        result.paste(pil_img, (0, (width - height) // 2))
-        return result
-    else:
-        result = Image.new(pil_img.mode, (height, height), background_color)
-        result.paste(pil_img, ((height - width) // 2, 0))
-        return result
-
-
-def process_images(images, image_processor, model_cfg):
-    image_aspect_ratio = getattr(model_cfg, "image_aspect_ratio", None)
-    new_images = []
-    if image_aspect_ratio == "pad":
-        for image in images:
-            image = expand2square(image, tuple(int(x * 255) for x in image_processor.transforms[-1].mean))
-            image = image_processor(image)
-            new_images.append(image)
-    elif image_aspect_ratio in ["anyres", "anyres-legacy"]:
-        base_img_size = image_processor.transforms[0].size[0]
-        for image in images:
-            image = process_anyres_image(
-                image,
-                image_processor,
-                [
-                    [base_img_size, base_img_size * 2],
-                    [base_img_size * 2, base_img_size],
-                    [base_img_size * 2, base_img_size * 2],
-                    [base_img_size * 3, base_img_size],
-                    [base_img_size, base_img_size * 3],
-                ],
+    def __init__(
+        self,
+        vision_encoder_config: dict | None = None,
+        vision_tokenizer_config: dict | None = None,
+        text_config: dict | None = None,
+        **kwargs,
+    ):
+        if vision_encoder_config is None:
+            vision_encoder_config = {
+                "image_aspect_ratio": "anyres",
+                "anyres_patch_sampling": False,
+            }
+            logger.info(
+                "vision_encoder_config is None. initializing the XGenMMVisionEncoderConfig with default values."
             )
 
-            new_images.append(image)
+        if vision_tokenizer_config is None:
+            vision_tokenizer_config = {}
+            logger.info(
+                "vision_tokenizer_config is None. Initializing the XGenMMVisionTokenizerConfig with default values."
+            )
+
+        if text_config is None:
+            text_config = {
+                "initial_tokenizer_len": 32012,
+                "pad_token_id": 32011,
+                "bos_token_id": 1,
+                "eos_token_id": 32000,
+                "vocab_size": 32064,
+                "hidden_size": 3072,
+                "intermediate_size": 8192,
+                "num_hidden_layers": 32,
+                "num_attention_heads": 32,
+                "num_key_value_heads": 32,
+                "resid_pdrop": 0.0,
+                "embd_pdrop": 0.0,
+                "attention_dropout": 0.0,
+                "hidden_act": "silu",
+                "max_position_embeddings": 4096,
+                "original_max_position_embeddings": 4096,
+                "initializer_range": 0.02,
+                "rms_norm_eps": 1e-05,
+                "use_cache": True,
+                "rope_theta": 10000.0,
+                "rope_scaling": None,
+                "sliding_window": 2047,
+                "return_dict": True,
+                "output_hidden_states": False,
+                "output_attentions": False,
+                "torchscript": False,
+                "torch_dtype": "bfloat16",
+                "use_bfloat16": False,
+                "tf_legacy_loss": False,
+                "pruned_heads": {},
+                "tie_word_embeddings": False,
+                "chunk_size_feed_forward": 0,
+                "is_encoder_decoder": False,
+                "is_decoder": False,
+                "cross_attention_hidden_size": None,
+                "add_cross_attention": False,
+                "tie_encoder_decoder": False,
+                "max_length": 20,
+                "min_length": 0,
+                "do_sample": False,
+                "early_stopping": False,
+                "num_beams": 1,
+                "num_beam_groups": 1,
+                "diversity_penalty": 0.0,
+                "temperature": 1.0,
+                "top_k": 50,
+                "top_p": 1.0,
+                "typical_p": 1.0,
+                "repetition_penalty": 1.0,
+                "length_penalty": 1.0,
+                "no_repeat_ngram_size": 0,
+                "encoder_no_repeat_ngram_size": 0,
+                "bad_words_ids": None,
+                "num_return_sequences": 1,
+                "output_scores": False,
+                "return_dict_in_generate": False,
+                "forced_bos_token_id": None,
+                "forced_eos_token_id": None,
+                "remove_invalid_values": False,
+                "exponential_decay_length_penalty": None,
+                "suppress_tokens": None,
+                "begin_suppress_tokens": None,
+                "finetuning_task": None,
+                "id2label": {0: "LABEL_0", 1: "LABEL_1"},
+                "label2id": {"LABEL_0": 0, "LABEL_1": 1},
+                "tokenizer_class": None,
+                "prefix": None,
+                "bos_token_id": 1,
+                "pad_token_id": 32000,
+                "eos_token_id": 32000,
+                "sep_token_id": None,
+                "decoder_start_token_id": None,
+                "task_specific_params": None,
+                "problem_type": None,
+                "model_type": "phi3",
+                "_attn_implementation": "flash_attention_2",
+            }
+            logger.info("text_config is None. Initializing the text config with default values (`Phi3Config`).")
+
+        self.vision_encoder_config = XGenMMVisionEncoderConfig(**vision_encoder_config)
+
+        self.vision_tokenizer_config = XGenMMVisionTokenizerConfig(**vision_tokenizer_config)
+        self.vis_proj_type = kwargs.get("vis_proj_type", "linear")
+        text_model_type = text_config["model_type"] if "model_type" in text_config else "phi3"
+        self.text_config = CONFIG_MAPPING[text_model_type](**text_config)
+
+        for key in ["initial_tokenizer_len", "pad_token_id"]:
+            if key not in self.text_config.to_dict():
+                raise ValueError(f"The key `{key}` is missing in the text_config.")
+
+        super().__init__(**kwargs)
+
+
+def hasattr_recursive(obj, att):
+    """
+    Check if obj has nested attribute
+    Example: hasattr_recursive(obj, 'a.b.c') is equivalent to hasattr(obj, 'a') and hasattr(obj.a, 'b') and hasattr(obj.a.b, 'c')
+    """
+    if att == "":
+        return True
+    i = att.find(".")
+    if i < 0:
+        return hasattr(obj, att)
     else:
-        return image_processor(images)
-    if all(x.shape == new_images[0].shape for x in new_images):
-        new_images = torch.stack(new_images, dim=0)
-    return new_images
+        try:
+            return hasattr_recursive(getattr(obj, att[:i]), att[i + 1 :])
+        except:
+            return False
 
 
-# copied directly from https://github.com/salesforce/LAVIS/blob/xgen-mm/open_flamingo/src/helpers.py
-
-"""
-Based on: https://github.com/lucidrains/flamingo-pytorch
-"""
-
-
-@dataclass
-class VLMOutputWithPast(CausalLMOutputWithPast):
+def getattr_recursive(obj, att):
     """
-    VLMOutputWithPast is a wrapper around CausalLMOutputWithPast that adds the following attributes:
-        past_media_locations: Optional[torch.Tensor] = None,
-        past_vision_tokens: Optional[torch.Tensor] = None,
+    Return nested attribute of obj
+    Example: getattr_recursive(obj, 'a.b.c') is equivalent to obj.a.b.c
     """
-
-    past_media_locations: Optional[torch.Tensor] = None
-    past_vision_tokens: Optional[torch.Tensor] = None
-
-
-T = TypeVar("T")
-
-
-def exists(val: T | None) -> TypeGuard[T]:
-    return val is not None
+    if att == "":
+        return obj
+    i = att.find(".")
+    if i < 0:
+        return getattr(obj, att)
+    else:
+        return getattr_recursive(getattr(obj, att[:i]), att[i + 1 :])
 
 
-def FeedForward(dim, mult=4):
-    inner_dim = int(dim * mult)
-    return nn.Sequential(
-        nn.LayerNorm(dim),
-        nn.Linear(dim, inner_dim, bias=False),
-        nn.GELU(),
-        nn.Linear(inner_dim, dim, bias=False),
-    )
+def setattr_recursive(obj, att, val):
+    """
+    Set nested attribute of obj
+    Example: setattr_recursive(obj, 'a.b.c', val) is equivalent to obj.a.b.c = val
+    """
+    if "." in att:
+        obj = getattr_recursive(obj, ".".join(att.split(".")[:-1]))
+    setattr(obj, att.split(".")[-1], val)
+
+
+def check_embedding_fns(lang_model):
+    """Checks for and attempts to set {get/set}_{input/output}_embeddings functions to the model"""
+    if not has_fn(lang_model, "get_input_embeddings"):
+        if hasattr_recursive(lang_model, "transformer.wte"):  # MPT
+            lang_model.get_input_embeddings = lambda: lang_model.transformer.wte
+        elif hasattr_recursive(lang_model, "model.decoder.embed_tokens"):  # OPT
+            lang_model.get_input_embeddings = lambda: lang_model.decoder.embed_tokens
+        else:
+            raise ValueError(
+                "We require the language encoder to have a get_input_embeddings method but we couldn't determine the name of the input embeddings attribute. Please supply this manually in factory.py."
+            )
+
+    if not has_fn(lang_model, "set_input_embeddings"):
+        if hasattr_recursive(lang_model, "transformer.wte"):  # MPT
+            lang_model.set_input_embeddings = lambda x: setattr_recursive(lang_model, "transformer.wte", x)
+        elif hasattr_recursive(lang_model, "model.decoder.embed_tokens"):  # OPT
+            lang_model.set_input_embeddings = lambda x: setattr_recursive(lang_model, "model.decoder.embed_tokens", x)
+        else:
+            raise ValueError(
+                "We require the language encoder to have a set_input_embeddings method but we couldn't determine the name of the input embeddings attribute. Please supply this manually in factory.py."
+            )
+
+    if not has_fn(lang_model, "get_output_embeddings"):
+        if hasattr_recursive(lang_model, "lm_head"):
+            lang_model.get_output_embeddings = lambda: lang_model.lm_head
+        else:
+            raise ValueError(
+                "We require the language encoder to have a get_output_embeddings method but we couldn't determine the name of the output embeddings attribute. Please supply this manually in factory.py."
+            )
+
+    if not has_fn(lang_model, "set_output_embeddings"):
+        if hasattr_recursive(lang_model, "lm_head"):
+            lang_model.set_output_embeddings = lambda x: setattr_recursive(lang_model, "lm_head", x)
+        else:
+            raise ValueError(
+                "We require the language encoder to have a set_output_embeddings method but we couldn't determine the name of the output embeddings attribute. Please supply this manually in factory.py."
+            )
+
+
+def has_fn(model, fn_name):
+    """Check if model has a function fn_name"""
+    return callable(getattr(model, fn_name, None))
+
+
+def stack_with_padding(list_of_tensors, padding_value=0, padding_side="right"):
+    """
+    Stack a list of tensors with padding on one side
+    Args:
+        list_of_tensors (list[torch.Tensor]): List of tensors to stack
+        padding_value (int, optional): Value to pad with. Defaults to 0.
+        padding_side (str, optional): Side to pad on. Defaults to "right".
+    Returns:
+        torch.Tensor: Stacked tensors
+    """
+    max_tokens = max(tensor.size(0) for tensor in list_of_tensors)
+    padded_tensors = []
+    for tensor in list_of_tensors:
+        num_tokens = tensor.size(0)
+        if len(tensor.size()) == 1:
+            padding = torch.full(
+                (max_tokens - num_tokens,),
+                padding_value,
+                dtype=tensor.dtype,
+                device=tensor.device,
+            )
+        else:
+            padding = torch.full(
+                (max_tokens - num_tokens, tensor.size(1)),
+                padding_value,
+                dtype=tensor.dtype,
+                device=tensor.device,
+            )
+        padded_tensor = (
+            torch.cat((tensor, padding), dim=0) if padding_side == "right" else torch.cat((padding, tensor), dim=0)
+        )
+        padded_tensors.append(padded_tensor)
+    return torch.stack(padded_tensors)
 
 
 class VisionTokenizer(nn.Module):
@@ -341,7 +339,11 @@ class PerceiverAttention(nn.Module):
             vision_attn_masks = torch.cat(
                 (
                     vision_attn_masks,
-                    torch.ones((latents.shape[0], latents.shape[-2]), dtype=latents.dtype, device=latents.device),
+                    torch.ones(
+                        (latents.shape[0], latents.shape[-2]),
+                        dtype=latents.dtype,
+                        device=latents.device,
+                    ),
                 ),
                 dim=-1,
             )
@@ -354,7 +356,11 @@ class PerceiverAttention(nn.Module):
         # Apply vision attention mask here.
         # Reference: https://pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html#torch.nn.functional.scaled_dot_product_attention
         if vision_attn_masks is not None:
-            attn_bias = torch.zeros((q.size(0), 1, 1, q.size(-2), k.size(-2)), dtype=q.dtype, device=q.device)
+            attn_bias = torch.zeros(
+                (q.size(0), 1, 1, q.size(-2), k.size(-2)),
+                dtype=q.dtype,
+                device=q.device,
+            )
             vision_attn_masks = repeat(vision_attn_masks, "b n -> b 1 1 l n", l=q.size(-2))
             attn_bias.masked_fill_(vision_attn_masks.logical_not(), float("-inf"))
             sim += attn_bias
@@ -367,6 +373,24 @@ class PerceiverAttention(nn.Module):
         return self.to_out(out)
 
 
+def FeedForward(dim, mult=4):
+    inner_dim = int(dim * mult)
+    return nn.Sequential(
+        nn.LayerNorm(dim),
+        nn.Linear(dim, inner_dim, bias=False),
+        nn.GELU(),
+        nn.Linear(inner_dim, dim, bias=False),
+    )
+
+
+def num_params(module, filter_to_trainable=False):
+    """Returns the number of parameters in the module, or optionally only the trainable parameters"""
+    if filter_to_trainable:
+        return sum(p.numel() for p in module.parameters() if p.requires_grad)
+    else:
+        return sum(p.numel() for p in module.parameters())
+
+
 class PerceiverResampler(VisionTokenizer):
     def __init__(
         self,
@@ -377,8 +401,8 @@ class PerceiverResampler(VisionTokenizer):
         dim_head=96,
         heads=16,
         num_latents=128,
-        max_num_media: int | None = None,
-        max_num_frames: int | None = None,
+        max_num_media=None,
+        max_num_frames=None,
         ff_mult=4,
     ):
         """
@@ -457,223 +481,6 @@ class PerceiverResampler(VisionTokenizer):
             return self.norm(latents)
 
 
-class LinearPatchProjection(VisionTokenizer):
-    """Linear projection from patch features to image tokens."""
-
-    def __init__(self, mm_projector_type, *, dim_visual, dim_out, num_patches):
-        super().__init__(dim_media=dim_visual, num_tokens_per_media=num_patches)
-        if mm_projector_type == "linear":
-            self.proj = nn.Linear(dim_visual, dim_out)
-        else:
-            mlp_gelu_match = re.match(r"^mlp(\d+)x_gelu$", mm_projector_type)
-            if mlp_gelu_match:
-                mlp_depth = int(mlp_gelu_match.group(1))
-                modules = [nn.Linear(dim_visual, dim_out)]
-                for _ in range(1, mlp_depth):
-                    modules.append(nn.GELU())
-                    modules.append(nn.Linear(dim_out, dim_out))
-                self.proj = nn.Sequential(*modules)
-            else:
-                raise ValueError(f"Unknown projector type: {mm_projector_type}")
-
-    def forward(self, x):
-        B = x.shape[0]
-        x = rearrange(x, "b T F v d -> (b T) (F v) d")
-        x = self.proj(x)
-        return rearrange(x, "(b T) n d -> b T n d", b=B)
-
-
-# gated cross attention
-class MaskedCrossAttention(nn.Module):
-    def __init__(
-        self,
-        *,
-        dim,
-        dim_visual,
-        dim_head=64,
-        heads=8,
-        only_attend_immediate_media=True,
-    ):
-        super().__init__()
-        self.scale = dim_head**-0.5
-        self.heads = heads
-        inner_dim = dim_head * heads
-
-        self.norm = nn.LayerNorm(dim)
-
-        self.to_q = nn.Linear(dim, inner_dim, bias=False)
-        self.to_kv = nn.Linear(dim_visual, inner_dim * 2, bias=False)
-        self.to_out = nn.Linear(inner_dim, dim, bias=False)
-
-        # whether for text to only attend to immediate preceding image, or all previous images
-        self.only_attend_immediate_media = only_attend_immediate_media
-
-    def forward(self, x, media, media_locations=None):
-        """
-        Args:
-            x (torch.Tensor): text features
-                shape (B, T_txt, D_txt)
-            media (torch.Tensor): image features
-                shape (B, T_img, n, D_img) where n is the dim of the latents
-            media_locations: boolean mask identifying the media tokens in x
-                shape (B, T_txt_all)
-                T_txt_all >= T_txt
-                If T_txt_all > T_txt, then the last T_txt text_times are used
-        """
-
-        T_txt = x.shape[1]
-        assert T_txt <= media_locations.shape[1], "current text cannot be longer than conditioned media locations"
-
-        _, T_img, n = media.shape[:3]
-        h = self.heads
-
-        x = self.norm(x)
-
-        q = self.to_q(x)
-        media = rearrange(media, "b t n d -> b (t n) d")
-
-        k, v = self.to_kv(media).chunk(2, dim=-1)
-        q, k, v = rearrange_many((q, k, v), "b n (h d) -> b h n d", h=h)
-
-        q = q * self.scale
-
-        sim = einsum("... i d, ... j d -> ... i j", q, k)
-
-        if exists(media_locations):
-            media_time = torch.arange(T_img, device=x.device) + 1
-
-            # at each boolean of True, increment the time counter (relative to media time)
-            text_time = media_locations.cumsum(dim=-1)[:, -T_txt:]
-
-            # text time must equal media time if only attending to most immediate image
-            # otherwise, as long as text time is greater than media time (if attending to all previous images / media)
-            mask_op = torch.eq if self.only_attend_immediate_media else torch.ge
-
-            text_to_media_mask = mask_op(
-                rearrange(text_time, "b i -> b 1 i 1"),
-                repeat(media_time, "j -> 1 1 1 (j n)", n=n),
-            )
-            sim = sim.masked_fill(~text_to_media_mask, -torch.finfo(sim.dtype).max)
-
-        sim = sim - sim.amax(dim=-1, keepdim=True).detach()
-        attn = sim.softmax(dim=-1)
-
-        if exists(media_locations) and self.only_attend_immediate_media:
-            # any text without a preceding media needs to have attention zeroed out
-            text_without_media_mask = text_time == 0
-            text_without_media_mask = rearrange(text_without_media_mask, "b i -> b 1 i 1")
-            attn = attn.masked_fill(text_without_media_mask, 0.0)
-
-        out = einsum("... i j, ... j d -> ... i d", attn, v)
-        out = rearrange(out, "b h n d -> b n (h d)")
-        return self.to_out(out)
-
-
-class GatedCrossAttentionBlock(nn.Module):
-    def __init__(
-        self,
-        *,
-        dim,
-        dim_visual,
-        dim_head=64,
-        heads=8,
-        ff_mult=4,
-        only_attend_immediate_media=True,
-    ):
-        super().__init__()
-        self.attn = MaskedCrossAttention(
-            dim=dim,
-            dim_visual=dim_visual,
-            dim_head=dim_head,
-            heads=heads,
-            only_attend_immediate_media=only_attend_immediate_media,
-        )
-        self.attn_gate = nn.Parameter(torch.tensor([0.0]))
-
-        self.ff = FeedForward(dim, mult=ff_mult)
-        self.ff_gate = nn.Parameter(torch.tensor([0.0]))
-
-    def forward(
-        self,
-        x,
-        media,
-        media_locations=None,
-    ):
-        x = (
-            self.attn(
-                x,
-                media,
-                media_locations=media_locations,
-            )
-            * self.attn_gate.tanh()
-            + x
-        )
-        x = self.ff(x) * self.ff_gate.tanh() + x
-
-        return x
-
-
-class QFormerWithProjection(VisionTokenizer):
-    """
-    Based on BLIP-2 (https://arxiv.org/pdf/2301.12597.pdf)
-    In the BLIP-2 paper, Q-former is initialized with BERT-base weights,
-    so dim_inner = 768, num_hidden_layers = 12, and intermediate_size = 3072
-    """
-
-    def __init__(
-        self,
-        dim_input,
-        dim_out,
-        dim_inner=768,
-        num_hidden_layers=12,
-        num_query_tokens=32,
-    ):
-        super().__init__(dim_media=dim_out, num_tokens_per_media=num_query_tokens)
-        # initialize the qformer
-        from transformers import Blip2QFormerConfig, Blip2QFormerModel
-
-        self.qformer = Blip2QFormerModel(
-            Blip2QFormerConfig(
-                encoder_hidden_size=dim_input,
-                hidden_size=dim_inner,
-                num_hidden_layers=num_hidden_layers,
-            )
-        )
-        self.query_tokens = nn.Parameter(torch.zeros(1, num_query_tokens, dim_inner))
-        self.proj = nn.Linear(dim_inner, dim_out)
-
-    def forward(self, x):
-        """
-        Args:
-            x (torch.Tensor): image features
-                shape (B, T, F, v, D)
-        Returns:
-            shape (B, T, n, D) where n is num_query_tokens
-        """
-        # HF class expects three dimensional input
-        B, T = x.shape[:2]
-        x = rearrange(x, "b T F v d -> (b T) (F v) d")
-
-        # get the outputs
-        image_attention_mask = torch.ones(x.size()[:-1], dtype=torch.long, device=x.device)
-        query_tokens = self.query_tokens.expand(x.shape[0], -1, -1)
-        query_outputs = self.qformer(
-            query_embeds=query_tokens,
-            encoder_hidden_states=x,
-            encoder_attention_mask=image_attention_mask,
-            output_attentions=False,
-            output_hidden_states=False,
-            return_dict=True,
-        )
-        query_output = query_outputs[0]
-        query_output = self.proj(query_output)
-
-        # reshape
-        query_output = rearrange(query_output, "(b T) n d -> b T n d", b=B)
-        return query_output
-
-
-# Both DecoupledEmbedding and DecoupledLinear are taken from https://github.com/huggingface/transformers/blob/v4.32.1/src/transformers/models/idefics/modeling_idefics.py and renamed for clarity
 class DecoupledEmbedding(nn.Embedding):
     # Derived from https://pytorch.org/docs/stable/_modules/torch/nn/modules/sparse.html#Embedding
     """
@@ -923,296 +730,6 @@ class DecoupledLinear(nn.Linear):
         )
 
 
-class XGenMMVisionTokenizerConfig(PretrainedConfig):
-    model_type = "xgenmm_vision_tokenizer"
-
-    def __init__(
-        self,
-        vis_feature_dim: int = 1152,
-        lang_embedding_dim: int = 3072,
-        num_vis_tokens: int = 128,
-        image_aspect_ratio: str = "anyres",
-        **kwargs,
-    ):
-        self.vis_feature_dim = vis_feature_dim
-        self.lang_embedding_dim = lang_embedding_dim
-        self.num_vis_tokens = num_vis_tokens
-        self.image_aspect_ratio = image_aspect_ratio
-        super().__init__(**kwargs)
-
-
-class XGenMMVisionTokenizer(PreTrainedModel):
-    config_class = XGenMMVisionTokenizerConfig
-
-    def __init__(self, config: XGenMMVisionTokenizerConfig):
-        super().__init__(config)
-        self.model = PerceiverResampler(
-            dim=config.vis_feature_dim,
-            dim_inner=config.lang_embedding_dim,
-            num_latents=config.num_vis_tokens,
-        )
-
-    def forward(self, vision_features: torch.Tensor, vision_attn_masks: torch.Tensor):
-        return self.model(vision_features, vision_attn_masks)
-
-
-# copied from https://github.com/salesforce/LAVIS/blob/xgen-mm/open_flamingo/src/utils.py
-
-# import torch
-
-
-def extend_instance(obj, mixin):
-    """Apply mixins to a class instance after creation"""
-    base_cls = obj.__class__
-    base_cls_name = obj.__class__.__name__
-    obj.__class__ = type(
-        base_cls_name, (mixin, base_cls), {}
-    )  # mixin needs to go first for our forward() logic to work
-
-
-def hasattr_recursive(obj, att):
-    """
-    Check if obj has nested attribute
-    Example: hasattr_recursive(obj, 'a.b.c') is equivalent to hasattr(obj, 'a') and hasattr(obj.a, 'b') and hasattr(obj.a.b, 'c')
-    """
-    if att == "":
-        return True
-    i = att.find(".")
-    if i < 0:
-        return hasattr(obj, att)
-    else:
-        try:
-            return hasattr_recursive(getattr(obj, att[:i]), att[i + 1 :])
-        except:
-            return False
-
-
-def getattr_recursive(obj, att):
-    """
-    Return nested attribute of obj
-    Example: getattr_recursive(obj, 'a.b.c') is equivalent to obj.a.b.c
-    """
-    if att == "":
-        return obj
-    i = att.find(".")
-    if i < 0:
-        return getattr(obj, att)
-    else:
-        return getattr_recursive(getattr(obj, att[:i]), att[i + 1 :])
-
-
-def setattr_recursive(obj, att, val):
-    """
-    Set nested attribute of obj
-    Example: setattr_recursive(obj, 'a.b.c', val) is equivalent to obj.a.b.c = val
-    """
-    if "." in att:
-        obj = getattr_recursive(obj, ".".join(att.split(".")[:-1]))
-    setattr(obj, att.split(".")[-1], val)
-
-
-def stack_with_padding(list_of_tensors, padding_value=0, padding_side="right"):
-    """
-    Stack a list of tensors with padding on one side
-    Args:
-        list_of_tensors (list[torch.Tensor]): List of tensors to stack
-        padding_value (int, optional): Value to pad with. Defaults to 0.
-        padding_side (str, optional): Side to pad on. Defaults to "right".
-    Returns:
-        torch.Tensor: Stacked tensors
-    """
-    max_tokens = max(tensor.size(0) for tensor in list_of_tensors)
-    padded_tensors = []
-    for tensor in list_of_tensors:
-        num_tokens = tensor.size(0)
-        if len(tensor.size()) == 1:
-            padding = torch.full(
-                (max_tokens - num_tokens,),
-                padding_value,
-                dtype=tensor.dtype,
-                device=tensor.device,
-            )
-        else:
-            padding = torch.full(
-                (max_tokens - num_tokens, tensor.size(1)),
-                padding_value,
-                dtype=tensor.dtype,
-                device=tensor.device,
-            )
-        padded_tensor = (
-            torch.cat((tensor, padding), dim=0) if padding_side == "right" else torch.cat((padding, tensor), dim=0)
-        )
-        padded_tensors.append(padded_tensor)
-    return torch.stack(padded_tensors)
-
-
-def num_params(module, filter_to_trainable=False):
-    """Returns the number of parameters in the module, or optionally only the trainable parameters"""
-    if filter_to_trainable:
-        return sum(p.numel() for p in module.parameters() if p.requires_grad)
-    else:
-        return sum(p.numel() for p in module.parameters())
-
-
-# copied directly from https://github.com/salesforce/LAVIS/blob/xgen-mm/open_flamingo/src/cross_attn_lm.py
-
-
-# from .helpers import GatedCrossAttentionBlock
-# from .utils import getattr_recursive, setattr_recursive
-
-
-class DecoderLayerWithCrossAttention(nn.Module):
-    """
-    DecoderLayerWithCrossAttention is a wrapper around the GatedCrossAttentionBlock and DecoderLayer.
-    """
-
-    def __init__(self, gated_cross_attn_layer, decoder_layer, gradient_checkpointing=False):
-        super().__init__()
-        self.gated_cross_attn_layer = gated_cross_attn_layer
-        self.decoder_layer = decoder_layer
-        self.vis_x = None
-        self.media_locations = None
-        if self.gated_cross_attn_layer is not None:
-            self.gated_cross_attn_layer._use_gradient_checkpointing = gradient_checkpointing
-        self.decoder_layer._use_gradient_checkpointing = gradient_checkpointing
-
-    def is_conditioned(self) -> bool:
-        """Check whether the layer is conditioned."""
-        return self.vis_x is not None and self.media_locations is not None
-
-    # Used this great idea from this implementation of Flamingo (https://github.com/dhansmair/flamingo-mini/)
-    def condition_vis_x(self, vis_x):
-        self.vis_x = vis_x
-
-    def condition_media_locations(self, media_locations):
-        self.media_locations = media_locations
-
-    def forward(
-        self,
-        lang_x,
-        attention_mask=None,
-        **decoder_layer_kwargs,
-    ):
-        # Cross attention
-        contains_media = (self.media_locations == 1).any()
-        if contains_media and self.gated_cross_attn_layer is not None:
-            if self.vis_x is None:
-                raise ValueError("vis_x must be conditioned before forward pass")
-
-            if self.media_locations is None:
-                raise ValueError("media_locations must be conditioned before forward pass")
-
-            lang_x = self.gated_cross_attn_layer(
-                lang_x,
-                self.vis_x,
-                media_locations=self.media_locations,
-            )
-
-        # Normal decoder layer
-        lang_x = self.decoder_layer(lang_x, attention_mask=attention_mask, **decoder_layer_kwargs)
-        return lang_x
-
-
-class CrossAttentionMixin(nn.Module):
-    """
-    Mixin to add cross-attention layers to a language model.
-    """
-
-    def set_decoder_layers_attr_name(self, decoder_layers_attr_name):
-        self.decoder_layers_attr_name = decoder_layers_attr_name
-
-    def _get_decoder_layers(self):
-        return getattr_recursive(self, self.decoder_layers_attr_name)
-
-    def _set_decoder_layers(self, value):
-        setattr_recursive(self, self.decoder_layers_attr_name, value)
-
-    def init_cross_attention_layers(
-        self,
-        lang_hidden_size,
-        vis_hidden_size,
-        cross_attn_every_n_layers,
-        gradient_checkpointing,
-    ):
-        """
-        Add gated cross attn layers to the decoder.
-        """
-        old_decoder_blocks = self._get_decoder_layers()
-        self.decoder_block_class = old_decoder_blocks[0].__class__
-        self.gated_cross_attn_layers = nn.ModuleList(
-            [
-                GatedCrossAttentionBlock(dim=lang_hidden_size, dim_visual=vis_hidden_size)
-                if (layer_idx + 1) % cross_attn_every_n_layers == 0
-                else None
-                for layer_idx, _ in enumerate(old_decoder_blocks)
-            ]
-        )
-        self._set_decoder_layers(
-            nn.ModuleList(
-                [
-                    DecoderLayerWithCrossAttention(gated_cross_attn_layer, decoder_layer, gradient_checkpointing)
-                    for gated_cross_attn_layer, decoder_layer in zip(self.gated_cross_attn_layers, old_decoder_blocks)
-                ]
-            )
-        )
-        self.initialized_cross_attention = True
-
-    def _condition_media_before_forward(
-        self,
-        input_ids: torch.Tensor,
-        vision_tokens: torch.Tensor = None,
-        past_media_locations: torch.Tensor = None,
-        past_vision_tokens: torch.Tensor = None,
-        num_beams: int = 1,
-    ):
-        """Each xattn layer needs to save the vision tokens and the locations of the media tokens in the language sequence"""
-        assert self.initialized_cross_attention, "Cross attention layers have not been initialized. "
-
-        # concat with past
-        if past_media_locations is not None and past_vision_tokens is not None:
-            if vision_tokens is not None:
-                updated_vision_tokens = torch.cat(
-                    [
-                        past_vision_tokens,
-                        vision_tokens,
-                    ],
-                    dim=1,
-                )
-            else:
-                updated_vision_tokens = past_vision_tokens
-            updated_media_locations = torch.cat(
-                [
-                    past_media_locations,
-                    input_ids == self.media_token_id,
-                ],
-                dim=1,
-            )
-        else:
-            updated_vision_tokens = vision_tokens
-            updated_media_locations = input_ids == self.media_token_id
-
-        # repeat the vision tokens and media locations for each beam
-        updated_vision_tokens = updated_vision_tokens.repeat_interleave(num_beams, dim=0)
-        updated_media_locations = updated_media_locations.repeat_interleave(num_beams, dim=0)
-
-        # condition
-        for layer in self._get_decoder_layers():
-            layer.condition_vis_x(updated_vision_tokens)
-            layer.condition_media_locations(updated_media_locations)
-
-    def is_conditioned(self) -> bool:
-        """Check whether all decoder layers are already conditioned."""
-        return all(l.is_conditioned() for l in self._get_decoder_layers())
-
-    def clear_conditioned_layers(self):
-        for layer in self._get_decoder_layers():
-            layer.condition_vis_x(None)
-            layer.condition_media_locations(None)
-
-
-# copied from https://github.com/salesforce/LAVIS/blob/xgen-mm/open_flamingo/src/vlm.py
-
-
 class VLM(nn.Module):
     """
     Generic vision-language model (VLM) class.
@@ -1235,7 +752,6 @@ class VLM(nn.Module):
         initial_tokenizer_len: int,
         pad_token_id: int,
         gradient_checkpointing: bool = False,
-        base_img_size: Optional[int] = None,
     ):
         """
         Args:
@@ -1260,16 +776,7 @@ class VLM(nn.Module):
         # core components
         self.vision_encoder = vision_encoder
         self.vision_tokenizer = vision_tokenizer
-        lang_model = cast(Phi3ForCausalLM, lang_model)
         self.lang_model = lang_model
-        if base_img_size is None:
-            if isinstance(self.vision_encoder, CLIPVisionModel) or isinstance(
-                self.vision_encoder, SiglipVisionTransformer
-            ):
-                base_img_size = self.vision_encoder.config.image_size
-            else:
-                base_img_size = self.vision_encoder.image_size[0]
-        self.base_img_size = base_img_size
 
         # lm embeddings
         self.pad_token_id = pad_token_id
@@ -1279,13 +786,15 @@ class VLM(nn.Module):
             num_additional_embeddings=len(self.special_tokens),
             _weight=self.lang_model.get_input_embeddings().weight,
             pad_token_id=self.pad_token_id,
-        )
+        ).to(self.lang_model.dtype)
         if hasattr(input_embeds, "additional_embedding"):
             input_embeds.additional_embedding.weight.data.normal_(
                 mean=0.0,
-                std=self.lang_model.config.initializer_range
-                if hasattr(self.lang_model.config, "initializer_range")
-                else 0.02,
+                std=(
+                    self.lang_model.config.initializer_range
+                    if hasattr(self.lang_model.config, "initializer_range")
+                    else 0.02
+                ),
             )
         self.lang_model.set_input_embeddings(input_embeds)
 
@@ -1293,16 +802,20 @@ class VLM(nn.Module):
             max_original_id=initial_tokenizer_len - 1,
             additional_out_features=len(self.special_tokens),
             _weight=self.lang_model.get_output_embeddings().weight,
-            _bias=self.lang_model.get_output_embeddings().bias
-            if hasattr(self.lang_model.get_output_embeddings(), "bias")
-            else None,
-        )
+            _bias=(
+                self.lang_model.get_output_embeddings().bias
+                if hasattr(self.lang_model.get_output_embeddings(), "bias")
+                else None
+            ),
+        ).to(self.lang_model.dtype)
         if hasattr(out_embeds, "additional_fc"):
             out_embeds.additional_fc.weight.data.normal_(
                 mean=0.0,
-                std=self.lang_model.config.initializer_range
-                if hasattr(self.lang_model.config, "initializer_range")
-                else 0.02,
+                std=(
+                    self.lang_model.config.initializer_range
+                    if hasattr(self.lang_model.config, "initializer_range")
+                    else 0.02
+                ),
             )
         self.lang_model.set_output_embeddings(out_embeds)
 
@@ -1374,96 +887,18 @@ class VLM(nn.Module):
 
         # postprocessing may be needed, e.g. to remove extra tokens from logits that were inserted into the language stream
         # or to add the past_vision_tokens and past_media_locations to the output
-        output = self._postprocess_outputs_from_forward(
-            output=output,
-            lang_x=lang_x,
-            vision_tokens=vision_tokens,
-            use_cache=use_cache,
-            past_vision_tokens=past_vision_tokens,
-            past_media_locations=past_media_locations,
-        )
+        # output = self._postprocess_outputs_from_forward(
+        #     output=output,
+        #     lang_x=lang_x,
+        #     vision_tokens=vision_tokens,
+        #     use_cache=use_cache,
+        #     past_vision_tokens=past_vision_tokens,
+        #     past_media_locations=past_media_locations,
+        # )
 
         # postforward hooks
         self._post_forward_hook()
         return output
-
-    def _encode_vision_x_anyres_custom(self, samples, device):
-        assert self.anyres_grids is not None
-        image_raw = samples["image"]  # list of patch list in of shape [1, N_patch, C, H, W]
-        image_sizes = samples["image_size"]
-
-        images = [x.squeeze(0) for sample_img in image_raw for x in sample_img]
-        image_sizes = [s for sample_sizes in image_sizes for s in sample_sizes]
-
-        image = torch.cat(images, dim=0)  # [\sum{B}{N_patch_i}, C, H, W]
-        image = image.to(device)
-
-        with torch.no_grad():
-            image_embeds = self.vision_encoder(image, interpolate_pos_encoding=True).last_hidden_state
-
-        grid_size_base = self.base_img_size // self.vision_encoder.config.patch_size
-        grid_size = (grid_size_base, grid_size_base)
-        height, width = grid_size
-
-        if not image_embeds.shape[1] == height * width:
-            assert image_embeds.shape[1] == height * width + 1  # For vision encoders that has [CLS] token.
-            image_embeds = image_embeds[:, 1:, :]  # Drop the cls token for each patch.
-        n_vis_token_per_patch = image_embeds.shape[1]
-
-        # Split encoded patches and merge patch features
-        # 1. Get the raw sizes from samples, and split the image embeds [\sum_{B}(N_patch_i), N_tok(16*16), C]
-        split_sizes = [image.shape[0] for image in images]
-        image_embeds = torch.split(image_embeds, split_sizes, dim=0)
-        # 2. For each image (consist of a list of patches), merge the patches spatially (of shape [C, n_patch_height, n_patch_width])
-        new_image_embeds = []
-        patch_attn_masks = []
-        max_n_img_token = -1
-        for idx, patch_embeds in enumerate(image_embeds):
-            if patch_embeds.shape[0] > 1:
-                # 3. Flatten the patch features and get [C, n_patch_height * (n_patch_width+1)]
-                base_patch_embeds = patch_embeds[
-                    0
-                ]  # TODO: prepend the CLS token for th base patch embeds (of the resized entire image).
-                patch_embeds = patch_embeds[1:]
-
-                assert height * width == base_patch_embeds.shape[0]
-
-                num_patch_width, num_patch_height = get_anyres_image_grid_shape(
-                    image_sizes[idx], self.anyres_grids, self.base_img_size
-                )  # Hardcoded grid_pinpoints.
-                patch_embeds = patch_embeds.view(num_patch_height, num_patch_width, height, width, -1)
-
-                patch_embeds = patch_embeds.permute(4, 0, 2, 1, 3).contiguous()
-                patch_embeds = patch_embeds.flatten(1, 2).flatten(2, 3)
-                patch_embeds, patch_attn_mask = unpad_image(patch_embeds, image_sizes[idx], self.anyres_patch_sampling)
-                if hasattr(self, "image_newline"):
-                    patch_embeds = torch.cat(
-                        (patch_embeds, self.image_newline[:, None, None].expand(*patch_embeds.shape[:-1], 1)), dim=-1
-                    )
-                patch_embeds = patch_embeds.view(-1, num_patch_height, num_patch_width, height * width)
-                patch_embeds = patch_embeds.flatten(1, 2).permute(1, 2, 0)
-                assert patch_attn_mask is not None
-                patch_attn_mask = patch_attn_mask.view(num_patch_height, num_patch_width, height * width)
-                patch_attn_mask = patch_attn_mask.flatten(0, 1)
-                patch_embeds = torch.cat((base_patch_embeds.unsqueeze(0), patch_embeds), dim=0)
-                patch_attn_mask = torch.cat(
-                    (torch.ones(n_vis_token_per_patch, device=patch_embeds.device).unsqueeze(0), patch_attn_mask), dim=0
-                )
-
-            else:
-                patch_embeds = patch_embeds[0].unsqueeze(0) if self.anyres_patch_sampling else patch_embeds[0]
-                patch_attn_mask = (
-                    torch.ones(n_vis_token_per_patch, device=patch_embeds.device).unsqueeze(0)
-                    if self.anyres_patch_sampling
-                    else None
-                )
-                if hasattr(self, "image_newline"):
-                    patch_embeds = torch.cat((patch_embeds, self.image_newline[None]), dim=0)
-
-            new_image_embeds.append(patch_embeds)
-            patch_attn_masks.append(patch_attn_mask)
-
-        return new_image_embeds, patch_attn_masks
 
     def _encode_vision_x(self, vision_x: torch.Tensor):
         """
@@ -1483,45 +918,15 @@ class VLM(nn.Module):
         with torch.no_grad():
             if self.vision_encoder.__class__.__name__ == "TimmModel":
                 vision_x = self.vision_encoder.trunk.forward_features(vision_x)
-            elif self.vision_encoder.__class__.__name__ in ["CLIPVisionModel", "SiglipVisionTransformer"]:
+            elif self.vision_encoder.__class__.__name__ in [
+                "CLIPVisionModel",
+                "SiglipVisionTransformer",
+            ]:
                 vision_x = self.vision_encoder(vision_x).last_hidden_state
             else:
                 vision_x = self.vision_encoder(vision_x)[1]  # OpenCLIP returns tuples
         vision_x = rearrange(vision_x, "(b T F) v d -> b T F v d", b=b, T=T, F=F)
         return vision_x
-
-    def _concat_vision_cache(self, lang_x, vision_tokens, past_vision_tokens, past_media_locations, use_cache):
-        """
-        Helper function to include the past vision tokens and past media locations in the output.
-        """
-        if use_cache:
-            if past_media_locations is not None and past_vision_tokens is not None:
-                if vision_tokens is not None:
-                    updated_vision_tokens = torch.cat(
-                        [
-                            past_vision_tokens,
-                            vision_tokens,
-                        ],
-                        dim=1,
-                    )
-                else:
-                    updated_vision_tokens = past_vision_tokens
-                updated_media_locations = torch.cat(
-                    [
-                        past_media_locations,
-                        lang_x == self.media_token_id,
-                    ],
-                    dim=1,
-                )
-            else:
-                updated_vision_tokens = vision_tokens
-                updated_media_locations = lang_x == self.media_token_id
-
-        else:
-            updated_vision_tokens = None
-            updated_media_locations = None
-
-        return updated_vision_tokens, updated_media_locations
 
     def generate(
         self,
@@ -1659,155 +1064,20 @@ class VLM(nn.Module):
         )
 
 
-class VLMWithCrossAttention(VLM):
+@dataclass
+class VLMOutputWithPast(CausalLMOutputWithPast):
     """
-    VLM using cross-attention to fuse vision and language tokens.
+    VLMOutputWithPast is a wrapper around CausalLMOutputWithPast that adds the following attributes:
+        past_media_locations: Optional[torch.Tensor] = None,
+        past_vision_tokens: Optional[torch.Tensor] = None,
     """
 
-    def __init__(
-        self,
-        vision_encoder: nn.Module,
-        vision_tokenizer: nn.Module,
-        lang_model: nn.Module,
-        initial_tokenizer_len: int,
-        pad_token_id: int,
-        gradient_checkpointing: bool = False,
-        decoder_layers_attr_name: str = None,
-        cross_attn_every_n_layers: int = None,
-    ):
-        extend_instance(lang_model, CrossAttentionMixin)
-        super().__init__(
-            vision_encoder=vision_encoder,
-            vision_tokenizer=vision_tokenizer,
-            lang_model=lang_model,
-            initial_tokenizer_len=initial_tokenizer_len,
-            pad_token_id=pad_token_id,
-            gradient_checkpointing=gradient_checkpointing,
-        )
-        self.lang_model.set_decoder_layers_attr_name(decoder_layers_attr_name)
-        self.decoder_layers_attr_name = decoder_layers_attr_name
-        self.lang_model.init_cross_attention_layers(
-            lang_hidden_size=self.lang_hidden_dim,
-            vis_hidden_size=self.vis_embedding_dim,
-            cross_attn_every_n_layers=cross_attn_every_n_layers,
-            gradient_checkpointing=gradient_checkpointing,
-        )
+    past_media_locations: Optional[torch.Tensor] = None
+    past_vision_tokens: Optional[torch.Tensor] = None
 
-    def _prepare_inputs_for_forward(
-        self,
-        vision_tokens: torch.Tensor,
-        lang_x: torch.Tensor,
-        attention_mask: torch.Tensor,
-        labels: torch.Tensor = None,
-        past_key_values=None,
-        past_media_locations: torch.Tensor = None,
-        past_vision_tokens: torch.Tensor = None,
-        padding_side: str = "right",  # noop for cross-attention models
-        num_beams: int = 1,
-    ):
-        """Each xattn layer needs to save the vision tokens and the locations of the media tokens in the language sequence"""
-        self.lang_model._condition_media_before_forward(
-            input_ids=lang_x,
-            vision_tokens=vision_tokens,
-            past_media_locations=past_media_locations,
-            past_vision_tokens=past_vision_tokens,
-            num_beams=num_beams,
-        )
-        if past_key_values is not None:
-            past_key_values = [
-                (k.repeat_interleave(num_beams, dim=0), v.repeat_interleave(num_beams, dim=0))
-                for k, v in past_key_values
-            ]
 
-        return {
-            "input_ids": lang_x,
-            "attention_mask": attention_mask,
-            "labels": labels,
-        }
-
-    def _postprocess_outputs_from_forward(
-        self,
-        output: CausalLMOutputWithPast,
-        lang_x: torch.Tensor,
-        vision_tokens: torch.Tensor,
-        past_vision_tokens: torch.Tensor,
-        past_media_locations: torch.Tensor,
-        use_cache: bool = False,
-    ):
-        """Include the past vision tokens and past media locations in the output"""
-        updated_vision_tokens, updated_media_locations = self._concat_vision_cache(
-            lang_x=lang_x,
-            vision_tokens=vision_tokens,
-            past_vision_tokens=past_vision_tokens,
-            past_media_locations=past_media_locations,
-            use_cache=use_cache,
-        )
-        output = VLMOutputWithPast(
-            loss=output.loss,
-            logits=output.logits,
-            past_key_values=output.past_key_values,
-            hidden_states=output.hidden_states,
-            attentions=output.attentions,
-            past_media_locations=updated_media_locations,
-            past_vision_tokens=updated_vision_tokens,
-        )
-
-        return output
-
-    def _post_forward_hook(self):
-        # clear the conditioned layers
-        self.lang_model.clear_conditioned_layers()
-
-    def get_fsdp_lambda_fn(self):
-        """
-        Returns the lambda function used to decide how to perform FSDP wrapping.
-        """
-        from torch.distributed.algorithms._checkpoint.checkpoint_wrapper import (
-            CheckpointWrapper,
-        )
-
-        from .helpers import GatedCrossAttentionBlock
-
-        decoder_block_class = getattr_recursive(self.lang_model, self.decoder_layers_attr_name)[0].__class__
-
-        def lambda_fn(module: nn.Module):
-            # we want FSDP(ckpt(module)), not ckpt(FSDP(module))
-            if getattr(module, "_use_gradient_checkpointing", False) and not isinstance(module, CheckpointWrapper):
-                return False
-            if module is self.vision_tokenizer:
-                return True
-            if isinstance(module, GatedCrossAttentionBlock):
-                return True
-            if isinstance(module, decoder_block_class):
-                return True
-
-        return lambda_fn
-
-    @property
-    def num_params_per_module(self):
-        """Print the number of parameters per module in the model"""
-        num_xattn_params = num_params(self.lang_model.gated_cross_attn_layers)
-        return "\n".join(
-            [
-                f"Vision encoder: {num_params(self.vision_encoder):,} parameters",
-                f"Vision tokenizer: {num_params(self.vision_tokenizer):,} parameters",
-                f"Cross attention: {num_xattn_params:,} parameters",
-                f"Language model: {num_params(self.lang_model) - num_xattn_params:,} parameters",
-            ]
-        )
-
-    @property
-    def num_trainable_params_per_module(self):
-        """Print the number of trainable parameters per module in the model"""
-        num_xattn_params = num_params(self.lang_model.gated_cross_attn_layers, filter_to_trainable=True)
-        return "\n".join(
-            [
-                f"Vision encoder: {num_params(self.vision_encoder, filter_to_trainable=True):,} trainable parameters",
-                f"Vision tokenizer: {num_params(self.vision_tokenizer, filter_to_trainable=True):,} trainable parameters",
-                f"Cross attention: {num_xattn_params:,} trainable parameters",
-                f"Language model: {num_params(self.lang_model, filter_to_trainable=True) - num_xattn_params:,} trainable parameters",
-            ]
-        )
+def exists(val):
+    return val is not None
 
 
 class VLMWithLanguageStream(VLM):
@@ -1824,7 +1094,6 @@ class VLMWithLanguageStream(VLM):
         pad_token_id: int,
         decoder_layers_attr_name: str = None,
         gradient_checkpointing: bool = False,
-        base_img_size: Optional[int] = None,
     ):
         super().__init__(
             vision_encoder=vision_encoder,
@@ -1832,12 +1101,12 @@ class VLMWithLanguageStream(VLM):
             lang_model=lang_model,
             initial_tokenizer_len=initial_tokenizer_len,
             pad_token_id=pad_token_id,
-            base_img_size=base_img_size,
             gradient_checkpointing=gradient_checkpointing,
         )
         self.decoder_layers_attr_name = decoder_layers_attr_name
-        for block in getattr_recursive(self.lang_model, self.decoder_layers_attr_name):
-            block._use_gradient_checkpointing = gradient_checkpointing
+        if decoder_layers_attr_name is not None:
+            for block in getattr_recursive(self.lang_model, self.decoder_layers_attr_name):
+                block._use_gradient_checkpointing = gradient_checkpointing
 
     def _prepare_inputs_for_forward(
         self,
@@ -1890,8 +1159,6 @@ class VLMWithLanguageStream(VLM):
                     multimodal_labels.append(labels[i].clone())
                 continue
 
-            # since an image is represented by self.num_tokens_per_vis tokens, we need to offset the image_token_idxs
-
             # loop through the image_token_idxs and insert the vision tokens
             new_embed = lang_embeds[i].clone()
             new_attention_mask = attention_mask[i].clone() if attention_mask is not None else None
@@ -1904,7 +1171,7 @@ class VLMWithLanguageStream(VLM):
                 if self.image_aspect_ratio == "anyres":
                     num_vis_tokens = vision_tokens[i][img_num].shape[0]
                     if vision_attention_mask is not None:
-                        vis_attention_mask = vision_attention_mask[i][img_num]
+                        vis_attention_mask = vision_attention_mask[i]
                     else:
                         vis_attention_mask = torch.ones(num_vis_tokens, dtype=torch.long).to(attention_mask.device)
                 else:
@@ -1974,161 +1241,8 @@ class VLMWithLanguageStream(VLM):
             "labels": multimodal_labels,
         }
 
-    def _postprocess_outputs_from_forward(
-        self,
-        output: CausalLMOutputWithPast,
-        lang_x: torch.Tensor,
-        vision_tokens: torch.Tensor,
-        past_vision_tokens: torch.Tensor,
-        past_media_locations: torch.Tensor,
-        use_cache: bool = False,
-    ):
-        # Include the past vision tokens and past media locations in the output
-        updated_vision_tokens, updated_media_locations = self._concat_vision_cache(
-            lang_x=lang_x,
-            vision_tokens=vision_tokens,
-            past_vision_tokens=past_vision_tokens,
-            past_media_locations=past_media_locations,
-            use_cache=use_cache,
-        )
-
-        # return logits that are the same shape as the original input_ids
-        logits = output.logits
-        batch_logits = []
-        B, T_txt = lang_x.shape
-        for i in range(B):
-            sequence_logits = []
-            logits_j = 0
-            img_id = 0
-            for j in range(T_txt):
-                if lang_x[i, j] != self.media_token_id:
-                    sequence_logits.append(logits[i, logits_j])
-                    logits_j += 1
-                else:
-                    # append the logit for the first image token, then skip over the rest
-                    # note: the model actually learns to predict <im_patch>, not <image>
-                    sequence_logits.append(logits[i, logits_j])
-                    # logits_j += self.num_tokens_per_vis
-                    # Offset in account of dynamic num_vis_tokens.
-                    logits_j += vision_tokens[i][img_id].shape[0]
-                    img_id += 1
-            sequence_logits = torch.stack(sequence_logits, dim=0)  # (B, vocab_size)
-            batch_logits.append(sequence_logits)
-
-        batch_logits = torch.stack(batch_logits, dim=0)  # (B, T_txt, vocab_size)
-        # The final logits shape should be the same as the original input_ids shape
-        assert batch_logits.shape[:2] == (B, T_txt)
-
-        # assemble the output
-        output = VLMOutputWithPast(
-            loss=output.loss,
-            logits=batch_logits,
-            past_key_values=output.past_key_values,
-            hidden_states=output.hidden_states,
-            attentions=output.attentions,
-            past_media_locations=updated_media_locations,
-            past_vision_tokens=updated_vision_tokens,
-        )
-
-        return output
-
     def _post_forward_hook(self):
         pass
-
-    def get_fsdp_lambda_fn(self):
-        """
-        Returns the lambda function used to decide how to perform FSDP wrapping.
-        """
-        from torch.distributed.algorithms._checkpoint.checkpoint_wrapper import (
-            CheckpointWrapper,
-        )
-
-        decoder_block_class = getattr_recursive(self.lang_model, self.decoder_layers_attr_name)[0].__class__
-
-        def lambda_fn(module: nn.Module):
-            if getattr(module, "_use_gradient_checkpointing", False) and not isinstance(module, CheckpointWrapper):
-                return False
-            if module is self.vision_tokenizer:
-                return True
-            if isinstance(module, decoder_block_class):
-                return True
-
-        return lambda_fn
-
-    def get_fsdp_wrapping_policy(self):
-        """
-        Returns the policy used to decide how to perform FSDP wrapping.
-        """
-        from open_clip.transformer import ResidualAttentionBlock, VisionTransformer
-        from torch.distributed.fsdp.wrap import _module_wrap_policy, _or_policy, transformer_auto_wrap_policy
-        from transformers.models.llama.modeling_llama import LlamaDecoderLayer
-        from transformers.models.phi.modeling_phi import PhiDecoderLayer
-
-        # for Phi-3 hot fiix
-        try:
-            import importlib
-
-            commit_hash = str(type(self.lang_model)).split("instruct.")[1].split(".modeling")[0]
-            module_name = f"transformers_modules.microsoft.Phi-3-mini-128k-instruct.{commit_hash}.modeling_phi3"
-            module = importlib.import_module(module_name)
-            Phi3DecoderLayer = module.Phi3DecoderLayer
-            import_phi3 = True
-        except IndexError:
-            import_phi3 = False
-
-        # hard code the wrap module name
-        # vision
-        if isinstance(self.vision_encoder, SiglipVisionModel):
-            from transformers import SiglipVisionModel
-
-            vit_wrap_policy = functools.partial(_module_wrap_policy, module_classes={SiglipVisionModel})
-            from transformers.models.siglip.modeling_siglip import (
-                SiglipEncoderLayer,
-                SiglipMultiheadAttentionPoolingHead,
-                SiglipVisionEmbeddings,
-                SiglipVisionTransformer,
-            )
-
-            # import torch.nn.LayerNorm as LayerNorm
-            transformer_layer_cls_vit = {
-                SiglipEncoderLayer,
-                SiglipVisionTransformer,
-                SiglipVisionEmbeddings,
-                SiglipMultiheadAttentionPoolingHead,
-            }
-            vision_transformer_block_policy = functools.partial(
-                transformer_auto_wrap_policy, transformer_layer_cls=transformer_layer_cls_vit
-            )
-            vision_wrap_policy = functools.partial(
-                _or_policy, policies=[vit_wrap_policy, vision_transformer_block_policy]
-            )
-
-        else:
-            vit_wrap_policy = functools.partial(_module_wrap_policy, module_classes={VisionTransformer, TimmModel})
-            # vit_wrap_policy = functools.partial(_module_wrap_policy, module_classes={VisionTransformer})
-            # transformer_layer_cls_vit = {ResidualAttentionBlock}
-            transformer_layer_cls_vit = {ResidualAttentionBlock, Block}
-            # transformer_layer_cls_vit = {Block}
-            vision_transformer_block_policy = functools.partial(
-                transformer_auto_wrap_policy, transformer_layer_cls=transformer_layer_cls_vit
-            )
-            vision_wrap_policy = functools.partial(
-                _or_policy, policies=[vit_wrap_policy, vision_transformer_block_policy]
-            )
-        # llm
-        transformer_layer_cls = {LlamaDecoderLayer, PhiDecoderLayer}
-        if import_phi3:
-            transformer_layer_cls.add(Phi3DecoderLayer)
-        llm_transformer_block_policy = functools.partial(
-            transformer_auto_wrap_policy, transformer_layer_cls=transformer_layer_cls
-        )
-        # vision_tokenizer
-        vis_tokenizer_policy = functools.partial(
-            _module_wrap_policy, module_classes={LinearPatchProjection, PerceiverResampler}
-        )
-        return functools.partial(
-            _or_policy, policies=[vision_wrap_policy, llm_transformer_block_policy, vis_tokenizer_policy]
-        )
 
     @property
     def num_params_per_module(self):
@@ -2153,29 +1267,22 @@ class VLMWithLanguageStream(VLM):
         )
 
 
-# copied from https://github.com/salesforce/LAVIS/blob/xgen-mm/open_flamingo/src/xgenmm.py with some changes
-
-
-# from .helpers import PerceiverResampler
-# from .vlm import VLMWithLanguageStream
-
-
 class XGenMMPerceiver(VLMWithLanguageStream):
     def __init__(
         self,
         vision_encoder: nn.Module,
+        vision_tokenizer: nn.Module,
         lang_model: nn.Module,
-        vis_feature_dim: int,
         initial_tokenizer_len: int,
         pad_token_id: int,
         decoder_layers_attr_name: str = None,
         gradient_checkpointing: bool = False,
-        base_img_size: Optional[int] = None,
         image_aspect_ratio: str = "anyres",
         anyres_patch_sampling: bool = True,
-        num_vision_tokens: int = 128,
         anyres_grids: list[int] = None,
-        max_num_frames: int | None = None,
+        num_vis_tokens: int = 128,
+        num_final_vis_tokens: int | None = None,
+        vis_proj_type: str | None = "linear",
     ):
         """
         Args:
@@ -2187,7 +1294,6 @@ class XGenMMPerceiver(VLMWithLanguageStream):
                 will be inserted into self.special_tokens, which factory.py fills after creating new tokens
             decoder_layers_attr_name (str, optional): name of the decoder layers attribute. Defaults to None.
             gradient_checkpointing (bool, optional): whether to use gradient checkpointing. Defaults to False.
-            max_num_frames (int, optional): time embedding dimension in PerceiverResampler (vision tokenizer). Defaults to 0.
         """
         self._special_tokens = {
             "media_token": "<image>",
@@ -2197,27 +1303,30 @@ class XGenMMPerceiver(VLMWithLanguageStream):
         lang_embedding_dim = lang_model.get_input_embeddings().weight.shape[1]
         super().__init__(
             vision_encoder=vision_encoder,
-            vision_tokenizer=PerceiverResampler(
-                dim=vis_feature_dim,
-                dim_inner=lang_embedding_dim,
-                num_latents=num_vision_tokens,
-                max_num_frames=max_num_frames,
-            ),
+            vision_tokenizer=vision_tokenizer,
             lang_model=lang_model,
             initial_tokenizer_len=initial_tokenizer_len,
             gradient_checkpointing=gradient_checkpointing,
-            base_img_size=base_img_size,
             decoder_layers_attr_name=decoder_layers_attr_name,
             pad_token_id=pad_token_id,
         )
         self.image_aspect_ratio = image_aspect_ratio
         self.anyres_patch_sampling = anyres_patch_sampling
-
-        # https://github.com/huggingface/peft/issues/1827
-        self.prepare_inputs_for_generation = self.lang_model.prepare_inputs_for_generation
-        self.config = self.lang_model.config
-        # self.anyres_grids = None
         self.anyres_grids = anyres_grids
+        if num_final_vis_tokens is not None and num_final_vis_tokens != num_vis_tokens:
+            if vis_proj_type == "linear":
+                self.vis_proj = nn.Linear(num_vis_tokens, num_final_vis_tokens, bias=True)
+            elif vis_proj_type == "maxpool" or vis_proj_type == "avgpool":
+                assert num_vis_tokens % num_final_vis_tokens == 0
+                ratio = int(num_vis_tokens / num_final_vis_tokens)
+                if vis_proj_type == "maxpool":
+                    self.vis_proj = nn.MaxPool1d(ratio, ratio)
+                else:
+                    self.vis_proj = nn.AvgPool1d(ratio, ratio)
+            else:
+                raise ValueError("vis_proj_type must be linear or maxpool or avgpool")
+        else:
+            self.vis_proj = None
 
     def set_trainable(self):
         """
@@ -2234,7 +1343,7 @@ class XGenMMPerceiver(VLMWithLanguageStream):
 
     def forward(
         self,
-        vision_x: list[list[torch.Tensor]],
+        vision_x: Optional[torch.Tensor],
         lang_x: torch.Tensor,
         attention_mask: Optional[torch.Tensor] = None,
         labels: Optional[torch.Tensor] = None,
@@ -2248,10 +1357,8 @@ class XGenMMPerceiver(VLMWithLanguageStream):
         """
         Args:
             vision_x: Vision input
-                shape (B, T_img, F, C, H, W) with F=1
-                only F = 1 is supported (single-frame videos)
-                if T_img > the number of media tokens in the corresponding input_ids (lang_x),
-                only the first number of media tokens in lang_x are used
+                shape (B, T_img, F, C, H, W) (Batch, T_img, Frame, Channel, Height, Width)
+                For 8 samples with 1 video and 25 frames each, it may be (8, 1, 25, 3, 384, 384)
             lang_x: Language input ids, with media tokens denoting where
                 visual media should be inserted.
                 shape (B, T_txt)
@@ -2270,61 +1377,42 @@ class XGenMMPerceiver(VLMWithLanguageStream):
         assert not (past_vision_tokens is None) ^ (past_media_locations is None), (
             "past_vision_tokens and past_media_locations must both be None or both be not None"
         )
-        # convert pixels to vision tokens
-        vision_attention_mask = None
 
-        input_dict = dict(image=vision_x, image_size=image_size)
-        vision_features, vision_attn_masks = self._encode_vision_x_anyres_custom(input_dict, lang_x.device)
-
-        split_sizes = [feature.shape[0] for feature in vision_features]
-        nt_images = [len(images) for images in vision_x]
-        split_split_sizes = []
-        img_id = 0
-        for nt in nt_images:
-            split_split_sizes.append(split_sizes[img_id : img_id + nt])
-            img_id += nt
-
-        vision_features = torch.cat(vision_features, dim=0)
-        vision_features = vision_features[:, None, None, :, :]  # Expand dimensions.
-        vision_attn_masks = torch.cat(vision_attn_masks, dim=0)
-
-        vision_tokens = self.vision_tokenizer(vision_features, vision_attn_masks)
-
-        vision_token_groups = torch.split(vision_tokens, list(sum(nt_img) for nt_img in split_split_sizes), dim=0)
-        vision_tokens = []
-
-        for sample_id, patch_vis_tokens in enumerate(vision_token_groups):
-            patch_vis_token_groups = torch.split(
-                patch_vis_tokens, split_split_sizes[sample_id], dim=0
-            )  # [Np*nt, 1, v, d] -> [[Np_t, 1, v, d], ...]
-            flatten_vision_tokens = []
-            # padded_attn_masks = []
-            for image_vis_token in patch_vis_token_groups:
-                image_vis_token = image_vis_token.flatten(0, 2)  # [Np, 1, v, d] -> [Np*v, d]
-                flatten_vision_tokens.append(image_vis_token)
-            vision_tokens_i = flatten_vision_tokens
-            vision_tokens.append(vision_tokens_i)
+        if vision_x is not None:
+            vision_attn_masks = None
+            B, T, F = vision_x.shape[:3]
+            # Convert to features
+            vision_x = rearrange(vision_x, "B T F C H W -> (B T F) C H W")
+            with torch.no_grad():
+                vision_x = self.vision_encoder(vision_x).last_hidden_state
+            vision_x = rearrange(vision_x, "(B T F) v d -> B T F v d", B=B, F=F, T=T)
+            # Compression with vision_tokenizer
+            vision_x = self.vision_tokenizer(vision_x, vision_attn_masks)
+            # Further compression (if needed)
+        else:
+            vision_x = None
 
         # fuse the vision and language tokens
         new_inputs = self._prepare_inputs_for_forward(
-            vision_tokens=vision_tokens,
+            vision_tokens=vision_x,
             lang_x=lang_x,
             attention_mask=attention_mask,
-            vision_attention_mask=vision_attention_mask,
+            vision_attention_mask=None,
             labels=labels,
             past_key_values=past_key_values,
             past_media_locations=past_media_locations,
             padding_side="right",
             past_vision_tokens=past_vision_tokens,
         )
-        output = self.lang_model(
+        output: CausalLMOutputWithPast | tuple = self.lang_model(
             **new_inputs,
             use_cache=use_cache,
             past_key_values=past_key_values,
             **kwargs,
         )
+
         # postforward hooks
-        # self._post_forward_hook()
+        self._post_forward_hook()
         return output
 
     def generate(
@@ -2353,91 +1441,28 @@ class XGenMMPerceiver(VLMWithLanguageStream):
         """
         num_beams = kwargs.pop("num_beams", 1)
 
-        # convert pixels to vision tokens
-        vision_attention_mask = None
         if vision_x is not None:
-            if self.image_aspect_ratio == "anyres":
-                input_dict = dict(image=vision_x, image_size=image_size)
-                vision_features, vision_attn_masks = self._encode_vision_x_anyres(input_dict, lang_x.device)
-            else:
-                vision_features = self._encode_vision_x(vision_x=vision_x)
-                vision_attn_masks = None
-            if self.anyres_patch_sampling:
-                split_sizes = [feature.shape[0] for feature in vision_features]
-                # Nested splits for multi-image samples.
-                if isinstance(vision_x[0], list):
-                    nt_images = [len(images) for images in vision_x]
-                    split_split_sizes = []
-                    img_id = 0
-                    for nt in nt_images:
-                        split_split_sizes.append(split_sizes[img_id : img_id + nt])
-                        img_id += nt
-                else:
-                    nt_images = [1] * len(vision_x)
-                    split_split_sizes = split_sizes
-                vision_features = torch.cat(vision_features, dim=0)
-                vision_features = vision_features[:, None, None, :, :]  # Expand dimensions.
-                vision_attn_masks = torch.cat(vision_attn_masks, dim=0)
-            vision_tokens = self.vision_tokenizer(vision_features, vision_attn_masks)
-
-            if (
-                not self.anyres_patch_sampling and self.image_aspect_ratio == "anyres"
-            ):  # copied to here so the main loop does not break
-                split_sizes = [feature.shape[0] for feature in vision_features]
-                # Nested splits for multi-image samples.
-                if isinstance(vision_x[0], list):
-                    nt_images = [len(images) for images in vision_x]
-                    split_split_sizes = []
-                    img_id = 0
-                    for nt in nt_images:
-                        split_split_sizes.append(split_sizes[img_id : img_id + nt])
-                        img_id += nt
-                else:
-                    nt_images = [1] * len(vision_x)
-                    split_split_sizes = split_sizes
-
-                vision_tokens = vision_tokens.squeeze()
-                vision_tokens = list(
-                    torch.split(vision_tokens, list(sum(nt_img) for nt_img in split_split_sizes), dim=0)
-                )  # [batch], frame, vistok, embed
-
-            # Post-processing: Split the batches into groups of patches and concatenate them together.
-            if self.anyres_patch_sampling:
-                assert isinstance(vision_x, list)
-                if isinstance(vision_x[0], list):
-                    vision_token_groups = torch.split(
-                        vision_tokens, list(sum(nt_img) for nt_img in split_split_sizes), dim=0
-                    )
-                    vision_tokens = []
-
-                    for sample_id, patch_vis_tokens in enumerate(vision_token_groups):
-                        # Pad the image tokens within a sample.
-                        patch_vis_token_groups = torch.split(
-                            patch_vis_tokens, split_split_sizes[sample_id], dim=0
-                        )  # [Np*nt, 1, v, d] -> [[Np_t, 1, v, d], ...]
-                        flatten_vision_tokens = []
-                        for image_vis_token in patch_vis_token_groups:
-                            image_vis_token = image_vis_token.flatten(0, 2)  # [Np, 1, v, d] -> [Np*v, d]
-                            flatten_vision_tokens.append(image_vis_token)
-                        vision_tokens_i = flatten_vision_tokens
-                        vision_tokens.append(vision_tokens_i)
-                else:
-                    # Padding. FIXME: padding here might not be necessary?
-                    vision_token_groups = torch.split(vision_tokens, split_sizes, dim=0)
-                    # Padding.
-                    vision_tokens = []
-                    for patch_vis_tokens in vision_token_groups:
-                        patch_vis_tokens = patch_vis_tokens.flatten(0, 2)  # [Np, 1, v, d] -> [Np*v, d]
-                        vision_tokens.append(patch_vis_tokens.unsqueeze(0))  # Add the nt dimension.
+            vision_attn_masks = None
+            B, T, F = vision_x.shape[:3]
+            # Convert to features
+            vision_x = rearrange(vision_x, "B T F C H W -> (B T F) C H W")
+            with torch.no_grad():
+                vision_x = self.vision_encoder(vision_x).last_hidden_state
+            vision_x = rearrange(vision_x, "(B T F) v d -> B T F v d", B=B, F=F, T=T)
+            # Compression with vision_tokenizer
+            vision_x = self.vision_tokenizer(vision_x, vision_attn_masks)
+            # Further compression (if needed)
         else:
-            vision_tokens = None
+            vision_x = None
 
         # fuse the vision and language tokens
+        # for xattn, vision_x and media_location are repeat_interleaved s.t.
+        # the total batch size is B * num_beams
         new_inputs = self._prepare_inputs_for_forward(
             vision_tokens=vision_tokens,
             lang_x=lang_x,
             attention_mask=attention_mask,
-            vision_attention_mask=vision_attention_mask,
+            vision_attention_mask=None,
             past_key_values=past_key_values,
             past_media_locations=past_media_locations,
             past_vision_tokens=past_vision_tokens,
@@ -2459,200 +1484,125 @@ class XGenMMPerceiver(VLMWithLanguageStream):
                 use_cache=True,
                 **kwargs,
             )
+        output = cast(Union[tuple, CausalLMOutputWithPast], output)
         self._post_forward_hook()
         return output
 
 
-# copied from https://github.com/salesforce/LAVIS/blob/xgen-mm/open_flamingo/src/factory.py with some changes
+class XGenMMVisionEncoder(PreTrainedModel):
+    main_input_name = "pixel_values"
+    config_class = XGenMMVisionEncoderConfig
+
+    def __init__(self, config: XGenMMVisionEncoderConfig):
+        super().__init__(config)
+        if config.model_name != "google/siglip-so400m-patch14-384":
+            raise ValueError(f"Unsupported model {config.model_name}. New vision models will be added soon.")
+        self.model = AutoModel.from_pretrained(config.model_name)
+
+    def forward(self, pixel_values: torch.Tensor) -> torch.Tensor:
+        # assert pixel_values.ndim == 4, f"Expected 4D tensor (bs, c, h, w), got {pixel_values.ndim}"
+        return self.model.encode_image(pixel_values)
 
 
-MODEL_ANYRES_GRIDS = [
-    [384, 768],
-    [768, 384],
-    [768, 768],
-    [1152, 384],
-    [384, 1152],
-]
+# vision tokenizer
+class XGenMMVisionTokenizer(PreTrainedModel):
+    config_class = XGenMMVisionTokenizerConfig
 
-"""
-# Save the base model weights to use the local model
-import os
-import torch
-from transformers import AutoModelForVision2Seq
-model = AutoModelForVision2Seq.from_pretrained(
-    "Salesforce/xgen-mm-phi3-mini-instruct-interleave-r-v1.5", trust_remote_code=True
-).vlm
-os.makedirs("weights", exist_ok=True)
-torch.save(model.state_dict(), "weights/xgenmm.pt")
-"""
+    def __init__(self, config: XGenMMVisionTokenizerConfig):
+        super().__init__(config)
+        self.model = PerceiverResampler(
+            dim=config.vis_feature_dim,
+            dim_inner=config.lang_embedding_dim,
+            num_latents=config.num_vis_tokens,
+        )
 
-PRETRAINED_PATH = "weights/xgenmm.pt"
+    def forward(self, vision_features: torch.Tensor, vision_attn_masks: torch.Tensor):
+        return self.model(vision_features, vision_attn_masks)
 
 
-def load_pretrained(pretrained_path: str, model: nn.Module) -> dict:
-    """
-    Loads pretrained weights into a model from a checkpoint file.
+# XGenMM model
+class XGenMMModelForConditionalGeneration(PreTrainedModel):
+    config_class = XGenMMConfig
 
-    Args:
-        pretrained (str): pretrained path
-        model (nn.Module): The model instance to load the weights into.
+    def __init__(self, config: XGenMMConfig):
+        super().__init__(config)
 
-    Returns:
-        pretrained (dict): The state dictionary loaded from the checkpoint file.
-    """
-    assert isinstance(pretrained_path, str) and os.path.exists(pretrained_path)
-    pretrained = torch.load(pretrained_path, map_location="cpu")
+        # vision encoder initialization
+        vision_encoder = AutoModel.from_pretrained(
+            config.vision_encoder_config.model_name,
+            torch_dtype=config.text_config.torch_dtype,
+        ).vision_model
 
-    if "vision_tokenizer.latents" in pretrained:
-        msd_current = model.state_dict()
-        if msd_current["vision_tokenizer.latents"].shape != pretrained["vision_tokenizer.latents"].shape:
-            pretrained["vision_tokenizer.latents"] = msd_current["vision_tokenizer.latents"]  # Random re-init.
+        # language model initialization
+        language_model = AutoModelForCausalLM.from_config(
+            config.text_config,
+            torch_dtype=config.text_config.torch_dtype,
+        )
+        check_embedding_fns(language_model)
+        # Update _tied_weights_keys using the base model used.
+        if language_model._tied_weights_keys is not None:
+            self._tied_weights_keys = [f"language_model.{k}" for k in language_model._tied_weights_keys]
 
-    if "vision_tokenizer.frame_embs" in pretrained:
-        msd_current = model.state_dict()
-        if msd_current["vision_tokenizer.frame_embs"] is None and pretrained["vision_tokenizer.frame_embs"] is not None:
-            msd_current["vision_tokenizer.frame_embs"] = msd_current["vision_tokenizer.frame_embs"]
-
-    result = model.load_state_dict(pretrained, strict=False)
-    torch.cuda.empty_cache()
-    rank = int(os.environ.get("RANK", 0))
-    print(f"Rank {rank} Missing keys:", result.missing_keys)
-    print(f"Rank {rank} Unexpected keys:", result.unexpected_keys)
-    return pretrained
-
-
-def create_model_and_tokenizer(
-    vision_encoder_path: str = "google/siglip-so400m-patch14-384",
-    lang_model_path: str = "microsoft/Phi-3-mini-4k-instruct",
-    tokenizer_path: str = "microsoft/Phi-3-mini-4k-instruct",
-    verbose: bool = True,
-    num_vision_tokens: int = 128,
-    image_aspect_ratio: str = "anyres",
-    anyres_patch_sampling=True,
-    gradient_checkpointing=True,
-    pretrained: str | None = None,
-) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
-    """
-    Initialize XGenMMPerceiver model
-
-    Args:
-        vision_encoder_path (str): path to pretrained vision_encoder
-        lang_model_path (str): path to pretrained language encoder
-        tokenizer_path (str): path to pretrained tokenizer
-        cache_dir (str, optional): path to cache directory for downloading OpenClip/HF weights.
-        gradient_checkpointing (bool, optional): whether to use gradient checkpointing. Defaults to False.
-        verbose (bool, optional): whether to print model info. Defaults to True.
-    Returns:
-        `tuple[XGenMMPerceiver, PreTrainedTokenizer]`
-    """
-
-    # Configure dtypes
-    vision_encoder_precision = torch.bfloat16
-    lang_model_precision = torch.bfloat16
-
-    attn_implementation = "flash_attention_2" if torch.cuda.get_device_capability(0)[0] >= 8 else "sdpa"
-
-    vision_encoder = AutoModel.from_pretrained(
-        pretrained_model_name_or_path=vision_encoder_path,
-        torch_dtype=vision_encoder_precision,
-        attn_implementation=attn_implementation,
-    ).vision_model
-
-    tokenizer = AutoTokenizer.from_pretrained(
-        pretrained_model_name_or_path=tokenizer_path,
-        trust_remote_code=True,
-        use_fast=False,
-        legacy=False,
-    )
-
-    if tokenizer.pad_token is None or tokenizer.pad_token == tokenizer.eos_token:
-        # add a pad token if it doesn't exist
-        tokenizer.add_special_tokens({"pad_token": "<pad>"})
-
-    lang_model = AutoModelForCausalLM.from_pretrained(
-        lang_model_path,
-        trust_remote_code=False,
-        attn_implementation=attn_implementation,
-        torch_dtype=lang_model_precision,
-    )
-
-    check_embedding_fns(lang_model)
-
-    # init the model
-    decoder_layers_attr_name = "model.layers"
-
-    model = XGenMMPerceiver(
-        vision_encoder=vision_encoder,
-        lang_model=lang_model,
-        vis_feature_dim=vision_encoder.config.hidden_size,
-        initial_tokenizer_len=len(tokenizer),
-        decoder_layers_attr_name=decoder_layers_attr_name,
-        pad_token_id=tokenizer.pad_token_id,
-        anyres_grids=MODEL_ANYRES_GRIDS,
-        anyres_patch_sampling=anyres_patch_sampling,
-        gradient_checkpointing=gradient_checkpointing,
-        num_vision_tokens=num_vision_tokens,
-        image_aspect_ratio=image_aspect_ratio,
-    )
-    model.lang_model.to(lang_model_precision)
-
-    # add special tokens to the tokenizer and language models
-    tokenizer.add_special_tokens({"additional_special_tokens": list(model.special_tokens.values())})
-    model.lang_model.config.vocab_size = len(tokenizer)
-    model.set_special_token_ids({v: tokenizer.convert_tokens_to_ids(v) for v in model.special_tokens.values()})
-
-    # freeze appropriate parameters
-    # model.set_trainable()
-
-    # log model info
-    if verbose and int(os.environ.get("RANK", 0)) == 0:
-        print(f"BLIP-3 model initialized with {model.num_trainable_params:,} trainable parameters")
-        # print(f"==========Trainable Parameters\n{model.num_trainable_params_per_module}")
-        # print(f"==========Total Parameters\n{model.num_params_per_module}")
-
-    load_pretrained(PRETRAINED_PATH if pretrained is None else pretrained, model)
-    return model, tokenizer
-
-
-def check_embedding_fns(lang_model):
-    """Checks for and attempts to set {get/set}_{input/output}_embeddings functions to the model"""
-    if not has_fn(lang_model, "get_input_embeddings"):
-        if hasattr_recursive(lang_model, "transformer.wte"):  # MPT
-            lang_model.get_input_embeddings = lambda: lang_model.transformer.wte
-        elif hasattr_recursive(lang_model, "model.decoder.embed_tokens"):  # OPT
-            lang_model.get_input_embeddings = lambda: lang_model.decoder.embed_tokens
-        else:
-            raise ValueError(
-                "We require the language encoder to have a get_input_embeddings method but we couldn't determine the name of the input embeddings attribute. Please supply this manually in factory.py."
+        # vision tokenizer initialization
+        if config.vision_tokenizer_config.lang_embedding_dim != language_model.get_input_embeddings().weight.shape[1]:
+            overwrite = language_model.get_input_embeddings().weight.shape[1]
+            config.vision_tokenizer_config.lang_embedding_dim = overwrite
+            print(
+                f"Warning: The language embedding dimension in the vision tokenizer config is different from the language model's embedding dimension. Overwriting the language embedding dimension in the vision tokenizer config to {overwrite}."
             )
 
-    if not has_fn(lang_model, "set_input_embeddings"):
-        if hasattr_recursive(lang_model, "transformer.wte"):  # MPT
-            lang_model.set_input_embeddings = lambda x: setattr_recursive(lang_model, "transformer.wte", x)
-        elif hasattr_recursive(lang_model, "model.decoder.embed_tokens"):  # OPT
-            lang_model.set_input_embeddings = lambda x: setattr_recursive(lang_model, "model.decoder.embed_tokens", x)
-        else:
-            raise ValueError(
-                "We require the language encoder to have a set_input_embeddings method but we couldn't determine the name of the input embeddings attribute. Please supply this manually in factory.py."
-            )
+        self.vision_tokenizer = XGenMMVisionTokenizer(config.vision_tokenizer_config)
+        vision_tokenizer = self.vision_tokenizer.model.to(language_model.dtype)
 
-    if not has_fn(lang_model, "get_output_embeddings"):
-        if hasattr_recursive(lang_model, "lm_head"):
-            lang_model.get_output_embeddings = lambda: lang_model.lm_head
-        else:
-            raise ValueError(
-                "We require the language encoder to have a get_output_embeddings method but we couldn't determine the name of the output embeddings attribute. Please supply this manually in factory.py."
-            )
+        self.vlm = XGenMMPerceiver(
+            vision_encoder=vision_encoder,
+            vision_tokenizer=vision_tokenizer,
+            lang_model=language_model,
+            initial_tokenizer_len=config.text_config.initial_tokenizer_len,
+            pad_token_id=config.text_config.pad_token_id,
+            image_aspect_ratio=config.vision_encoder_config.image_aspect_ratio,
+            anyres_patch_sampling=config.vision_encoder_config.anyres_patch_sampling,
+            anyres_grids=config.vision_encoder_config.anyres_grids,
+            num_vis_tokens=config.vision_tokenizer_config.num_vis_tokens,
+            num_final_vis_tokens=config.vision_tokenizer_config.num_final_vis_tokens,
+        )
+        # Initialize weights and apply final processing
+        self.post_init()
 
-    if not has_fn(lang_model, "set_output_embeddings"):
-        if hasattr_recursive(lang_model, "lm_head"):
-            lang_model.set_output_embeddings = lambda x: setattr_recursive(lang_model, "lm_head", x)
-        else:
-            raise ValueError(
-                "We require the language encoder to have a set_output_embeddings method but we couldn't determine the name of the output embeddings attribute. Please supply this manually in factory.py."
-            )
+    def forward(
+        self,
+        pixel_values: torch.FloatTensor,
+        input_ids: Optional[torch.LongTensor] = None,
+        attention_mask: Optional[torch.LongTensor] = None,
+        **kwargs,
+    ) -> Union[tuple, CausalLMOutputWithPast]:
+        return self.vlm(
+            vision_x=pixel_values,
+            lang_x=input_ids,
+            attention_mask=attention_mask,
+            **kwargs,
+        )
 
+    @torch.no_grad()
+    def generate(
+        self,
+        pixel_values: torch.FloatTensor,
+        input_ids: Optional[torch.LongTensor] = None,
+        attention_mask: Optional[torch.LongTensor] = None,
+        **generate_kwargs,
+    ) -> Union[tuple, CausalLMOutputWithPast]:
+        self.vlm = self.vlm.eval()
+        return self.vlm.generate(
+            vision_x=pixel_values,
+            lang_x=input_ids,
+            attention_mask=attention_mask,
+            **generate_kwargs,
+        )
 
-def has_fn(model, fn_name):
-    """Check if model has a function fn_name"""
-    return callable(getattr(model, fn_name, None))
+    def update_special_tokens(self, tokenizer):
+        tokenizer.add_special_tokens({"additional_special_tokens": list(self.vlm.special_tokens.values())})
+        self.vlm.lang_model.config.vocab_size = len(tokenizer)
+        self.vlm.set_special_token_ids(
+            {v: tokenizer.convert_tokens_to_ids(v) for v in self.vlm.special_tokens.values()}
+        )
+        return tokenizer
