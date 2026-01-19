@@ -1,3 +1,5 @@
+import copy
+from collections import UserDict
 from dataclasses import asdict
 from typing import Literal, Optional, TypedDict, Union, cast
 
@@ -9,21 +11,27 @@ from transformers import (
     AutoConfig,
     AutoModelForImageTextToText,
     AutoTokenizer,
+    GenerationMixin,
     PretrainedConfig,
     PreTrainedModel,
     PreTrainedTokenizer,
-    GenerationMixin
 )
 from transformers.generation.utils import GenerateBeamDecoderOnlyOutput, GenerateDecoderOnlyOutput
+from transformers.loss.loss_utils import ForCausalLMLoss
+from transformers.models.phi3 import Phi3ForCausalLM
 from transformers.optimization import get_cosine_with_min_lr_schedule_with_warmup
 
 from project.base_models.blip3 import XGenMMModelForConditionalGeneration
 from project.config import Config
+from project.dataset import InferenceCollatorOutput, TrainCollatorOutput
+from project.eval_utils import beam_search_to_scores, greedy_to_scores
 from project.losses import GeneralizedDiceLoss, TverskyLoss
 from project.utils import log
 
+
 class GenerativePreTrainedModel(PreTrainedModel, GenerationMixin):
     """For type hint"""
+
     pass
 
 
@@ -61,7 +69,7 @@ def load_adapter(
 
 class MyModule(L.LightningModule):
     num_frames: int = 25
-    model: GenerativePreTrainedModel
+    model: GenerativePreTrainedModel | XGenMMModelForConditionalGeneration
     tokenizer: PreTrainedTokenizer
     criterions: list[nn.Module]
     model_cfg: PretrainedConfig
@@ -81,11 +89,9 @@ class MyModule(L.LightningModule):
         # type model
         name = self.model.__class__.__name__.lower()
         if "xgenmm" in name and "video" not in name:
-            self.model = cast(XGenMMModelForConditionalGeneration, self.model)
             self.model_code = "blip3"
         else:
             self.model_code = "blip3"
-            self.model = cast(XGenMMModelForConditionalGeneration, self.model)
         log(f"model_code is {self.model_code}")
 
         # tokenizer
@@ -96,8 +102,11 @@ class MyModule(L.LightningModule):
 
         # losses & predictions
         self.init_losses(config)
-        self.val_predictions = []
-        self.test_predictions = []
+
+        self.predictions = []
+        self.invalid_predictions = []
+
+        # self.test_predictions = []
 
     def infer_tokens_from_tokenizer(self):
         tokenizer = self.tokenizer
@@ -176,33 +185,59 @@ class MyModule(L.LightningModule):
         return loss
 
     def validation_step(self, batch, batch_idx):
-        output = self.model.
-        loss, logits = self.model(batch)
-        self.log(name="val/ce_loss", value=loss.item())
-
-        moment_logits = self.extract_binary_mask(logits, batch.input_ids)
-
-        log_freq = max(self.cfg.gradient_accumulation_steps, 2)
-        for idx, crit in enumerate(self.criterions):
-            crit_loss = crit(moment_logits)
-            loss += crit_loss * self.crit_weight[idx]
-            self.log(
-                name="val/" + self.crit_names[idx],
-                value=crit_loss.item(),
-                sync_dist=True,
-                on_step=(batch_idx + 1) % log_freq == 0,
-            )
-        self.log(name="val/loss", value=loss.item())
-
-        self.val_predictions.append(moment_logits)
+        self.predict_step(batch, batch_idx)
 
     def predict_step(self, batch, batch_idx):
-        logits = self.model(batch)
-        moment_logits = self.extract_binary_mask(logits, batch.input_ids)
-        self.test_predictions.append(moment_logits)
+        cfg = self.cfg
+        output = self.model.generate(
+            pixel_values=batch.pixel_values,
+            input_ids=batch.input_ids,
+            attention_mask=batch.attention_mask,
+            do_sample=False,
+            output_scores=True,
+            return_dict_in_generate=True,
+            max_new_tokens=self.num_frames * 2,
+            num_beams=self.cfg.num_val_beams,
+        )
+        output = cast(GenerateDecoderOnlyOutput, output)
+        text = self.tokenizer.batch_decode(output.sequences, skip_special_tokens=True)
+        text = [text.split("<|end|>")[0][: self.num_frames] for text in text]
+
+        if cfg.num_val_beams > 1 and isinstance(output, GenerateBeamDecoderOnlyOutput):
+            scores = beam_search_to_scores(output, self.token_0, self.token_1, self.num_frames)
+        else:
+            scores = greedy_to_scores(
+                output.scores,
+                self.token_0,
+                self.token_1,
+                self.num_frames,
+            )
+        del output
+
+        for b in range(cfg.train_batch_size):
+            pred_dict = {
+                "qid": int(batch["qids"][b]),
+                "duration": round(batch["durations"][b]),
+                "score": scores[b].tolist(),
+                "preds": text[b],
+            }
+            if all(pred == "0" for pred in text[b]) or any(pred not in ("1", "0") for pred in text[b]):
+                self.invalid_predictions.append(pred_dict)
+                pred_dict_copy = copy.deepcopy(pred_dict)
+                pred_dict_copy["preds"] = "".join(["1" for _ in range(self.num_frames)])
+                self.predictions.append(pred_dict_copy)
+            else:
+                self.predictions.append(pred_dict)
 
     def on_validation_epoch_end(self) -> None:
-        self.val_predictions.clear()
+        
+        self.predictions.clear()
+        self.invalid_predictions.clear()
+
+    def on_predict_epoch_end(self) -> None:
+        
+        self.predictions.clear()
+        self.invalid_predictions.clear()
 
     def configure_optimizers(self):  # type: ignore
         cfg = self.cfg

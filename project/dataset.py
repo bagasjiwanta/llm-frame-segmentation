@@ -2,6 +2,7 @@ import copy
 import json
 import os
 import random
+from collections import UserDict
 from pathlib import Path
 from typing import Literal, Sequence, TypedDict
 
@@ -203,7 +204,7 @@ class MomentRetrievalDataset(Dataset):
         }
 
 
-class TrainCollatorOutput(TypedDict):
+class TrainCollatorOutput(UserDict):
     """
     Output of the training data collator
 
@@ -266,17 +267,19 @@ class TrainDataCollator:
 
         images = [item["images"] for item in raw_batch]
 
-        return {
-            "pixel_values": images,
-            "input_ids": input_ids,
-            "labels": labels,
-            "attention_mask": lang_inputs["attention_mask"],  # type: ignore
-            "image_size": image_sizes,
-            "answers": answers,
-        }
+        return TrainCollatorOutput(
+            {
+                "pixel_values": images,
+                "input_ids": input_ids,
+                "labels": labels,
+                "attention_mask": lang_inputs["attention_mask"],  # type: ignore
+                "image_size": image_sizes,
+                "answers": answers,
+            }
+        )
 
 
-class InferenceCollatorOutput(TypedDict):
+class InferenceCollatorOutput(UserDict):
     """
     Output of the inference data collator
 
@@ -330,16 +333,18 @@ class InferenceDataCollator:
         attention_mask: torch.Tensor = lang_inputs["attention_mask"]  # type: ignore
 
         images = [item["images"] for item in raw_batch]
-        return {
-            "pixel_values": images,
-            "input_ids": input_ids,
-            "labels": labels,
-            "attention_mask": attention_mask,
-            "image_size": image_sizes,
-            "qids": qids,
-            "relevant_windows": relevant_windows,
-            "durations": durations,
-        }
+        return InferenceCollatorOutput(
+            {
+                "pixel_values": images,
+                "input_ids": input_ids,
+                "labels": labels,
+                "attention_mask": attention_mask,
+                "image_size": image_sizes,
+                "qids": qids,
+                "relevant_windows": relevant_windows,
+                "durations": durations,
+            }
+        )
 
 
 def infer_tokens_from_tokenizer(tokenizer: PreTrainedTokenizer):
