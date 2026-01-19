@@ -73,7 +73,8 @@ def deepspeed_finetune_one_epoch_generator(
         meters.num_pos.update(float(batch["answers"][:, :, -1].sum().item() / (batch_size * num_frame)))
 
         images, input_ids, attention_mask, labels, answers = train_batch_to_device(batch, device)
-        images = process_images(images, img_resizer, img_normalizer)
+        if config.use_local_model:
+            images = process_images(images, img_resizer, img_normalizer)
 
         meters.num_tokens.update(attention_mask.sum().item() / 1000)
 

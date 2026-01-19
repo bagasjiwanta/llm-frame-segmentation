@@ -43,10 +43,6 @@ def infer_tokens_from_tokenizer(tokenizer: PreTrainedTokenizer):
     token_one = tokenizer.convert_tokens_to_ids("1")
     token_one = token_one[-1] if isinstance(token_one, list) else token_one
 
-    # token_assistant = tokenizer.convert_tokens_to_ids("<|assistant|>")
-    # token_assistant = token_assistant[-1] if isinstance(token_assistant, list) else token_assistant
-
-    # return token_zero, token_one, token_assistant
     return token_zero, token_one
 
 
@@ -60,6 +56,7 @@ def test_one_epoch(
     filename: str = "hl_test_submission.jsonl",
     do_save: bool = True,
     max_iter: int = -1,
+    num_frames: int = 25,
 ):
     """
     Do inference on dataloader. This can be used without other parts of the repo.
@@ -69,9 +66,6 @@ def test_one_epoch(
     assert dataloader is not None
 
     rank = os.environ.get("RANK", 0)
-    if dist.is_initialized():
-        rank = dist.get_rank()
-
     device = torch.device(f"cuda:{rank}")
 
     img_resizer, img_normalizer = make_img_resizer(device), make_img_normalizer(device=device)
@@ -94,14 +88,16 @@ def test_one_epoch(
         batch: InferenceCollatorOutput
 
         batch_size = batch["input_ids"].size(0)
-        num_frames = 25
 
         images, input_ids, attention_mask = val_batch_to_device(batch, device)
-        images = process_images(images, img_resizer, img_normalizer)
+        if isinstance(model, XGenMMPerceiver):
+            images = process_images(images, img_resizer, img_normalizer)
 
         if rank == 0 and step == 0:
             tqdm.write("Dataloading OK")
+
         num_beams = generation_kwargs.get("num_beams", 1)
+
         with torch.no_grad():
             with torch.autocast(
                 device_type="cuda",

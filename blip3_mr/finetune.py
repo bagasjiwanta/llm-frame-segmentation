@@ -23,7 +23,6 @@ from blip3_mr.utils import (
     log,
     random_seed,
     save_checkpoint_deepspeed,
-    save_state_dict_summary_to_file,
     unwrap_model,
 )
 from blip3_mr.validate import (
@@ -68,13 +67,7 @@ def main():
         model.requires_grad_(False)
 
         if config.do_val:
-            validate_one_epoch(
-                config=config,
-                model=model,
-                dataset=val_datainfo,
-                do_save=True,
-                output_dir=f"runs/{config.run_name}",
-            )
+            validate_one_epoch(config, model, val_datainfo, do_save=True, output_dir=f"runs/{config.run_name}")
 
         if config.do_test:
             test_one_epoch(
@@ -84,11 +77,11 @@ def main():
                 generation_kwargs={"num_beams": config.num_val_beams},
                 tokenizer=tokenizer,
                 output_dir=f"runs/{config.run_name}",
+                num_frames=test_datainfo.num_frames,
             )
         return
 
     # --- Initialize deepspeed ---
-    save_state_dict_summary_to_file(model, "weights_pre.json")
     orig_mod = unwrap_model(model)
     ckpt_dir, resume_from_step, resume_from_epoch, deepspeed_model = wrap_model_in_deepspeed(
         config, model, num_micro_batch_in_epoch, num_global_steps
@@ -109,21 +102,13 @@ def main():
     orig_mod.vision_tokenizer.compile(mode=COMPILE_MODE)
     orig_mod.lang_model.compile(mode=COMPILE_MODE)
 
-    save_state_dict_summary_to_file(model, "weights_post.json")
-
     if config.rank == 0:
         print("Trainable parameters:")
         print(orig_mod.num_trainable_params_per_module)
 
     # --- Val loop with deepspeed
     if not config.do_train:
-        validate_one_epoch(
-            config=config,
-            model=model,
-            dataset=val_datainfo,
-            do_save=True,
-            output_dir=f"runs/{config.run_name}",
-        )
+        validate_one_epoch(config, model, val_datainfo, do_save=True, output_dir=f"runs/{config.run_name}")
         deepspeed.dist.destroy_process_group()
         return
 
@@ -140,17 +125,12 @@ def main():
         config.num_sanity_steps = int((num_sanity_steps // config.world_size) * config.world_size)
         deepspeed.dist.barrier()
         log(f"Performing sanity check for {config.num_sanity_steps} steps")
-        validate_one_epoch(
-            config=config,
-            model=model,
-            dataset=val_datainfo,
-            max_iter=config.num_sanity_steps,
-        )
+        validate_one_epoch(config, model, val_datainfo, max_iter=config.num_sanity_steps)
         torch.cuda.empty_cache()
 
     # --- Calculate at what steps to do eval
     val_steps = calc_val_steps(config.num_epochs, num_micro_batch_in_epoch, config.num_val_per_epoch)
-    log(f"Validation steps:\n{", ".join([str(v) for v in val_steps])}")
+    log(f"Validation steps:\n{', '.join([str(v) for v in val_steps])}")
     val_step = -1
 
     # --- Training loop ---

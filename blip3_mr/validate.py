@@ -135,6 +135,7 @@ def validate_one_epoch(
         do_save=False,
         max_iter=max_iter,
         generation_kwargs={"num_beams": config.num_val_beams},
+        num_frames=dataset.num_frames,
     )
 
     moment_dataset: MomentRetrievalDataset = dataset.dataloader.dataset

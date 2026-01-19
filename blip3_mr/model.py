@@ -2,7 +2,7 @@ from typing import cast
 
 import deepspeed
 import torch
-from transformers import AutoModelForVision2Seq, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoModelForVision2Seq, AutoTokenizer
 from transformers.tokenization_utils import PreTrainedTokenizer
 
 from blip3_mr.config import Config, get_deepspeed_config_from_config
@@ -13,7 +13,6 @@ from blip3_mr.open_flamingo.src.factory import create_model_and_tokenizer
 from blip3_mr.open_flamingo.src.xgenmm import XGenMMPerceiver
 from blip3_mr.utils import (
     find_and_load_checkpoint_deepspeed,
-    is_file_or_dir,
     isdir,
     isfile,
     load_pretrained_state_dict,
@@ -29,9 +28,9 @@ def load_model(config: Config) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
         if isdir(config.lang_model_pretrained) or isinstance(config.lang_model_pretrained, str):
             lang_model_pretrained = config.lang_model_pretrained
         model, tokenizer = create_model_and_tokenizer(
-            gradient_checkpointing=config.gradient_checkpointing, 
+            gradient_checkpointing=config.gradient_checkpointing,
             pretrained=config.base_model_name_or_path,
-            lang_model_path=lang_model_pretrained
+            lang_model_path=lang_model_pretrained,
         )
     else:
         hf_model = AutoModelForVision2Seq.from_pretrained(
@@ -40,10 +39,9 @@ def load_model(config: Config) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
             dtype=torch.bfloat16,
         )
         tokenizer: PreTrainedTokenizer = AutoTokenizer.from_pretrained(
-            "Salesforce/xgen-mm-phi3-mini-instruct-interleave-r-v1.5",
+            config.base_model_name_or_path,
             trust_remote_code=True,
             use_fast=False,
-            legacy=False,
         )
         tokenizer = hf_model.update_special_tokens(tokenizer)
         model = hf_model.vlm
@@ -75,47 +73,30 @@ def load_model(config: Config) -> tuple[XGenMMPerceiver, PreTrainedTokenizer]:
 
 
 def wrap_model_in_lora(config: Config, model: XGenMMPerceiver, tokenizer: PreTrainedTokenizer):
-    if config.lang_model_lora:
-        if isdir(config.lang_model_pretrained) or isinstance(config.lang_model_pretrained, str):
-            peft_model = load_adapter(model.lang_model, config, model_name_or_path=config.lang_model_adapter)
-            peft_model.to(torch.bfloat16)
-            log(f"Loaded lang_model adapter from {config.lang_model_adapter} with config:")
-        else:
-            peft_model = load_adapter(
-                model.lang_model,
-                config,
-                task_type="CAUSAL_LM",
-                target_modules="phi3",
-            )
-            peft_model.to(torch.bfloat16)
-            log(f"Created lang_model adapter with config:")
+    if not config.lang_model_lora:
+        return
 
-        model.lang_model = peft_model
-        if config.rank == 0:
-            print(peft_model.peft_config)
-            log("Lang model trainable parameters:")
-            peft_model.print_trainable_parameters()
-
-    if config.vision_tokenizer_lora:
-        peft_model2 = load_adapter(
-            # @TODO fix the vision tokenizer since it's a plain torch.nn.Module
-            model.vision_tokenizer,
-            config,
-            task_type=None,
-            target_modules="all-linear",
-            model_name_or_path=config.vision_tokenizer_pretrained,
+    if isinstance(config.lang_model_adapter, str):
+        model.lang_model = AutoModelForCausalLM.from_pretrained(
+            config.lang_model_adapter,
+            dtype=torch.bfloat16,
         )
-        peft_model2.bfloat16()
-        model.vision_tokenizer = peft_model2
-        log(f"Loaded vision_tokenizer adapter from {config.vision_tokenizer_pretrained} with config:")
-        if config.rank == 0:
-            for k, v in peft_model2.peft_config["default"].items():
-                print(f"\t{k}: {v}")
-        peft_model2.print_trainable_parameters()
+        peft_model = load_adapter(model.lang_model, config, model_name_or_path=config.lang_model_adapter)
+        log(f"Loaded lang_model adapter from {config.lang_model_adapter} with config:")
+    else:
+        peft_model = load_adapter(
+            model.lang_model,
+            config,
+            task_type="CAUSAL_LM",
+        )
+        log(f"Created lang_model adapter with config:")
 
-    # if config.rank == 0:
-    #     print("Trainable parameters:")
-    #     print(model.num_trainable_params_per_module)
+    peft_model.to(torch.bfloat16)
+    model.lang_model = peft_model
+    if config.rank == 0:
+        print(peft_model.peft_config)
+        log("Lang model trainable parameters:")
+        peft_model.print_trainable_parameters()
 
 
 def wrap_model_in_deepspeed(
@@ -132,7 +113,7 @@ def wrap_model_in_deepspeed(
         config, deepspeed_model, num_micro_batch_in_epoch
     )
 
-    if ckpt_ok and config.lora and config.deepspeed_from_universal:
+    if ckpt_ok and config.lora and config.deepspeed_from_universal and False:
         if config.lang_model_lora:
             log("Reloading lora model for universal checkp0oint")
             model.lang_model = load_adapter(model.lang_model, config)
