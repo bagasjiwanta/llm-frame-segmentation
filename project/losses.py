@@ -58,9 +58,7 @@ class GeneralizedDiceLoss(nn.Module):
     """
     Computes the Generalized Dice Loss, adaptable for soft labels.
 
-    As defined in: https://arxiv.org/abs/1707.03237
-
-    Modified to be used for LLM logits.
+    Defined in: https://arxiv.org/abs/1707.03237
     """
 
     def __init__(

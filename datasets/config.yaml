@@ -2,12 +2,24 @@
 # unique_name:
 #   dir: dataset directory (str)
 #   prompt: which prompt variation to use (int)
-#   variation: actual number of variation that the dataset has
-#   use_variation: number of variation to use
+#   variation: actual number of frame variation that the dataset has (e.g. 3)
+#   use_variation: number of variation to use (default to variation. Specify 1 for middle frame)
 #   num_frames: number of frames
 #   version: defaults to 1 unless dataset has multiple versions of the same config
 
-main:
+
+# dataset dir format (in python string formatting):
+
+# f"{base_data_dir}/{dir}/p{prompt}/{split}_v{version}.json
+
+# split name is either 'train', 'test', or 'val'
+# base_data_dir is specified as CLI arg
+
+# for example: "datasets/qvhighlights-25frames/p2/train_v2.json"
+# or "datasets/qvhighlights-25frames-test/p2/test.json"
+# the "_v" is gone if there's no second/third version
+
+frames50_prompt2_trainval:
   dir: qvhighlights-25frames
   prompt: 2
   variation: 3
@@ -16,7 +28,7 @@ main:
   version: 2
   images_dir: videos
 
-test:
+frames50_prompt2_test:
   dir: qvhighlights-25frames-test
   prompt: 2
   variation: 1
@@ -25,3 +37,20 @@ test:
   version: 1
   images_dir: videos
 
+frames50_prompt1_all:
+  dir: qvhighlights-50frames
+  prompt: 1
+  variation: 3
+  num_frames: 50
+  use_variation: 3
+  version: 1
+  images_dir: videos
+
+frames50_prompt2_all:
+  dir: qvhighlights-50frames
+  prompt: 2
+  variation: 3
+  num_frames: 50
+  use_variation: 3
+  version: 1
+  images_dir: videos

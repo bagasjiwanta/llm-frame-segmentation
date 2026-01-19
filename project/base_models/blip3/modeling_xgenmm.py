@@ -746,9 +746,9 @@ class VLM(nn.Module):
 
     def __init__(
         self,
-        vision_encoder: nn.Module,
+        vision_encoder: nn.Module | PreTrainedModel,
         vision_tokenizer: nn.Module,
-        lang_model: nn.Module,
+        lang_model: nn.Module | PreTrainedModel,
         initial_tokenizer_len: int,
         pad_token_id: int,
         gradient_checkpointing: bool = False,
@@ -1087,9 +1087,9 @@ class VLMWithLanguageStream(VLM):
 
     def __init__(
         self,
-        vision_encoder: nn.Module,
+        vision_encoder: nn.Module | PreTrainedModel,
         vision_tokenizer: nn.Module,
-        lang_model: nn.Module,
+        lang_model: nn.Module | PreTrainedModel,
         initial_tokenizer_len: int,
         pad_token_id: int,
         decoder_layers_attr_name: str = None,
@@ -1270,9 +1270,9 @@ class VLMWithLanguageStream(VLM):
 class XGenMMPerceiver(VLMWithLanguageStream):
     def __init__(
         self,
-        vision_encoder: nn.Module,
+        vision_encoder: nn.Module | PreTrainedModel,
         vision_tokenizer: nn.Module,
-        lang_model: nn.Module,
+        lang_model: nn.Module | PreTrainedModel,
         initial_tokenizer_len: int,
         pad_token_id: int,
         decoder_layers_attr_name: str = None,
@@ -1459,7 +1459,7 @@ class XGenMMPerceiver(VLMWithLanguageStream):
         # for xattn, vision_x and media_location are repeat_interleaved s.t.
         # the total batch size is B * num_beams
         new_inputs = self._prepare_inputs_for_forward(
-            vision_tokens=vision_tokens,
+            vision_tokens=vision_x,
             lang_x=lang_x,
             attention_mask=attention_mask,
             vision_attention_mask=None,

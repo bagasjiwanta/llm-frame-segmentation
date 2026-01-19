@@ -2,15 +2,12 @@ import copy
 import json
 import os
 import random
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal, Sequence, TypedDict
 
 import lightning as L
 import numpy as np
 import torch
-import torch.distributed as dist
-import torchvision.transforms.v2 as v2
 import yaml
 from torch.distributed import get_rank, get_world_size
 from torch.multiprocessing import Value
@@ -18,7 +15,7 @@ from torch.utils.data import DataLoader, Dataset, DistributedSampler
 from torchvision.io import ImageReadMode, decode_image
 from transformers.tokenization_utils import PreTrainedTokenizer
 
-from project.config import DataConfig
+from project.config import Config, DataConfig
 
 
 class ConversationType(TypedDict):
@@ -374,25 +371,21 @@ class SharedEpoch:
 class VTGDataModule(L.LightningDataModule):
     def __init__(
         self,
-        cfg: DataConfig,
-        do_train: bool,
-        do_val: bool,
-        do_test: bool,
+        cfg: DataConfig | Config,
+        mode: Literal["fit", "validate", "test"],
         tokenizer: PreTrainedTokenizer,
         seed: int = 2109,
     ):
-        assert do_train and do_val and do_test
-
+        self.do_train = mode == "fit"
+        self.do_val = mode in ("fit", "validate")
+        self.do_test = mode == "test"
         cfg_path = Path(cfg.base_data_dir) / cfg.yaml_path
         with open(cfg_path, "r") as f_in:
             # load with name as key
             data_cfg = yaml.safe_load(f_in)[cfg.dataset_name]
 
         self.tokenizer = tokenizer
-        self.do_train = do_train
-        self.do_val = do_val
-        self.do_test = do_test
-        self.train_batch_size = cfg.train_micro_batch_size_per_gpu
+        self.train_batch_size = cfg.train_batch_size
         self.val_batch_size = cfg.val_batch_size
         self.cfg = cfg
 
@@ -400,10 +393,7 @@ class VTGDataModule(L.LightningDataModule):
         self.val = MomentRetrievalDataset(cfg.base_data_dir, data_cfg, "val", cfg.num_val_samples)
         self.test = MomentRetrievalDataset(cfg.base_data_dir, data_cfg, "test", cfg.num_test_samples)
 
-        tokens = infer_tokens_from_tokenizer(tokenizer)
-        self.token_0 = tokens[0]
-        self.token_1 = tokens[1]
-        self.token_assistant = tokens[2]
+        self.num_frames = self.train.num_frames
 
         world_size = get_world_size()
         distributed = world_size > 1
